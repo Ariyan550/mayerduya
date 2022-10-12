@@ -5,15 +5,13 @@ let packetText =document.querySelector('.packetCount')
 
 packetText.addEventListener('keyup',()=>{
     let packetTaka =document.querySelector('.packetTaka')
-    let totalamountsoapchalk =document.querySelector('.totalamountsoapchalk')
 
     let pval =packetText.value;
      let chalkmulti =pval * 0.3
-     let chalkTotal = 500*chalkmulti
     packetTaka.innerHTML =chalkmulti
-    totalamountsoapchalk.innerHTML =chalkTotal
 
 })
+
 
 
 
@@ -25,11 +23,24 @@ packetText.addEventListener('keyup',()=>{
 
 
 // product slider
-document.addEventListener( 'DOMContentLoaded', function() {
-    var splide = new Splide( '.splide',{
-        type    : 'loop',
-        autoplay: 'true',
-    });
-    splide.mount();
-    
-  } );
+document.addEventListener('DOMContentLoaded', function () {
+    new Splide('#largeProduct', {
+    type   : 'loop',
+    autoplay: true,
+    drag:true,
+    keyboard:true,
+  
+    }).mount();
+  });
+  
+  document.addEventListener('DOMContentLoaded', function () {
+    new Splide('#bigProduct', {
+    type   : 'loop',
+    autoplay: true,
+    drag:true,
+    keyboard:true,
+    }).mount();
+  });
+
+
+ //end product slider

@@ -144,11 +144,14 @@ font-size: 22px;
 
 .productCard img{
     width: 100%;
+   height: 460px;
 }
+
 
 .productCard .pname h4{
     margin-top: 16px;
     font-size: 20px;
+    text-transform: capitalize;
 }
 
 .productCard h4{
@@ -204,7 +207,7 @@ font-size: 22px;
 }
 
 
-.productCard .packetCount{
+.productCard .inp{
     width: 70px;
     color: black;
     height: 30px;
