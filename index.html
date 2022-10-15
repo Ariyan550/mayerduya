@@ -14,7 +14,7 @@
 </head>
 <body>
  
-    <header>
+    <header id="header">
             <div class="topBar">
                 <div class="row align-items-center justify-content-center">
                     <div class="col-lg-2 col-sm-12">
@@ -37,7 +37,7 @@
             </div>
 
             <!-- navbar -->
-            <nav class="navbar navbar-expand-lg navbar-dark bg-light">
+            <nav id="navBar" class="navbar navbar-expand-lg navbar-dark bg-light">
               <img src="img/logo.png" alt="logo">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon"></span>
@@ -46,7 +46,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                   <ul class="navbar-nav ml-auto">
                     <li class="nav-item active">
-                      <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                      <a class="nav-link" href="#header">Home <span class="sr-only">(current)</span></a>
                     </li>
                     
                     <li class="nav-item dropdown">
@@ -54,7 +54,7 @@
                         Products
                       </a>
                       <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Soap Chalk</a>
+                        <a class="dropdown-item" href="#product">Soap Chalk</a>
                         <a class="dropdown-item" href="#">English Chalk</a>
                         <a class="dropdown-item" href="#">Magic Chalk</a>
                         <a class="dropdown-item" href="#">Tailor Chalk</a>
@@ -74,13 +74,15 @@
 
             <div class="home">
          
+                 <div class="container">
                   <div class="centerTitle d-flex justify-content-center align-items-center flex-column">
-                    <h1>MAYER DUYA ENTERPRISE</h1>
+                    <h1 >MAYER DUYA ENTERPRISE</h1>
                     <P class="headingsOne">All Kinds Of Garments Chalk Whole Sales Suppliers.</P>
                     <p class="headingsBangla">আসসালামুয়ালাইকুম আমাদের অনলাইন শপ এ আপনাকে স্বাগতম। আমাদের কাছে পেয়ে যাবেন সকল ধরনের মারকিং চক পাইকারি দামে। <br> আমরা আপনাদের অর্ডার করা মাল নিজ দায়িক্তে আপনাদের দোকানে পৌছায় দিয়ে থাকি। আমাদের চক গুলো দেখার জন্য শপ নাও <br>  তে ক্লিক করুন। অর্ডার এবং বিস্তারিত জানার জন্য একবারে উপরে দিয়া নাম্বার এ যোগাযোগ করার জন্য অনুরধ করা হল।
                     </p>
-                    <a class="shopBtn" href="#"><i class="fa-sharp fa-solid fa-cart-shopping"></i> Shop Now</a>
+                    <a class="shopBtn" href="#product"><i class="fa-sharp fa-solid fa-cart-shopping"></i> Shop Now</a>
                   </div>
+                 </div>
 
             </div>
     </header>
@@ -91,10 +93,13 @@
 
 <!-- start products page design -->
 
-<section class="products">
+<section class="products" id="product">
   <div class="container">
     <div class="ptitle">
       <h3>Our Products</h3>
+    </div>
+    <div class="productHeadingName">
+      <h4>Soap Chalk</h4>
     </div>
     <div class="row">
      
@@ -221,8 +226,131 @@
         </div>
       </div>
 
+      <!-- product three -->
 
+      
+      <div class="col-lg-6">
+        <div class="productCard">
+          <div class="pimg">
 
+            <!-- product slider -->
+            <section id="smallProduct"  class="splide" aria-label=" Basic HTML Example">
+              <div class="splide__track">
+                <ul class="splide__list">
+                  <li class="splide__slide"> <img  src="img/p5.jpg" alt=""></li>
+                  <li class="splide__slide"> <img  src="img/p6.jpg" alt=""></li>           
+                </ul>
+              </div>
+            </section>
+            
+            <!--end product slider -->
+          </div>
+          <div class="pname">
+            <h4 class="font-weight-bold">Soap Chalk Green,Red,Yellow</h4>
+          </div>
+          <hr>
+          <div class="pcolors">
+            <div class="colorText">
+              <h4>Colors :</h4>
+            </div>
+         <div class="d-flex">
+          <div class="pgreen"></div>
+          <div class="pred ml-4"></div>
+          <div class="pyellow ml-4"></div>
+         </div>
+          </div>
+          <hr>
+          <div class="psize d-flex justify-content-between">
+            <h4>Size :</h4>
+            <h4 class="font-weight-bold">3cm x 1.9cm</h4>
+          </div>
+          <hr>
+         
+          <div class="pquantity d-flex justify-content-between">
+            <h4>Packet :</h4>
+            <h4 class="font-weight-bold"><input value="20" class="packetCount packetCount1 inp" type="text"> Pieces</h4>
+          </div>
+          <hr>
+          <div class="pprice d-flex justify-content-between">
+            <h4>Price :</h4>
+            <h4 class="font-weight-bold"><span class="packetTaka1">3.8</span> taka</h4>
+          </div>
+          <hr>
+        
+          <div class="pquantity d-flex justify-content-between">
+            <h4>Custom Order</h4>
+            <h4 class="font-weight-bold">Available😍</h4>
+          </div>
+         
+          <div class="buyNow">
+            <button class="buyBtn">Order Now</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- product four -->
+
+ 
+      <div class="col-lg-6">
+        <div class="productCard">
+          <div class="pimg">
+
+            <!-- product slider -->
+            <section id="mediumProduct"  class="splide" aria-label=" Basic HTML Example">
+              <div class="splide__track">
+                <ul class="splide__list">
+                  <li class="splide__slide"> <img  src="img/p7.jpg" alt=""></li>
+                 
+                </ul>
+              </div>
+            </section>
+            
+            <!--end product slider -->
+          </div>
+          <div class="pname">
+            <h4 class="font-weight-bold">Soap Chalk Green,Red,Yellow</h4>
+          </div>
+          <hr>
+          <div class="pcolors">
+            <div class="colorText">
+              <h4>Colors :</h4>
+            </div>
+         <div class="d-flex">
+          <div class="pgreen"></div>
+          <div class="pred ml-4"></div>
+          <div class="pyellow ml-4"></div>
+         </div>
+          </div>
+          <hr>
+          <div class="psize d-flex justify-content-between">
+            <h4>Size :</h4>
+            <h4 class="font-weight-bold">3cm x 1.9cm</h4>
+          </div>
+          <hr>
+         
+          <div class="pquantity d-flex justify-content-between">
+            <h4>Packet :</h4>
+            <h4 class="font-weight-bold"><input value="20" class="packetCount packetCount1 inp" type="text"> Pieces</h4>
+          </div>
+          <hr>
+          <div class="pprice d-flex justify-content-between">
+            <h4>Price :</h4>
+            <h4 class="font-weight-bold"><span class="packetTaka1">4</span> taka</h4>
+          </div>
+          <hr>
+        
+          <div class="pquantity d-flex justify-content-between">
+            <h4>Custom Order</h4>
+            <h4 class="font-weight-bold">Available😍</h4>
+          </div>
+         
+          <div class="buyNow">
+            <button class="buyBtn">Order Now</button>
+          </div>
+
+        </div>
+      </div>
 
 
 

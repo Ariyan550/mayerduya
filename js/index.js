@@ -13,11 +13,8 @@ packetText.addEventListener('keyup',()=>{
 })
 
 
-
-
-
-
 //end packet count
+
 
 
 
@@ -43,6 +40,31 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 
+  document.addEventListener('DOMContentLoaded', function () {
+    new Splide('#smallProduct', {
+    type   : 'loop',
+    autoplay: true,
+    drag:true,
+    keyboard:true,
+    }).mount();
+  });
+
+
+
+
+  document.addEventListener('DOMContentLoaded', function () {
+    new Splide('#mediumProduct', {
+    type   : 'loop',
+    autoplay: true,
+    drag:true,
+    keyboard:true,
+    }).mount();
+  });
+
+
+
+
+
  //end product slider
 
 
@@ -51,10 +73,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 //  scroll to top
 
-// Get the button
+
 let myTop = document.getElementById("myTop");
 
-// When the user scrolls down 20px from the top of the document, show the button
 window.onscroll = function() {scrollFunction()};
 
 function scrollFunction() {
@@ -65,11 +86,31 @@ function scrollFunction() {
   }
 }
 
-// When the user clicks on the button, scroll to the top of the document
 function topFunction() {
   document.body.scrollTop = 0;
   document.documentElement.scrollTop = 0;
 }
 
-
 //end  scroll to top
+
+
+
+
+
+
+
+
+// sticky top
+
+const stickyTop =document.querySelector('.navbar')
+
+window.addEventListener('scroll',()=>{
+    if(window.pageYOffset > 50){
+        stickyTop.classList.add('fixed-top')
+    }else{
+        stickyTop.classList.remove('fixed-top')
+    }
+})
+
+
+//end sticky top

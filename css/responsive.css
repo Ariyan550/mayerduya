@@ -1,0 +1,58 @@
+/* header home */
+@media screen and (max-width: 500px) {
+    
+.home .centerTitle{
+    text-align: center;
+}
+.home .centerTitle h1{
+    font-size: 35px;
+}
+.home .centerTitle .headingsOne{
+    font-size: 15px;
+    font-weight: bold;
+}
+.home .centerTitle .headingsBangla{
+    text-align: justify;
+    word-break: break-all;
+    
+}
+
+.products{
+    margin-top: 100px;
+}
+
+.topBar .col-sm-12{
+    margin-top: 6px!important;
+}
+
+  }
+
+
+
+  @media screen and (max-width: 1000px) {
+    
+    .home .centerTitle{
+        text-align: center;
+    }
+    .home .centerTitle .headingsOne{
+        font-size: 15px;
+        font-weight: bold;
+    }
+    .home .centerTitle .headingsBangla{
+        text-align: justify;
+        word-break: break-all;
+        
+    }
+    
+    .products{
+        margin-top: 100px;
+    }
+    
+    .topBar .col-sm-12{
+        margin-top: 6px!important;
+    }
+    
+      }
+    
+
+/*end header home */

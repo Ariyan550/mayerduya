@@ -74,7 +74,11 @@ font-size: 22px;
 
 .navbar{
     background-color: var(--color-blue)!important;
+    transition: all .2s ease-in-out;
 }
+
+
+
 
 .navbar img{
     width: 100px;
@@ -119,6 +123,25 @@ font-size: 22px;
 .products{
     padding:40px 0px;
 }
+
+.products .productHeadingName{
+    text-align: center;
+    margin-top: 20px;
+}
+.products .productHeadingName h4{
+   font-weight: bold;
+}
+
+.products .productHeadingName h4::after{
+    content: '';
+    width: 150px;
+    height: 4px;
+    background-color: #ffbc4b;
+    display: block;
+    margin: auto;
+}
+
+
 
 .products .ptitle{
   text-align: center;
@@ -227,7 +250,7 @@ font-size: 22px;
 
 .scrollTop{
     position: fixed;
-    bottom:30px;
+    bottom:50px;
     left: 20px;
 }
 
