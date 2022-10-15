@@ -62,7 +62,35 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 
+  document.addEventListener('DOMContentLoaded', function () {
+    new Splide('#enoneProduct', {
+    type   : 'loop',
+    autoplay: true,
+    drag:true,
+    keyboard:true,
+    }).mount();
+  });
 
+
+  document.addEventListener('DOMContentLoaded', function () {
+    new Splide('#entwoProduct', {
+    type   : 'loop',
+    autoplay: true,
+    drag:true,
+    keyboard:true,
+    }).mount();
+  });
+
+
+
+  document.addEventListener('DOMContentLoaded', function () {
+    new Splide('#enthreeProduct', {
+    type   : 'loop',
+    autoplay: true,
+    drag:true,
+    keyboard:true,
+    }).mount();
+  });
 
 
  //end product slider

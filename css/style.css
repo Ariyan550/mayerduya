@@ -29,7 +29,7 @@ a:hover{
 /* floting call */
 .flotingcall{
     position: fixed;
-    right: 50px;
+    right: 20px;
     bottom:50px;
 }
 .flotingcall .call{
@@ -272,3 +272,34 @@ font-size: 22px;
 }
 
 /* scroll to top */
+
+
+
+/* sms */
+
+.sendSms{
+    position: fixed;
+    bottom: 150px;
+    right: 20px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: #2568FB;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 0px 20px 10px rgba(0,0,0,0.1);
+}
+
+.sendSms .sms{
+    border: none;
+    background:transparent
+}
+
+.sendSms .sms i{
+    font-size: 25px;
+    color: #ffbc4b;
+}
+
+
+/* end sms */
