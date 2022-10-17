@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="css/style.css">
     <title>Mayer Duya Enterprise</title>
 </head>
-<body>
+<body onload="loader()">
+  <div id="preloader"></div>
  
     <header id="header">
             <div class="topBar">
@@ -542,16 +543,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
     </div>
   </div>
 </section>
@@ -563,6 +554,31 @@
 
 
 
+
+
+
+
+
+
+
+
+
+<!-- footer section -->
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <p>&copy;2022 Mayer Duya Enterprise All Right Researved</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+<!-- end footer section -->
 
 
 
@@ -584,11 +600,19 @@
 <!-- end scroll to top -->
 
 
+
 <div class="sendSms">
   <button class="sms"><i class="fa fa-envelope"></i></button>
 </div>
 
-
+<div class="chatBox">
+  <input type="text" placeholder="Shop Name">
+  <input type="text" placeholder="Address">
+  <input type="tel" placeholder="Phone Number">
+  <textarea name="" id="" cols="30" rows="10" placeholder="Type Your Massage..."></textarea>
+  <button id="sendbtn" class="sendbtn">Send Massage <img class="" src="img/button.gif" alt=""></button>
+  <h6 class="chatresponce"></h6>
+</div>
 
 
 
