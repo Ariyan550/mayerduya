@@ -146,40 +146,6 @@ window.addEventListener('scroll',()=>{
 
 
 
-// chat box
-let smsbtn =document.querySelector('.sendSms')
-let chatBox =document.querySelector('.chatBox')
-let sendbtn =document.querySelector('.sendbtn')
-let chatresponce=document.querySelector('.chatresponce')
-smsbtn.addEventListener('click',()=>{
-  chatBox.classList.toggle('active')
-})
-
-sendbtn.addEventListener('click',()=>{
-
-  sendbtn.innerHTML='Loading..'
-
-  setTimeout(()=>{
-    chatresponce.innerHTML='Massage Send Successfull😃 <br> Our Team Will Call You Later'
-    sendbtn.innerHTML='Send Massage'
-    setTimeout(()=>{
-      chatresponce.innerHTML=''
-    },4000)
-    
-  },3000)
-  
- 
-  
-  
-})
-
-
-
-// end chat box
-
-
-
-
 // start preloader
 
 var preloader = document.getElementById('preloader');
