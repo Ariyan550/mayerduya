@@ -297,3 +297,23 @@ font-size: 22px;
 
 
 
+.reachSide{
+background-color: #ffbc4b;
+padding: 10px 20px;
+}
+.reachSide h5{
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.reachSide .cmenu{
+    margin-top: 50px;
+}
+.reachSide h4{
+    text-decoration: underline;
+    font-weight: bold;
+}
+.contactPage h3{
+    text-decoration: underline;
+}

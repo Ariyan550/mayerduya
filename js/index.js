@@ -146,14 +146,3 @@ window.addEventListener('scroll',()=>{
 
 
 
-// start preloader
-
-var preloader = document.getElementById('preloader');
-
-function loader(){
-preloader.style.display ="none";
-
-}
-
-
-// end preloader
