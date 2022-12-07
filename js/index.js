@@ -93,6 +93,23 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 
+  document.addEventListener('DOMContentLoaded', function () {
+    new Splide('#enfourProduct', {
+    type   : 'loop',
+    autoplay: true,
+    drag:true,
+    keyboard:true,
+    }).mount();
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    new Splide('#enfiveProduct', {
+    type   : 'loop',
+    autoplay: true,
+    drag:true,
+    keyboard:true,
+    }).mount();
+  });
  //end product slider
 
 
