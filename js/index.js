@@ -163,3 +163,10 @@ window.addEventListener('scroll',()=>{
 
 
 
+// let orderNow =document.querySelectorAll('.buyBtn')
+
+// orderNow.forEach((data,ind)=>{
+//   data.addEventListener('click',()=>{
+    
+//   })
+// })

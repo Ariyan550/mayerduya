@@ -108,7 +108,7 @@ font-size: 22px;
     font-size: 20px;
 }
 .home .headingsBangla{
-    text-align: center;
+    text-align: justify;
     line-height: 28px;
     font-weight: 600;
 }
@@ -316,4 +316,8 @@ padding: 10px 20px;
 }
 .contactPage h3{
     text-decoration: underline;
+}
+.contactPage iframe{
+    width: 100%;
+    height: 100%;
 }
