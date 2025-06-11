@@ -3,228 +3,166 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🕯️ মোম বিক্রি ও কর্মচারী ড্যাশবোর্ড</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>মোম ও চক বিক্রয় ব্যবস্থাপনা</title>
+  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      background-color: #1f2937; /* Tailwind gray-800 */
-      color: #d1d5db; /* Tailwind gray-300 */
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    input, select, button {
-      transition: all 0.3s ease;
-    }
-    /* Scrollbar styling for overflow areas */
-    #shopList, #todaySales, #dueList, #employeeList {
-      scrollbar-width: thin;
-      scrollbar-color: #2563eb #374151;
-    }
-    #shopList::-webkit-scrollbar,
-    #todaySales::-webkit-scrollbar,
-    #dueList::-webkit-scrollbar,
-    #employeeList::-webkit-scrollbar {
-      width: 8px;
-    }
-    #shopList::-webkit-scrollbar-thumb,
-    #todaySales::-webkit-scrollbar-thumb,
-    #dueList::-webkit-scrollbar-thumb,
-    #employeeList::-webkit-scrollbar-thumb {
-      background-color: #2563eb;
-      border-radius: 10px;
-    }
-  </style>
 </head>
-<body class="p-6">
+<body class="bg-gray-100 p-6 font-sans">
 
-  <h1 class="text-4xl font-bold mb-6 text-center">🕯️ মোম বিক্রি ও কর্মচারী ড্যাশবোর্ড</h1>
+  <h1 class="text-3xl font-bold mb-6 text-center">মোম ও ইংলিশ চক বিক্রয় ব্যবস্থাপনা</h1>
 
-  <!-- নতুন দোকান যোগ -->
-  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">নতুন দোকান যোগ করুন</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-      <input id="shopName" type="text" placeholder="দোকানের নাম" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      <input id="shopMobile" type="text" placeholder="মোবাইল নম্বর" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      <input id="shopAddress" type="text" placeholder="ঠিকানা" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      <button onclick="addShop()" class="bg-blue-600 hover:bg-blue-500 rounded px-5 py-3 text-white font-semibold transition">যোগ করুন</button>
-    </div>
+  <!-- দোকান তালিকা -->
+  <section class="mb-8 bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-2">দোকান তালিকা</h2>
+    <input id="shopSearch" type="text" placeholder="দোকান খুঁজুন..." class="border p-2 rounded w-full mb-2" />
+    <ul id="shopList" class="mb-2 max-h-32 overflow-auto border rounded p-2 bg-gray-50"></ul>
+    <input id="newShopName" type="text" placeholder="নতুন দোকানের নাম" class="border p-2 rounded w-full mb-2" />
+    <input id="newShopMobile" type="text" placeholder="মোবাইল নম্বর" class="border p-2 rounded w-full mb-2" />
+    <input id="newShopAddress" type="text" placeholder="ঠিকানা" class="border p-2 rounded w-full mb-2" />
+    <button id="addShopBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">দোকান যোগ করুন</button>
   </section>
 
-  <!-- দোকানের তালিকা -->
-  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">দোকানের তালিকা</h2>
-    <input id="shopSearch" type="text" placeholder="🔍 দোকান খুঁজুন..." class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="loadShops()" />
-    <ul id="shopList" class="list-disc pl-5 space-y-2 max-h-48 overflow-y-auto"></ul>
+  <!-- মোম বিক্রয় -->
+  <section class="mb-8 bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-2">মোম বিক্রয়</h2>
+    <select id="saleShop" class="border p-2 rounded w-full mb-2"></select>
+    <input id="saleKg" type="number" step="0.01" placeholder="কেজি" class="border p-2 rounded w-full mb-2" />
+    <input id="saleTk" type="number" step="0.01" placeholder="টাকা" class="border p-2 rounded w-full mb-2" />
+    <input id="profitTk" type="number" step="0.01" placeholder="লাভ" class="border p-2 rounded w-full mb-2" />
+    <input id="saleDate" type="date" class="border p-2 rounded w-full mb-2" />
+    <button onclick="addWaxSale()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">মোম বিক্রয় যোগ করুন</button>
+    <h3 class="mt-4 font-semibold">আজকের মোম বিক্রয়:</h3>
+    <ul id="todaySales" class="max-h-32 overflow-auto bg-gray-50 border rounded p-2"></ul>
   </section>
 
-  <!-- মোম বিক্রয় তথ্য -->
-  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">মোম বিক্রয় তথ্য</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-6 gap-4">
-      <select id="saleShop" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500"></select>
-      <input id="saleKg" type="number" placeholder="কেজি" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500" />
-      <input id="saleTk" type="number" placeholder="টাকা" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500" />
-      <input id="profitTk" type="number" placeholder="লাভ (৳)" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500" />
-      <input id="saleDate" type="date" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500" />
-      <button onclick="addWaxSale()" class="bg-green-600 hover:bg-green-500 rounded px-5 py-3 text-white font-semibold transition">সেভ করুন</button>
-    </div>
-  </section>
-
-  <!-- ইংলিশ চক বিক্রয় তথ্য -->
-  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">ইংলিশ চক বিক্রয় তথ্য</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-6 gap-4">
-      <select id="chalkShop" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
-      <input id="chalkQty" type="number" placeholder="চক (পিস)" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-      <input id="chalkTk" type="number" placeholder="টাকা" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-      <input id="chalkProfit" type="number" placeholder="লাভ (৳)" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-      <input id="chalkDate" type="date" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-      <button onclick="addChalkSale()" class="bg-indigo-600 hover:bg-indigo-500 rounded px-5 py-3 text-white font-semibold transition">সেভ করুন</button>
-    </div>
+  <!-- ইংলিশ চক বিক্রয় -->
+  <section class="mb-8 bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-2">ইংলিশ চক বিক্রয়</h2>
+    <select id="chalkShop" class="border p-2 rounded w-full mb-2"></select>
+    <input id="chalkQty" type="number" placeholder="পরিমাণ (পিস)" class="border p-2 rounded w-full mb-2" />
+    <input id="chalkTk" type="number" step="0.01" placeholder="টাকা" class="border p-2 rounded w-full mb-2" />
+    <input id="chalkProfit" type="number" step="0.01" placeholder="লাভ" class="border p-2 rounded w-full mb-2" />
+    <input id="chalkDate" type="date" class="border p-2 rounded w-full mb-2" />
+    <button onclick="addChalkSale()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">চক বিক্রয় যোগ করুন</button>
+    <h3 class="mt-4 font-semibold">মোট বিক্রয়:</h3>
+    <div id="chalkSummary" class="bg-gray-50 border rounded p-2"></div>
   </section>
 
   <!-- ব্যয় -->
-  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">ব্যয়</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-      <input id="expenseAmount" type="number" placeholder="ব্যয় (৳)" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-purple-500" />
-      <input id="memo" type="text" placeholder="নোট / বিবরণ" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-purple-500" />
-      <input id="ieDate" type="date" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-purple-500" />
-      <button onclick="addExpense()" class="bg-purple-600 hover:bg-purple-500 rounded px-5 py-3 text-white font-semibold transition">সংরক্ষণ করুন</button>
-    </div>
-  </section>
-
-  <!-- মাসিক ব্যয় রিপোর্ট -->
-  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">মাসিক ব্যয় রিপোর্ট</h2>
-    <button onclick="showMonthlyExpense()" class="bg-red-600 hover:bg-red-500 rounded px-5 py-3 text-white font-semibold transition">দেখাও</button>
-    <div id="monthlyExpense" class="mt-4 text-lg"></div>
-  </section>
-
-  <!-- আজকের বিক্রি -->
-  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">আজকের বিক্রির তালিকা</h2>
-    <ul id="todaySales" class="space-y-2 max-h-48 overflow-y-auto"></ul>
-  </section>
-
-  <!-- ইংলিশ চক রিপোর্ট -->
-  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">ইংলিশ চক বিক্রয় পরিসংখ্যান</h2>
-    <div id="chalkSummary" class="text-lg"></div>
-  </section>
-
-  <!-- মাসিক রিপোর্ট -->
-  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">মাসিক রিপোর্ট</h2>
-    <div class="flex flex-col sm:flex-row gap-3 mb-4">
-      <button onclick="generateMonthlyReport()" class="bg-indigo-600 hover:bg-indigo-500 rounded px-5 py-3 text-white font-semibold transition flex-1">রিপোর্ট দেখাও</button>
-      <button onclick="downloadPDF()" class="bg-red-600 hover:bg-red-500 rounded px-5 py-3 text-white font-semibold transition flex-1">PDF ডাউনলোড</button>
-    </div>
-    <div id="monthlyReport" class="mt-4 max-h-72 overflow-y-auto"></div>
+  <section class="mb-8 bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-2">ব্যয়</h2>
+    <input id="expenseAmount" type="number" step="0.01" placeholder="টাকা" class="border p-2 rounded w-full mb-2" />
+    <input id="memo" type="text" placeholder="মেমো" class="border p-2 rounded w-full mb-2" />
+    <input id="ieDate" type="date" class="border p-2 rounded w-full mb-2" />
+    <button onclick="addExpense()" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">ব্যয় যোগ করুন</button>
+    <button onclick="showMonthlyExpense()" class="mt-2 bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">মাসিক ব্যয় দেখুন</button>
+    <div id="monthlyExpense" class="mt-2 font-semibold"></div>
   </section>
 
   <!-- বকেয়া হিসাব -->
-  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">বকেয়া হিসাব</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-      <select id="dueShop" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-yellow-500"></select>
-      <input id="dueAmount" type="number" placeholder="টাকা (বকেয়া/পেমেন্ট)" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-yellow-500" />
-      <button onclick="updateDue()" class="bg-yellow-600 hover:bg-yellow-500 rounded px-5 py-3 text-gray-900 font-semibold transition">আপডেট করুন</button>
-    </div>
-    <ul id="dueList" class="list-disc pl-5 space-y-2 max-h-48 overflow-y-auto"></ul>
+  <section class="mb-8 bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-2">বকেয়া হিসাব</h2>
+    <select id="dueShop" class="border p-2 rounded w-full mb-2"></select>
+    <input id="dueAmount" type="number" step="0.01" placeholder="টাকা (+বকেয়া, -পেমেন্ট)" class="border p-2 rounded w-full mb-2" />
+    <button onclick="updateDue()" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">বকেয়া আপডেট করুন</button>
+    <h3 class="mt-4 font-semibold">বকেয়া তালিকা:</h3>
+    <ul id="dueList" class="max-h-32 overflow-auto bg-gray-50 border rounded p-2"></ul>
   </section>
 
-  <!-- বিক্রয়, লাভ, ব্যয়ের চার্ট -->
-  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
-    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">📊 বিক্রয়, লাভ, ব্যয়ের চার্ট</h2>
-    <canvas id="salesChart" class="w-full h-64"></canvas>
+  <!-- কর্মচারী ব্যবস্থাপনা -->
+  <section class="mb-8 bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-2">কর্মচারী ব্যবস্থাপনা</h2>
+    <input id="empName" type="text" placeholder="নাম" class="border p-2 rounded w-full mb-2" />
+    <input id="empMobile" type="text" placeholder="মোবাইল" class="border p-2 rounded w-full mb-2" />
+    <input id="empSalary" type="number" step="0.01" placeholder="বেতন" class="border p-2 rounded w-full mb-2" />
+    <button onclick="addEmployee()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">কর্মচারী যোগ করুন</button>
+
+    <table class="w-full mt-4 border-collapse border border-gray-300">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="border border-gray-300 px-4 py-2">নাম</th>
+          <th class="border border-gray-300 px-4 py-2">মোবাইল</th>
+          <th class="border border-gray-300 px-4 py-2">বেতন</th>
+        </tr>
+      </thead>
+      <tbody id="employeeList" class="text-center"></tbody>
+    </table>
   </section>
 
-  <!-- কর্মচারী ব্যবস্থাপনা সেকশন -->
-  <section class="bg-gray-800 p-6 rounded-lg shadow-md">
-    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">কর্মচারী ব্যবস্থাপনা</h2>
-
-    <!-- কর্মচারী যোগ -->
-    <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-4">
-      <input id="empName" type="text" placeholder="নাম" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-pink-500" />
-      <input id="empMobile" type="text" placeholder="মোবাইল" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-pink-500" />
-      <input id="empSalary" type="number" placeholder="মাসিক বেতন (৳)" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-pink-500" />
-      <button onclick="addEmployee()" class="bg-pink-600 hover:bg-pink-500 rounded px-5 py-3 text-white font-semibold transition">কর্মচারী যোগ করুন</button>
-    </div>
-
-    <!-- কর্মচারী তালিকা টেবিল -->
-    <div class="overflow-auto max-h-64 border border-gray-700 rounded">
-      <table class="w-full text-left text-gray-300">
-        <thead class="bg-gray-900 sticky top-0">
-          <tr>
-            <th class="px-4 py-2">নাম</th>
-            <th class="px-4 py-2">মোবাইল</th>
-            <th class="px-4 py-2">মাসিক বেতন (৳)</th>
-            <th class="px-4 py-2">হাজিরা</th>
-            <th class="px-4 py-2">এবসেন্স</th>
-            <th class="px-4 py-2">এডভান্স (৳)</th>
-            <th class="px-4 py-2">অ্যাকশন</th>
-          </tr>
-        </thead>
-        <tbody id="employeeList" class="bg-gray-800"></tbody>
-      </table>
-    </div>
+  <!-- মাসিক রিপোর্ট ও পিডিএফ -->
+  <section class="mb-8 bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-semibold mb-2">মাসিক রিপোর্ট</h2>
+    <button onclick="generateMonthlyReport()" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 mb-2">রিপোর্ট তৈরি করুন</button>
+    <button onclick="downloadPDF()" class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 mb-4">পিডিএফ ডাউনলোড করুন</button>
+    <div id="monthlyReport" class="border p-4 rounded bg-gray-50 whitespace-pre-line"></div>
   </section>
 
 <script>
-  // ---- দোকান সংক্রান্ত ডাটা ও ফাংশন ----
+  // দোকান ডাটা ও ফাংশন
   let shops = JSON.parse(localStorage.getItem('shops') || '[]');
 
   function saveShops() {
     localStorage.setItem('shops', JSON.stringify(shops));
   }
 
-  function addShop() {
-    const name = document.getElementById('shopName').value.trim();
-    const mobile = document.getElementById('shopMobile').value.trim();
-    const address = document.getElementById('shopAddress').value.trim();
-    if (!name) {
-      alert('দোকানের নাম দিতে হবে');
-      return;
-    }
-    shops.push({ id: Date.now(), name, mobile, address });
-    saveShops();
-    document.getElementById('shopName').value = '';
-    document.getElementById('shopMobile').value = '';
-    document.getElementById('shopAddress').value = '';
-    loadShops();
-    loadShopOptions();
-  }
-
-  function loadShops() {
-    const search = document.getElementById('shopSearch').value.toLowerCase();
+  function renderShopList(filter = '') {
     const ul = document.getElementById('shopList');
     ul.innerHTML = '';
-    shops
-      .filter(s => s.name.toLowerCase().includes(search))
-      .forEach(shop => {
-        const li = document.createElement('li');
-        li.textContent = `${shop.name} (${shop.mobile}) - ${shop.address}`;
-        ul.appendChild(li);
-      });
+    const filtered = shops.filter(s => s.name.toLowerCase().includes(filter.toLowerCase()));
+    filtered.forEach(shop => {
+      const li = document.createElement('li');
+      li.className = "flex justify-between items-center border-b py-1";
+      li.innerHTML = `<span>${shop.name} - ${shop.mobile} - ${shop.address}</span>
+        <button onclick="deleteShop(${shop.id})" class="text-red-600 hover:text-red-800">মুছুন</button>`;
+      ul.appendChild(li);
+    });
+    populateShopSelects();
   }
 
-  function loadShopOptions() {
+  function addShop() {
+    const name = document.getElementById('newShopName').value.trim();
+    const mobile = document.getElementById('newShopMobile').value.trim();
+    const address = document.getElementById('newShopAddress').value.trim();
+
+    if (!name) {
+      alert('দোকানের নাম দিন');
+      return;
+    }
+
+    shops.push({ id: Date.now(), name, mobile, address });
+    saveShops();
+    document.getElementById('newShopName').value = '';
+    document.getElementById('newShopMobile').value = '';
+    document.getElementById('newShopAddress').value = '';
+    renderShopList();
+  }
+
+  function deleteShop(id) {
+    if(!confirm('আপনি কি এই দোকান মুছে ফেলতে চান?')) return;
+    shops = shops.filter(s => s.id !== id);
+    saveShops();
+    renderShopList();
+    loadTodaySales();
+    loadDueList();
+  }
+
+  // দোকান সিলেক্ট অপশন আপডেট
+  function populateShopSelects() {
     const saleShop = document.getElementById('saleShop');
     const chalkShop = document.getElementById('chalkShop');
     const dueShop = document.getElementById('dueShop');
-    [saleShop, chalkShop, dueShop].forEach(sel => {
-      sel.innerHTML = '<option value="">-- দোকান নির্বাচন করুন --</option>';
-      shops.forEach(s => {
+    [saleShop, chalkShop, dueShop].forEach(select => {
+      select.innerHTML = '<option value="">দোকান নির্বাচন করুন</option>';
+      shops.forEach(shop => {
         const option = document.createElement('option');
-        option.value = s.id;
-        option.textContent = s.name;
-        sel.appendChild(option);
+        option.value = shop.id;
+        option.textContent = shop.name;
+        select.appendChild(option);
       });
     });
   }
 
-  // ---- মোম বিক্রয় ডাটা ও ফাংশন ----
+  // মোম বিক্রয় ডাটা ও ফাংশন
   let waxSales = JSON.parse(localStorage.getItem('waxSales') || '[]');
   function saveWaxSales() {
     localStorage.setItem('waxSales', JSON.stringify(waxSales));
@@ -250,3 +188,97 @@
     document.getElementById('saleDate').value = '';
     loadTodaySales();
   }
+
+  // আজকের মোম বিক্রয় লোড
+  function loadTodaySales() {
+    const today = new Date().toISOString().slice(0, 10);
+    const ul = document.getElementById('todaySales');
+    ul.innerHTML = '';
+
+    const todaySalesList = waxSales.filter(sale => sale.date === today);
+
+    todaySalesList.forEach(sale => {
+      const shop = shops.find(s => s.id == sale.shopId);
+      const li = document.createElement('li');
+      li.textContent = `${shop ? shop.name : 'অজানা দোকান'} - ${sale.kg} কেজি - ৳${sale.tk} - লাভ: ৳${sale.profit}`;
+      ul.appendChild(li);
+    });
+  }
+
+  // ইংলিশ চক বিক্রয় ডাটা ও ফাংশন
+  let chalkSales = JSON.parse(localStorage.getItem('chalkSales') || '[]');
+  function saveChalkSales() {
+    localStorage.setItem('chalkSales', JSON.stringify(chalkSales));
+  }
+  function addChalkSale() {
+    const shopId = document.getElementById('chalkShop').value;
+    const qty = parseInt(document.getElementById('chalkQty').value);
+    const tk = parseFloat(document.getElementById('chalkTk').value);
+    const profit = parseFloat(document.getElementById('chalkProfit').value);
+    const date = document.getElementById('chalkDate').value;
+
+    if (!shopId || isNaN(qty) || isNaN(tk) || isNaN(profit) || !date) {
+      alert('সঠিক তথ্য দিন');
+      return;
+    }
+
+    chalkSales.push({ id: Date.now(), shopId, qty, tk, profit, date });
+    saveChalkSales();
+    alert('ইংলিশ চক বিক্রয় তথ্য সংরক্ষিত হয়েছে');
+    document.getElementById('chalkQty').value = '';
+    document.getElementById('chalkTk').value = '';
+    document.getElementById('chalkProfit').value = '';
+    document.getElementById('chalkDate').value = '';
+    loadChalkSummary();
+  }
+
+  function loadChalkSummary() {
+    const summaryDiv = document.getElementById('chalkSummary');
+    const totalQty = chalkSales.reduce((sum, s) => sum + s.qty, 0);
+    const totalTk = chalkSales.reduce((sum, s) => sum + s.tk, 0);
+    const totalProfit = chalkSales.reduce((sum, s) => sum + s.profit, 0);
+
+    summaryDiv.textContent = `মোট চক বিক্রি: ${totalQty} পিস, মোট বিক্রয়: ৳${totalTk.toFixed(2)}, মোট লাভ: ৳${totalProfit.toFixed(2)}`;
+  }
+
+  // ব্যয় ডাটা ও ফাংশন
+  let expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+  function saveExpenses() {
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+  }
+  function addExpense() {
+    const amount = parseFloat(document.getElementById('expenseAmount').value);
+    const memo = document.getElementById('memo').value.trim();
+    const date = document.getElementById('ieDate').value;
+
+    if (isNaN(amount) || !date) {
+      alert('সঠিক তথ্য দিন');
+      return;
+    }
+
+    expenses.push({ id: Date.now(), amount, memo, date });
+    saveExpenses();
+    alert('ব্যয় সংরক্ষিত হয়েছে');
+    document.getElementById('expenseAmount').value = '';
+    document.getElementById('memo').value = '';
+    document.getElementById('ieDate').value = '';
+  }
+
+  function showMonthlyExpense() {
+    const monthlyExpenseDiv = document.getElementById('monthlyExpense');
+    const month = prompt('মাসের সংখ্যা লিখুন (যেমন 2023-06):');
+    if (!month) return;
+
+    const total = expenses
+      .filter(e => e.date.startsWith(month))
+      .reduce((sum, e) => sum + e.amount, 0);
+
+    monthlyExpenseDiv.textContent = `${month} মাসের মোট ব্যয়: ৳${total.toFixed(2)}`;
+  }
+
+  // মাসিক রিপোর্ট তৈরি
+  function generateMonthlyReport() {
+    const month = prompt('মাসের সংখ্যা লিখুন (যেমন 2023-06):');
+    if (!month) return;
+
+    const monthlyWaxSales = waxSales.filter(sale => sale
