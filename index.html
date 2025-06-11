@@ -1,698 +1,252 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="plugin/slider/splide.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <title>Mayer Duya Enterprise</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🕯️ মোম বিক্রি ও কর্মচারী ড্যাশবোর্ড</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #1f2937; /* Tailwind gray-800 */
+      color: #d1d5db; /* Tailwind gray-300 */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    input, select, button {
+      transition: all 0.3s ease;
+    }
+    /* Scrollbar styling for overflow areas */
+    #shopList, #todaySales, #dueList, #employeeList {
+      scrollbar-width: thin;
+      scrollbar-color: #2563eb #374151;
+    }
+    #shopList::-webkit-scrollbar,
+    #todaySales::-webkit-scrollbar,
+    #dueList::-webkit-scrollbar,
+    #employeeList::-webkit-scrollbar {
+      width: 8px;
+    }
+    #shopList::-webkit-scrollbar-thumb,
+    #todaySales::-webkit-scrollbar-thumb,
+    #dueList::-webkit-scrollbar-thumb,
+    #employeeList::-webkit-scrollbar-thumb {
+      background-color: #2563eb;
+      border-radius: 10px;
+    }
+  </style>
 </head>
-<body onload="loader()">
- 
-    <header id="header">
-            <div class="topBar">
-                <div class="row align-items-center justify-content-center">
-                    <div class="col-lg-2 col-sm-12">
-                        <a href="https://www.facebook.com/profile.php?id=100088050881325"><i class="fab fa-facebook fb"></i></a>
-                    </div>
+<body class="p-6">
 
-                    <div class="col-lg-3 col-sm-12">
-                        <a href="mailTo:mayerdua550@gmail.com"><i class="fa fa-envelope"></i> mayerdua550@gmail.com</a>
-                    </div>
-                    <div class="col-lg-2 col-sm-12">
-                        <a href="tel:01644705929"><i class="fa fa-phone"></i> 01644705929</a>
-                    </div>
-                    <div class="col-lg-2 col-sm-12">
-                        <a href="tel:01725811017"><i class="fa fa-phone"></i> 01725811017</a>
-                    </div>
-                    <div class="col-lg-2 col-sm-12">
-                        <a href="tel:01710658759"><i class="fa fa-phone"></i> 01710658759</a>
-                    </div>
-                </div>
-            </div>
+  <h1 class="text-4xl font-bold mb-6 text-center">🕯️ মোম বিক্রি ও কর্মচারী ড্যাশবোর্ড</h1>
 
-            <!-- navbar -->
-            <nav id="navBar" class="navbar navbar-expand-lg navbar-dark bg-light">
-              <img src="img/logo.png" alt="logo">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-                </button>
-              
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                  <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                      <a class="nav-link" href="#header">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    
-                    <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Products
-                      </a>
-                      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#product">Soap Chalk</a>
-                        <a class="dropdown-item" href="#englishChalk">English Chalk</a>
-                        <a class="dropdown-item" href="#magic">Magic Chalk</a>
-                        <a class="dropdown-item" href="#tailor">Tailor Chalk</a>
-                        <a class="dropdown-item" href="#iron">Iron Wax</a>
-                      </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="#contact">Contact Us</a>
-                      </li>
-                   
-                  </ul>
-                 
-                </div>
-              </nav>
+  <!-- নতুন দোকান যোগ -->
+  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">নতুন দোকান যোগ করুন</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <input id="shopName" type="text" placeholder="দোকানের নাম" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <input id="shopMobile" type="text" placeholder="মোবাইল নম্বর" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <input id="shopAddress" type="text" placeholder="ঠিকানা" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <button onclick="addShop()" class="bg-blue-600 hover:bg-blue-500 rounded px-5 py-3 text-white font-semibold transition">যোগ করুন</button>
+    </div>
+  </section>
 
+  <!-- দোকানের তালিকা -->
+  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">দোকানের তালিকা</h2>
+    <input id="shopSearch" type="text" placeholder="🔍 দোকান খুঁজুন..." class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="loadShops()" />
+    <ul id="shopList" class="list-disc pl-5 space-y-2 max-h-48 overflow-y-auto"></ul>
+  </section>
 
+  <!-- মোম বিক্রয় তথ্য -->
+  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">মোম বিক্রয় তথ্য</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-6 gap-4">
+      <select id="saleShop" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500"></select>
+      <input id="saleKg" type="number" placeholder="কেজি" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500" />
+      <input id="saleTk" type="number" placeholder="টাকা" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500" />
+      <input id="profitTk" type="number" placeholder="লাভ (৳)" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500" />
+      <input id="saleDate" type="date" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-green-500" />
+      <button onclick="addWaxSale()" class="bg-green-600 hover:bg-green-500 rounded px-5 py-3 text-white font-semibold transition">সেভ করুন</button>
+    </div>
+  </section>
 
-            <div class="home">
-         
-                 <div class="container">
-                  <div class="centerTitle d-flex justify-content-center align-items-center flex-column">
-                    <h1 >Chalk Poient</h1>
-                    <span class="mb-2 h5">Mayer Duya Enterprise</span>
-                    <P class="headingsOne">All Kinds Of Garments Chalk Whole Sales Suppliers.</P>
-                    <p class="headingsBangla">আসসালামুয়ালাইকুম আমাদের অনলাইন শপ এ আপনাকে স্বাগতম। আমাদের কাছে পেয়ে যাবেন সকল ধরনের মারকিং চক পাইকারি দামে। আমরা আপনাদের অর্ডার করা মাল নিজ দায়িক্তে আপনাদের দোকানে পৌছায় দিয়ে থাকি।  আমাদের চক গুলো দেখার জন্য শপ নাও তে ক্লিক করুন। অর্ডার এবং বিস্তারিত জানার জন্য একবারে উপরে দিয়া নাম্বার এ যোগাযোগ করার জন্য অনুরধ করা হল।
-                    </p>
-                    <a class="shopBtn" href="#product"><i class="fa-sharp fa-solid fa-cart-shopping"></i> Shop Now</a>
-                  </div>
-                 </div>
+  <!-- ইংলিশ চক বিক্রয় তথ্য -->
+  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">ইংলিশ চক বিক্রয় তথ্য</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-6 gap-4">
+      <select id="chalkShop" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
+      <input id="chalkQty" type="number" placeholder="চক (পিস)" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      <input id="chalkTk" type="number" placeholder="টাকা" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      <input id="chalkProfit" type="number" placeholder="লাভ (৳)" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      <input id="chalkDate" type="date" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      <button onclick="addChalkSale()" class="bg-indigo-600 hover:bg-indigo-500 rounded px-5 py-3 text-white font-semibold transition">সেভ করুন</button>
+    </div>
+  </section>
 
-            </div>
-    </header>
+  <!-- ব্যয় -->
+  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">ব্যয়</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <input id="expenseAmount" type="number" placeholder="ব্যয় (৳)" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+      <input id="memo" type="text" placeholder="নোট / বিবরণ" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+      <input id="ieDate" type="date" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+      <button onclick="addExpense()" class="bg-purple-600 hover:bg-purple-500 rounded px-5 py-3 text-white font-semibold transition">সংরক্ষণ করুন</button>
+    </div>
+  </section>
 
+  <!-- মাসিক ব্যয় রিপোর্ট -->
+  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">মাসিক ব্যয় রিপোর্ট</h2>
+    <button onclick="showMonthlyExpense()" class="bg-red-600 hover:bg-red-500 rounded px-5 py-3 text-white font-semibold transition">দেখাও</button>
+    <div id="monthlyExpense" class="mt-4 text-lg"></div>
+  </section>
 
+  <!-- আজকের বিক্রি -->
+  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">আজকের বিক্রির তালিকা</h2>
+    <ul id="todaySales" class="space-y-2 max-h-48 overflow-y-auto"></ul>
+  </section>
 
+  <!-- ইংলিশ চক রিপোর্ট -->
+  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">ইংলিশ চক বিক্রয় পরিসংখ্যান</h2>
+    <div id="chalkSummary" class="text-lg"></div>
+  </section>
 
+  <!-- মাসিক রিপোর্ট -->
+  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">মাসিক রিপোর্ট</h2>
+    <div class="flex flex-col sm:flex-row gap-3 mb-4">
+      <button onclick="generateMonthlyReport()" class="bg-indigo-600 hover:bg-indigo-500 rounded px-5 py-3 text-white font-semibold transition flex-1">রিপোর্ট দেখাও</button>
+      <button onclick="downloadPDF()" class="bg-red-600 hover:bg-red-500 rounded px-5 py-3 text-white font-semibold transition flex-1">PDF ডাউনলোড</button>
+    </div>
+    <div id="monthlyReport" class="mt-4 max-h-72 overflow-y-auto"></div>
+  </section>
 
-<!-- start products page design -->
+  <!-- বকেয়া হিসাব -->
+  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">বকেয়া হিসাব</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <select id="dueShop" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-yellow-500"></select>
+      <input id="dueAmount" type="number" placeholder="টাকা (বকেয়া/পেমেন্ট)" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-yellow-500" />
+      <button onclick="updateDue()" class="bg-yellow-600 hover:bg-yellow-500 rounded px-5 py-3 text-gray-900 font-semibold transition">আপডেট করুন</button>
+    </div>
+    <ul id="dueList" class="list-disc pl-5 space-y-2 max-h-48 overflow-y-auto"></ul>
+  </section>
 
-<section class="products" id="product">
-  <div class="container">
-    <div class="ptitle">
-      <h3>Our Products</h3>
+  <!-- বিক্রয়, লাভ, ব্যয়ের চার্ট -->
+  <section class="bg-gray-800 p-6 rounded-lg shadow-md mb-6">
+    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">📊 বিক্রয়, লাভ, ব্যয়ের চার্ট</h2>
+    <canvas id="salesChart" class="w-full h-64"></canvas>
+  </section>
+
+  <!-- কর্মচারী ব্যবস্থাপনা সেকশন -->
+  <section class="bg-gray-800 p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold mb-4 border-b border-gray-700 pb-2">কর্মচারী ব্যবস্থাপনা</h2>
+
+    <!-- কর্মচারী যোগ -->
+    <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-4">
+      <input id="empName" type="text" placeholder="নাম" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-pink-500" />
+      <input id="empMobile" type="text" placeholder="মোবাইল" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-pink-500" />
+      <input id="empSalary" type="number" placeholder="মাসিক বেতন (৳)" class="bg-gray-900 text-gray-100 border border-gray-700 rounded p-3 focus:outline-none focus:ring-2 focus:ring-pink-500" />
+      <button onclick="addEmployee()" class="bg-pink-600 hover:bg-pink-500 rounded px-5 py-3 text-white font-semibold transition">কর্মচারী যোগ করুন</button>
     </div>
 
-    <div class="row">
-     
-      <div class="col-lg-6">
-        <div class="productCard">
-          <div class="pimg">
-
-            <!-- product slider -->
-            <section id="largeProduct"  class="splide" aria-label="Splide Basic HTML Example">
-              <div class="splide__track">
-                <ul class="splide__list">
-                  <li class="splide__slide"> <img src="img/p1.jpg" alt=""></li>
-                  <li class="splide__slide"> <img src="img/p2.jpg" alt=""></li>
-                
-                </ul>
-              </div>
-            </section>
-            
-            <!--end product slider -->
-          </div>
-          <div class="pname">
-            <h4 class="font-weight-bold">Soap chalk green,red,yellow</h4>
-          </div>
-          <hr>
-          <div class="pcolors">
-            <div class="colorText">
-              <h4>Colors :</h4>
-            </div>
-         <div class="d-flex">
-          <div class="pgreen"></div>
-          <div class="pred ml-4"></div>
-          <div class="pyellow ml-4"></div>
-         </div>
-          </div>
-          <hr>
-          <div class="psize d-flex justify-content-between">
-            <h4>Size :</h4>
-            <h4 class="font-weight-bold">2.5cm x 1.8cm</h4>
-          </div>
-          <hr>
-         
-          <div class="pquantity d-flex justify-content-between">
-            <h4>Packet :</h4>
-            <h4 class="font-weight-bold"><input value="20" class="packetCount packetCount1 inp" type="text"> Pieces</h4>
-          </div>
-          <hr>
-        
-          <hr>
-          <div class="pquantity d-flex justify-content-between">
-            <h4>Custom Order</h4>
-            <h4 class="font-weight-bold">Available😍</h4>
-          </div>
-         
-          <div class="buyNow">
-            <button class="buyBtn">Order Now</button>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- product two -->
-
-      <div class="col-lg-6">
-        <div class="productCard">
-          <div class="pimg">
-
-            <!-- product slider -->
-            <section id="bigProduct"  class="splide" aria-label=" Basic HTML Example">
-              <div class="splide__track">
-                <ul class="splide__list">
-                  <li class="splide__slide"> <img  src="img/p3.png" alt=""></li>
-                  <li class="splide__slide"> <img  src="img/p4.png" alt=""></li>
-                  <li class="splide__slide"> <img  src="img/p9.png" alt=""></li>           
-                </ul>
-              </div>
-            </section>
-            
-            <!--end product slider -->
-          </div>
-          <div class="pname">
-            <h4 class="font-weight-bold">Soap Chalk Green,Red,Yellow</h4>
-          </div>
-          <hr>
-          <div class="pcolors">
-            <div class="colorText">
-              <h4>Colors :</h4>
-            </div>
-         <div class="d-flex">
-          <div class="pgreen"></div>
-          <div class="pred ml-4"></div>
-          <div class="pyellow ml-4"></div>
-         </div>
-          </div>
-          <hr>
-          <div class="psize d-flex justify-content-between">
-            <h4>Size :</h4>
-            <h4 class="font-weight-bold">3cm x 1.9cm</h4>
-          </div>
-          <hr>
-         
-          <div class="pquantity d-flex justify-content-between">
-            <h4>Packet :</h4>
-            <h4 class="font-weight-bold"><input value="20" class="packetCount packetCount1 inp" type="text"> Pieces</h4>
-          </div>
-          <hr>
-        
-          <div class="pquantity d-flex justify-content-between">
-            <h4>Custom Order</h4>
-            <h4 class="font-weight-bold">Available😍</h4>
-          </div>
-         
-          <div class="buyNow">
-            <button class="buyBtn">Order Now</button>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- product three -->
-
-      
-      <div class="col-lg-6">
-        <div class="productCard">
-          <div class="pimg">
-
-            <!-- product slider -->
-            <section id="smallProduct"  class="splide" aria-label=" Basic HTML Example">
-              <div class="splide__track">
-                <ul class="splide__list">
-                  <li class="splide__slide"> <img  src="img/p5.jpg" alt=""></li>
-                  <li class="splide__slide"> <img  src="img/p6.jpg" alt=""></li>           
-                </ul>
-              </div>
-            </section>
-            
-            <!--end product slider -->
-          </div>
-          <div class="pname">
-            <h4 class="font-weight-bold">Soap Chalk Green,Red,Yellow</h4>
-          </div>
-          <hr>
-          <div class="pcolors">
-            <div class="colorText">
-              <h4>Colors :</h4>
-            </div>
-         <div class="d-flex">
-          <div class="pgreen"></div>
-          <div class="pred ml-4"></div>
-          <div class="pyellow ml-4"></div>
-         </div>
-          </div>
-          <hr>
-          <div class="psize d-flex justify-content-between">
-            <h4>Size :</h4>
-            <h4 class="font-weight-bold">2cm x 1.5cm</h4>
-          </div>
-          <hr>
-         
-          <div class="pquantity d-flex justify-content-between">
-            <h4>Packet :</h4>
-            <h4 class="font-weight-bold"><input value="20" class="packetCount packetCount1 inp" type="text"> Pieces</h4>
-          </div>
-          <hr>
-      
-        
-          <div class="pquantity d-flex justify-content-between">
-            <h4>Custom Order</h4>
-            <h4 class="font-weight-bold">Available😍</h4>
-          </div>
-         
-          <div class="buyNow">
-            <button class="buyBtn">Order Now</button>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- product four -->
-
- 
-      <div class="col-lg-6">
-        <div class="productCard">
-          <div class="pimg">
-
-            <!-- product slider -->
-            <section id="mediumProduct"  class="splide" aria-label=" Basic HTML Example">
-              <div class="splide__track">
-                <ul class="splide__list">
-                  <li class="splide__slide"> <img  src="img/p7.jpg" alt=""></li>
-                 
-                </ul>
-              </div>
-            </section>
-            
-            <!--end product slider -->
-          </div>
-          <div class="pname">
-            <h4 class="font-weight-bold">Soap Chalk Green,Red,Yellow</h4>
-          </div>
-          <hr>
-          <div class="pcolors">
-            <div class="colorText">
-              <h4>Colors :</h4>
-            </div>
-         <div class="d-flex">
-          <div class="pgreen"></div>
-          <div class="pred ml-4"></div>
-          <div class="pyellow ml-4"></div>
-         </div>
-          </div>
-          <hr>
-          <div class="psize d-flex justify-content-between">
-            <h4>Size :</h4>
-            <h4 class="font-weight-bold">0.5 Ins</h4>
-          </div>
-          <hr>
-         
-          <div class="pquantity d-flex justify-content-between">
-            <h4>Packet :</h4>
-            <h4 class="font-weight-bold"><input value="20" class="packetCount packetCount1 inp" type="text"> Pieces</h4>
-          </div>
-          <hr>
-    
-          <div class="pquantity d-flex justify-content-between">
-            <h4>Custom Order</h4>
-            <h4 class="font-weight-bold">Available😍</h4>
-          </div>
-         
-          <div class="buyNow">
-            <button class="buyBtn">Order Now</button>
-          </div>
-
-        </div>
-      </div>
-
-<!-- english chalk -->
-<div class="col-lg-6" id="englishChalk">
-  <div class="productCard">
-    <div class="pimg">
-
-      <!-- product slider -->
-      <section id="enoneProduct"  class="splide" aria-label=" Basic HTML Example">
-        <div class="splide__track">
-          <ul class="splide__list">
-            <li class="splide__slide"> <img  src="img/p10.png" alt=""></li>
-            <li class="splide__slide"> <img  src="img/p11.png" alt=""></li>
-
-          </ul>
-        </div>
-      </section>
-      
-      <!--end product slider -->
+    <!-- কর্মচারী তালিকা টেবিল -->
+    <div class="overflow-auto max-h-64 border border-gray-700 rounded">
+      <table class="w-full text-left text-gray-300">
+        <thead class="bg-gray-900 sticky top-0">
+          <tr>
+            <th class="px-4 py-2">নাম</th>
+            <th class="px-4 py-2">মোবাইল</th>
+            <th class="px-4 py-2">মাসিক বেতন (৳)</th>
+            <th class="px-4 py-2">হাজিরা</th>
+            <th class="px-4 py-2">এবসেন্স</th>
+            <th class="px-4 py-2">এডভান্স (৳)</th>
+            <th class="px-4 py-2">অ্যাকশন</th>
+          </tr>
+        </thead>
+        <tbody id="employeeList" class="bg-gray-800"></tbody>
+      </table>
     </div>
-    <div class="pname">
-      <h4 class="font-weight-bold">English Chalk</h4>
-    </div>
-    <hr>
-    <div class="pcolors">
-      <div class="colorText">
-        <h4>Brand :</h4>
-      </div>
-   <div class="">
- <h4>  (Tiger,Lion,Dear)</h4>
-   </div>
-    </div>
-    <hr>
-    <div class="psize d-flex justify-content-between">
-      <h4>Size :</h4>
-      <h4 class="font-weight-bold">1</h4>
-    </div>
-    <hr>
-   
-    <div class="pquantity d-flex justify-content-between">
-      <h4>Packet :</h4>
-      <h4 class="font-weight-bold"><input value="25" class="packetCount packetCount1 inp" type="text"> Pieces</h4>
-    </div>
-    <hr>
-  
-    <div class="pquantity d-flex justify-content-between">
-      <h4>Custom Order</h4>
-      <h4 class="font-weight-bold">Available😍</h4>
-    </div>
-   
-    <div class="buyNow">
-      <button class="buyBtn">Order Now</button>
-    </div>
-
-  </div>
-</div>
-
-<!-- en product two -->
-<div class="col-lg-6">
-  <div class="productCard">
-    <div class="pimg">
-
-      <!-- product slider -->
-      <section id="entwoProduct"  class="splide" aria-label=" Basic HTML Example">
-        <div class="splide__track">
-          <ul class="splide__list">
-            <li class="splide__slide"> <img  src="img/p12.png" alt=""></li>
-            <li class="splide__slide"> <img  src="img/p13.png" alt=""></li>
-
-          </ul>
-        </div>
-      </section>
-      
-      <!--end product slider -->
-    </div>
-    <div class="pname">
-      <h4 class="font-weight-bold">English Chalk</h4>
-    </div>
-    <hr>
-    <div class="pcolors">
-      <div class="colorText">
-        <h4>Brand :</h4>
-      </div>
-   <div class="">
- <h4>  (Tiger,Lion,Dear)</h4>
-   </div>
-    </div>
-    <hr>
-    <div class="psize d-flex justify-content-between">
-      <h4>Thikness :</h4>
-      <h4 class="font-weight-bold">Standard</h4>
-    </div>
-    <hr>
-   
-    <div class="pquantity d-flex justify-content-between">
-      <h4>Packet :</h4>
-      <h4 class="font-weight-bold"><input value="25" class="packetCount packetCount1 inp" type="text"> Pieces</h4>
-    </div>
-    <hr>
-  
-    <div class="pquantity d-flex justify-content-between">
-      <h4>Custom Order</h4>
-      <h4 class="font-weight-bold">Available😍</h4>
-    </div>
-   
-    <div class="buyNow">
-      <button class="buyBtn">Order Now</button>
-    </div>
-
-  </div>
-</div>
-
-
-
-<!-- en product three -->
-<div class="col-lg-6" id="magic">
-  <div class="productCard">
-    <div class="pimg">
-
-      <!-- product slider -->
-      <section id="enthreeProduct"  class="splide" aria-label=" Basic HTML Example">
-        <div class="splide__track">
-          <ul class="splide__list">
-            <li class="splide__slide"> <img  src="img/p14.png" alt=""></li>
-            <li class="splide__slide"> <img  src="img/p15.png" alt=""></li>
-
-          </ul>
-        </div>
-      </section>
-      
-      <!--end product slider -->
-    </div>
-    <div class="pname">
-      <h4 class="font-weight-bold">Magic Chalk</h4>
-    </div>
-    <hr>
-    <div class="pcolors">
-      <div class="colorText">
-        <h4>Brand :</h4>
-      </div>
-   <div class="">
- <h4>  (Tiger,Lion,Dear)</h4>
-   </div>
-    </div>
-    <hr>
-    <div class="psize d-flex justify-content-between">
-      <h4>Thikness :</h4>
-      <h4 class="font-weight-bold">small and Medium</h4>
-    </div>
-    <hr>
-   
-    <div class="pquantity d-flex justify-content-between">
-      <h4>Packet :</h4>
-      <h4 class="font-weight-bold"><input value="20" class="packetCount packetCount1 inp" type="text"> Pieces</h4>
-    </div>
-    <hr>
-  
-    <div class="pquantity d-flex justify-content-between">
-      <h4>Custom Order</h4>
-      <h4 class="font-weight-bold">Available😍</h4>
-    </div>
-   
-    <div class="buyNow">
-      <button class="buyBtn">Order Now</button>
-    </div>
-
-  </div>
-</div>
-
-
-
-
-<!-- tailor chalk -->
-
-<div class="col-lg-6" id="tailor">
-  <div class="productCard">
-    <div class="pimg">
-
-      <!-- product slider -->
-      <section id="enfourProduct"  class="splide" aria-label=" Basic HTML Example">
-        <div class="splide__track">
-          <ul class="splide__list">
-            <li class="splide__slide"> <img  src="img/p16.png" alt=""></li>
-            <li class="splide__slide"> <img  src="img/p17.jpg" alt=""></li>
-
-          </ul>
-        </div>
-      </section>
-      
-      <!--end product slider -->
-    </div>
-    <div class="pname">
-      <h4 class="font-weight-bold">Tailor Chalk</h4>
-    </div>
-    <hr>
-    <div class="pquantity d-flex justify-content-between">
-      <h4>Custom Order</h4>
-      <h4 class="font-weight-bold">Available😍</h4>
-    </div>
-   
-    <div class="buyNow">
-      <button class="buyBtn">Order Now</button>
-    </div>
-
-  </div>
-</div>
-
-
-<!-- iron wax -->
-<!-- tailor chalk -->
-
-<div class="col-lg-6" id="iron">
-  <div class="productCard">
-    <div class="pimg">
-
-      <!-- product slider -->
-      <section id="enfiveProduct"  class="splide" aria-label=" Basic HTML Example">
-        <div class="splide__track">
-          <ul class="splide__list">
-            <li class="splide__slide"> <img  src="img/p18.jpg" alt=""></li>
-            <li class="splide__slide"> <img  src="img/p19.jpg" alt=""></li>
-
-          </ul>
-        </div>
-      </section>
-      
-      <!--end product slider -->
-    </div>
-    <div class="pname">
-      <h4 class="font-weight-bold">Iron Wax</h4>
-    </div>
-    <hr>
-    <div class="pquantity d-flex justify-content-between">
-      <h4>Custom Order</h4>
-      <h4 class="font-weight-bold">Available😍</h4>
-    </div>
-   
-    <div class="buyNow">
-      <button class="buyBtn">Order Now</button>
-    </div>
-
-  </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    </div>
-  </div>
-</section>
-<!-- end products page design -->
-
-
-
-
-
-
-
-
-<section id="contact" class="contactPage py-4">
-  <div class="ptitle text-center mb-5">
-    <h3 class="text-transform-underline font-weight-bold">Contact Us</h3>
-  </div>
-<div class="container">
-  <div class="row">
-    <div class="col-lg-6 col-12 col-md-12">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3647.29637415662!2d90.2928379!3d23.9145571!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755e917eb7ec8a1%3A0xcb3bfb2c435ee815!2sMayer%20Dua%20Enterprise!5e0!3m2!1sen!2sbd!4v1669636751164!5m2!1sen!2sbd" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
-    <div class="col-lg-6 col-12 col-md-12 reachSide">
-      <div class="reach">
-        <h4>Reach Up</h4>
-       <div class="cmenu">
-        <h5><i class="fa fa-phone"></i>  01724655226</h5>
-        <h5><i class="fa fa-phone"></i>  01710658759</h5>
-        <h5><i class="fa fa-phone"></i>  01644705929</h5>
-        <h5><i class="fa fa-envelope"></i>  mayerdua550@gmail.com</h5>
-        <h5><i class="fab fa-facebook"></i> <a href="https://www.facebook.com/profile.php?id=100088050881325">www.facebook.com/mayerduya</a></h5>
-        <h5><i class="fa fa-globe"></i>  www.mayerduya.info</h5>
-        <h5><i class="fa fa-home"></i>  Ashulia,Savar,Dhaka</h5>
-       </div>
-      </div>
-    </div>
-  </div>
-</div>
-</section>
-
-
-
-
-
-
-
-
-
-
-
-<!-- footer section -->
-
-  <footer class="footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <p>&copy;2022 Mayer Duya Enterprise All Right Researved</p>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-
-
-
-<!-- end footer section -->
-
-
-
-
-
-<!-- floting call icon -->
-    <div class="flotingcall">
-       <a href="tel:01644705929"> <button class="call"><i class="fa fa-phone"> <br></i></button></a>
-    </div>
-<!--end floting call icon -->
-
-
-<!-- scroll to top -->
-
-<div class="scrollTop">
-  <button onclick="topFunction()" id="myTop" class="scrollBtn"><i class="fa fa-arrow-up"></i></button>
-</div>
-
-<!-- end scroll to top -->
-
-
-
-
-
-
-<!-- jQuery library -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
-<!-- Popper JS -->
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<!-- Latest compiled JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="plugin/slider/splide.min.js"></script>
-    <script src="js/index.js"></script>
-</body>
-</html>
+  </section>
+
+<script>
+  // ---- দোকান সংক্রান্ত ডাটা ও ফাংশন ----
+  let shops = JSON.parse(localStorage.getItem('shops') || '[]');
+
+  function saveShops() {
+    localStorage.setItem('shops', JSON.stringify(shops));
+  }
+
+  function addShop() {
+    const name = document.getElementById('shopName').value.trim();
+    const mobile = document.getElementById('shopMobile').value.trim();
+    const address = document.getElementById('shopAddress').value.trim();
+    if (!name) {
+      alert('দোকানের নাম দিতে হবে');
+      return;
+    }
+    shops.push({ id: Date.now(), name, mobile, address });
+    saveShops();
+    document.getElementById('shopName').value = '';
+    document.getElementById('shopMobile').value = '';
+    document.getElementById('shopAddress').value = '';
+    loadShops();
+    loadShopOptions();
+  }
+
+  function loadShops() {
+    const search = document.getElementById('shopSearch').value.toLowerCase();
+    const ul = document.getElementById('shopList');
+    ul.innerHTML = '';
+    shops
+      .filter(s => s.name.toLowerCase().includes(search))
+      .forEach(shop => {
+        const li = document.createElement('li');
+        li.textContent = `${shop.name} (${shop.mobile}) - ${shop.address}`;
+        ul.appendChild(li);
+      });
+  }
+
+  function loadShopOptions() {
+    const saleShop = document.getElementById('saleShop');
+    const chalkShop = document.getElementById('chalkShop');
+    const dueShop = document.getElementById('dueShop');
+    [saleShop, chalkShop, dueShop].forEach(sel => {
+      sel.innerHTML = '<option value="">-- দোকান নির্বাচন করুন --</option>';
+      shops.forEach(s => {
+        const option = document.createElement('option');
+        option.value = s.id;
+        option.textContent = s.name;
+        sel.appendChild(option);
+      });
+    });
+  }
+
+  // ---- মোম বিক্রয় ডাটা ও ফাংশন ----
+  let waxSales = JSON.parse(localStorage.getItem('waxSales') || '[]');
+  function saveWaxSales() {
+    localStorage.setItem('waxSales', JSON.stringify(waxSales));
+  }
+  function addWaxSale() {
+    const shopId = document.getElementById('saleShop').value;
+    const kg = parseFloat(document.getElementById('saleKg').value);
+    const tk = parseFloat(document.getElementById('saleTk').value);
+    const profit = parseFloat(document.getElementById('profitTk').value);
+    const date = document.getElementById('saleDate').value;
+
+    if (!shopId || isNaN(kg) || isNaN(tk) || isNaN(profit) || !date) {
+      alert('সঠিক তথ্য দিন');
+      return;
+    }
+
+    waxSales.push({ id: Date.now(), shopId, kg, tk, profit, date });
+    saveWaxSales();
+    alert('মোম বিক্রয় তথ্য সংরক্ষিত হয়েছে');
+    document.getElementById('saleKg').value = '';
+    document.getElementById('saleTk').value = '';
+    document.getElementById('profitTk').value = '';
+    document.getElementById('saleDate').value = '';
+    loadTodaySales();
+  }
