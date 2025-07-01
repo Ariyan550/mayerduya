@@ -17,6 +17,7 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      overflow-x: hidden;
     }
     header, footer {
       background-color: #333;
@@ -44,13 +45,32 @@
       font-size: 20px;
       border-radius: 5px;
     }
+    .action-btn {
+      padding: 5px 10px;
+      margin: 2px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .edit-btn {
+      background-color: #03a9f4;
+      color: white;
+    }
+    .delete-btn {
+      background-color: #4caf50;
+      color: white;
+    }
     .form-container, .list-container {
       background: #2c2c2c;
       padding: 20px;
       border-radius: 10px;
       margin-top: 20px;
       width: 100%;
-      max-width: 500px;
+      max-width: 800px;
+      overflow-x: auto;
+      position: relative;
+      z-index: 10;
     }
     label, input, textarea {
       display: block;
@@ -64,6 +84,7 @@
       border-radius: 5px;
     }
     table {
+      min-width: 500px;
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
@@ -73,6 +94,7 @@
       border: 1px solid #444;
       padding: 8px;
       text-align: center;
+      word-break: break-word;
     }
     .close-btn {
       float: right;
@@ -96,6 +118,11 @@
       z-index: 1000;
       font-size: 18px;
     }
+    #buttonContainer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
     @media(max-width: 600px) {
       .btn {
         font-size: 16px;
@@ -111,31 +138,38 @@
   <header>
     <h1>Mayer Duya Enterprise</h1>
   </header>
-
   <main>
-    <button class="btn" onclick="showForm()">Order</button>
-    <button class="btn" onclick="showList()">Order List</button>
+    <div id="buttonContainer">
+      <button class="btn" onclick="showForm()">Order</button>
+      <button class="btn" onclick="showList()">Order List</button>
+      <button class="btn" onclick="alert('Sell button clicked!')">Sell</button>
+      <button class="btn" onclick="alert('Due button clicked!')">Due</button>
+      <button class="btn" onclick="alert('Cost button clicked!')">Cost</button>
+    </div>
 
     <div id="formContainer" class="form-container" style="display:none;">
-      <button class="close-btn" onclick="hide('formContainer')">✖</button>
+      <button class="close-btn" onclick="hideForm()">✖</button>
       <h2 id="formTitle">New Order</h2>
       <label>Date:</label>
       <input type="date" id="date">
       <label>Shop Name:</label>
       <input type="text" id="shop">
+      <label>Address:</label>
+      <input type="text" id="address">
       <label>Description:</label>
       <textarea id="desc"></textarea>
       <button class="btn" onclick="submitForm()" id="submitBtn">Submit</button>
     </div>
 
     <div id="listContainer" class="list-container" style="display:none;">
-      <button class="close-btn" onclick="hide('listContainer')">✖</button>
+      <button class="close-btn" onclick="hideList()">✖</button>
       <h2>Order List</h2>
       <table id="orderTable">
         <thead>
           <tr>
             <th>Date</th>
             <th>Shop</th>
+            <th>Address</th>
             <th>Description</th>
             <th>Action</th>
           </tr>
@@ -146,93 +180,95 @@
 
     <div id="popup" class="popup">Data saved successfully!</div>
   </main>
-
   <footer>
     Mayer Duya Enterprise © 2025 All Rights Reserved
   </footer>
 
   <script>
     let editIndex = -1;
-
     function showForm() {
       hide('listContainer');
       document.getElementById('formTitle').innerText = "New Order";
       document.getElementById('submitBtn').innerText = "Submit";
       document.getElementById('formContainer').style.display = 'block';
+      document.getElementById('buttonContainer').style.display = 'none';
       document.getElementById('date').value = '';
       document.getElementById('shop').value = '';
+      document.getElementById('address').value = '';
       document.getElementById('desc').value = '';
       editIndex = -1;
     }
-
     function showList() {
       hide('formContainer');
       document.getElementById('listContainer').style.display = 'block';
+      document.getElementById('buttonContainer').style.display = 'none';
       loadOrders();
     }
-
+    function hideForm() {
+      document.getElementById('formContainer').style.display = 'none';
+      document.getElementById('buttonContainer').style.display = 'flex';
+    }
+    function hideList() {
+      document.getElementById('listContainer').style.display = 'none';
+      document.getElementById('buttonContainer').style.display = 'flex';
+    }
     function hide(id) {
       document.getElementById(id).style.display = 'none';
     }
-
     function submitForm() {
       const date = document.getElementById('date').value;
       const shop = document.getElementById('shop').value;
+      const address = document.getElementById('address').value;
       const desc = document.getElementById('desc').value;
-      if (!date || !shop || !desc) return alert('Please fill all fields');
-
+      if (!date || !shop || !address || !desc) return alert('Please fill all fields');
       const orders = JSON.parse(localStorage.getItem('orders')) || [];
-
       if (editIndex === -1) {
-        orders.push({ date, shop, desc });
+        orders.push({ date, shop, address, desc });
       } else {
-        orders[editIndex] = { date, shop, desc };
+        orders[editIndex] = { date, shop, address, desc };
       }
-
       localStorage.setItem('orders', JSON.stringify(orders));
       showPopup();
-      hide('formContainer');
+      hideForm();
       loadOrders();
     }
-
     function loadOrders() {
       const tbody = document.querySelector('#orderTable tbody');
       tbody.innerHTML = '';
       const orders = JSON.parse(localStorage.getItem('orders')) || [];
-
       orders.forEach((order, index) => {
         const row = `<tr>
           <td>${order.date}</td>
           <td>${order.shop}</td>
+          <td>${order.address}</td>
           <td>${order.desc}</td>
           <td>
-            <button onclick="editOrder(${index})">Edit</button>
-            <button onclick="deleteOrder(${index})">Delete</button>
+            <button class='action-btn edit-btn' onclick="editOrder(${index})">Edit</button>
+            <button class='action-btn delete-btn' onclick="deleteOrder(${index})">Complete</button>
           </td>
         </tr>`;
         tbody.innerHTML += row;
       });
     }
-
     function deleteOrder(index) {
       const orders = JSON.parse(localStorage.getItem('orders')) || [];
       orders.splice(index, 1);
       localStorage.setItem('orders', JSON.stringify(orders));
       loadOrders();
     }
-
     function editOrder(index) {
       const orders = JSON.parse(localStorage.getItem('orders')) || [];
       const order = orders[index];
       document.getElementById('date').value = order.date;
       document.getElementById('shop').value = order.shop;
+      document.getElementById('address').value = order.address;
       document.getElementById('desc').value = order.desc;
       document.getElementById('formTitle').innerText = "Edit Order";
       document.getElementById('submitBtn').innerText = "Update";
       document.getElementById('formContainer').style.display = 'block';
+      document.getElementById('buttonContainer').style.display = 'none';
       editIndex = index;
     }
-
     function showPopup() {
       const popup = document.getElementById('popup');
       popup.style.display = 'block';
