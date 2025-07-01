@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wax & Chalk Sales</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { background-color: #000; color: #fff; font-size: 20px; text-align: center; font-weight: 500; font-family: sans-serif; }
+    button { margin: 10px; padding: 10px 20px; font-size: 20px; }
+    .dashboard { display: flex; justify-content: space-between; padding: 20px; flex-wrap: wrap; }
+    .section { width: 48%; }
+    table { width: 100%; margin-top: 10px; border-collapse: collapse; }
+    th, td { border: 1px solid #fff; padding: 8px; text-align: center; }
+    .summary-boxes { display: flex; justify-content: space-around; margin: 10px 0; }
+    .summary-box { background-color: #222; padding: 10px; border-radius: 8px; }
+    .filter { margin: 10px 0; }
+    .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); }
+    .modal-content { background-color: #111; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 80%; }
+    input, select { padding: 5px; margin: 5px; font-size: 16px; }
+    .pagination { margin-top: 10px; }
+    .pagination button { margin: 0 5px; padding: 5px 10px; }
+  </style>
+</head>
+<body>
+  <h1>Wax & English Chalk Sales Dashboard</h1>
+  <button onclick="openModal('wax')">Sell Wax</button>
+  <button onclick="openModal('chalk')">Sell English Chalk</button>
+  <button onclick="resetAll()">Reset</button>
+  
+  <div class="dashboard">
+    <div class="section" id="waxSection">
+      <div class="summary-boxes">
+        <div class="summary-box">Total Qty: <span id="waxTotalQty">0</span></div>
+        <div class="summary-box">Total ৳: <span id="waxTotalAmt">0</span></div>
+        <div class="summary-box">Profit ৳: <span id="waxProfit">0</span></div>
+      </div>
+      <div class="filter">
+        <input type="date" id="waxFilterDate" onchange="filterData('wax')" />
+      </div>
+      <table id="waxTable">
+        <thead>
+          <tr><th>Date</th><th>Shop</th><th>Qty</th><th>Rate</th><th>Amount</th><th>Profit</th><th>Edit</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="pagination" id="waxPagination"></div>
+    </div>
+
+    <div class="section" id="chalkSection">
+      <div class="summary-boxes">
+        <div class="summary-box">Total Qty: <span id="chalkTotalQty">0</span></div>
+        <div class="summary-box">Total ৳: <span id="chalkTotalAmt">0</span></div>
+        <div class="summary-box">Profit ৳: <span id="chalkProfit">0</span></div>
+      </div>
+      <div class="filter">
+        <input type="date" id="chalkFilterDate" onchange="filterData('chalk')" />
+      </div>
+      <table id="chalkTable">
+        <thead>
+          <tr><th>Date</th><th>Shop</th><th>Size</th><th>Qty</th><th>Rate</th><th>Amount</th><th>Profit</th><th>Edit</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="pagination" id="chalkPagination"></div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal" id="waxModal">
+    <div class="modal-content">
+      <h2>Sell Wax</h2>
+      <input type="date" id="waxDate" required>
+      <input type="text" id="waxShop" placeholder="Shop Name" required>
+      <input type="number" id="waxQty" placeholder="Quantity" required>
+      <input type="number" id="waxRate" placeholder="Rate" required>
+      <input type="number" id="waxAmount" placeholder="Amount" required>
+      <input type="number" id="waxProfitInput" placeholder="Profit" required>
+      <button onclick="submitForm('wax')">Submit</button>
+    </div>
+  </div>
+
+  <div class="modal" id="chalkModal">
+    <div class="modal-content">
+      <h2>Sell English Chalk</h2>
+      <input type="date" id="chalkDate" required>
+      <input type="text" id="chalkShop" placeholder="Shop Name" required>
+      <input type="text" id="chalkSize" placeholder="Size" required>
+      <input type="number" id="chalkQty" placeholder="Quantity" required>
+      <input type="number" id="chalkRate" placeholder="Rate" required>
+      <input type="number" id="chalkAmount" placeholder="Amount" required>
+      <input type="number" id="chalkProfitInput" placeholder="Profit" required>
+      <button onclick="submitForm('chalk')">Submit</button>
+    </div>
+  </div>
+
+  <script>
+    const DATA_KEY = { wax: 'waxData', chalk: 'chalkData' };
+    const PER_PAGE = 8;
+
+    function openModal(type) {
+      document.getElementById(type + 'Modal').style.display = 'block';
+    }
+
+    window.onclick = function(event) {
+      ['waxModal', 'chalkModal'].forEach(id => {
+        const modal = document.getElementById(id);
+        if (event.target == modal) modal.style.display = 'none';
+      });
+    }
+
+    function getInputValues(type) {
+      return type === 'wax' ? {
+        date: waxDate.value, shop: waxShop.value, qty: +waxQty.value,
+        rate: +waxRate.value, amount: +waxAmount.value, profit: +waxProfitInput.value
+      } : {
+        date: chalkDate.value, shop: chalkShop.value, size: chalkSize.value,
+        qty: +chalkQty.value, rate: +chalkRate.value, amount: +chalkAmount.value, profit: +chalkProfitInput.value
+      };
+    }
+
+    function submitForm(type) {
+      const values = getInputValues(type);
+      const data = JSON.parse(localStorage.getItem(DATA_KEY[type]) || '[]');
+      data.push(values);
+      localStorage.setItem(DATA_KEY[type], JSON.stringify(data));
+      document.getElementById(type + 'Modal').style.display = 'none';
+      renderTable(type);
+    }
+
+    function renderTable(type, page = 1) {
+      const rawData = JSON.parse(localStorage.getItem(DATA_KEY[type]) || '[]');
+      const filterDate = document.getElementById(type + 'FilterDate').value;
+      const data = filterDate ? rawData.filter(d => d.date === filterDate) : rawData;
+      const tbody = document.querySelector(`#${type}Table tbody`);
+      tbody.innerHTML = '';
+      const start = (page - 1) * PER_PAGE;
+      const paginated = data.slice(start, start + PER_PAGE);
+      paginated.forEach((d, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = type === 'wax'
+          ? `<td>${d.date}</td><td>${d.shop}</td><td>${d.qty}</td><td>${d.rate}</td><td>${d.amount}</td><td>${d.profit}</td><td><button onclick='editEntry("${type}", ${start + i})'>Edit</button></td>`
+          : `<td>${d.date}</td><td>${d.shop}</td><td>${d.size}</td><td>${d.qty}</td><td>${d.rate}</td><td>${d.amount}</td><td>${d.profit}</td><td><button onclick='editEntry("${type}", ${start + i})'>Edit</button></td>`;
+        tbody.appendChild(tr);
+      });
+      renderPagination(type, data.length, page);
+      renderSummary(type, data);
+    }
+
+    function renderPagination(type, total, currentPage) {
+      const pages = Math.ceil(total / PER_PAGE);
+      const container = document.getElementById(type + 'Pagination');
+      container.innerHTML = '';
+      for (let i = 1; i <= pages; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.onclick = () => renderTable(type, i);
+        if (i === currentPage) btn.style.fontWeight = 'bold';
+        container.appendChild(btn);
+      }
+    }
+
+    function renderSummary(type, data) {
+      const totalQty = data.reduce((sum, d) => sum + d.qty, 0);
+      const totalAmt = data.reduce((sum, d) => sum + d.amount, 0);
+      const profit = data.reduce((sum, d) => sum + d.profit, 0);
+      document.getElementById(`${type}TotalQty`).textContent = totalQty;
+      document.getElementById(`${type}TotalAmt`).textContent = totalAmt;
+      document.getElementById(`${type}Profit`).textContent = profit;
+    }
+
+    function filterData(type) {
+      renderTable(type);
+    }
+
+    function editEntry(type, index) {
+      const data = JSON.parse(localStorage.getItem(DATA_KEY[type]) || '[]');
+      const d = data[index];
+      if (type === 'wax') {
+        waxDate.value = d.date; waxShop.value = d.shop; waxQty.value = d.qty;
+        waxRate.value = d.rate; waxAmount.value = d.amount; waxProfitInput.value = d.profit;
+        openModal('wax');
+      } else {
+        chalkDate.value = d.date; chalkShop.value = d.shop; chalkSize.value = d.size;
+        chalkQty.value = d.qty; chalkRate.value = d.rate; chalkAmount.value = d.amount; chalkProfitInput.value = d.profit;
+        openModal('chalk');
+      }
+      data.splice(index, 1);
+      localStorage.setItem(DATA_KEY[type], JSON.stringify(data));
+    }
+
+    function resetAll() {
+      if (confirm('সব তথ্য মুছে ফেলবেন?')) {
+        localStorage.removeItem(DATA_KEY.wax);
+        localStorage.removeItem(DATA_KEY.chalk);
+        renderTable('wax'); renderTable('chalk');
+      }
+    }
+
+    function downloadPDF() {
+      const pdf = new jspdf.jsPDF();
+      pdf.text("Wax & Chalk Sales Summary", 10, 10);
+      pdf.save("sales_data.pdf");
+    }
+
+    window.onload = () => {
+      renderTable('wax'); renderTable('chalk');
+    };
+  </script>
+</body>
+</html>
