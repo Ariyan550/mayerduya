@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mayer Duya Enterprise</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
+    body {
+      margin: 0;
+      background-color: #1f1f1f;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header, footer {
+      background-color: #333;
+      text-align: center;
+      padding: 10px;
+    }
+    footer {
+      font-size: 14px;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      flex-direction: column;
+    }
+    .btn {
+      background-color: #e91e63;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+      font-size: 20px;
+      border-radius: 5px;
+    }
+    .form-container, .list-container {
+      background: #2c2c2c;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      width: 100%;
+      max-width: 500px;
+    }
+    label, input, textarea {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    input, textarea {
+      padding: 8px;
+      border: none;
+      border-radius: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 8px;
+      text-align: center;
+    }
+    .close-btn {
+      float: right;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #4caf50;
+      color: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #000;
+      display: none;
+      z-index: 1000;
+      font-size: 18px;
+    }
+    @media(max-width: 600px) {
+      .btn {
+        font-size: 16px;
+        padding: 8px 16px;
+      }
+      label, input, textarea {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mayer Duya Enterprise</h1>
+  </header>
+
+  <main>
+    <button class="btn" onclick="showForm()">Order</button>
+    <button class="btn" onclick="showList()">Order List</button>
+
+    <div id="formContainer" class="form-container" style="display:none;">
+      <button class="close-btn" onclick="hide('formContainer')">✖</button>
+      <h2 id="formTitle">New Order</h2>
+      <label>Date:</label>
+      <input type="date" id="date">
+      <label>Shop Name:</label>
+      <input type="text" id="shop">
+      <label>Description:</label>
+      <textarea id="desc"></textarea>
+      <button class="btn" onclick="submitForm()" id="submitBtn">Submit</button>
+    </div>
+
+    <div id="listContainer" class="list-container" style="display:none;">
+      <button class="close-btn" onclick="hide('listContainer')">✖</button>
+      <h2>Order List</h2>
+      <table id="orderTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Shop</th>
+            <th>Description</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div id="popup" class="popup">Data saved successfully!</div>
+  </main>
+
+  <footer>
+    Mayer Duya Enterprise © 2025 All Rights Reserved
+  </footer>
+
+  <script>
+    let editIndex = -1;
+
+    function showForm() {
+      hide('listContainer');
+      document.getElementById('formTitle').innerText = "New Order";
+      document.getElementById('submitBtn').innerText = "Submit";
+      document.getElementById('formContainer').style.display = 'block';
+      document.getElementById('date').value = '';
+      document.getElementById('shop').value = '';
+      document.getElementById('desc').value = '';
+      editIndex = -1;
+    }
+
+    function showList() {
+      hide('formContainer');
+      document.getElementById('listContainer').style.display = 'block';
+      loadOrders();
+    }
+
+    function hide(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function submitForm() {
+      const date = document.getElementById('date').value;
+      const shop = document.getElementById('shop').value;
+      const desc = document.getElementById('desc').value;
+      if (!date || !shop || !desc) return alert('Please fill all fields');
+
+      const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+      if (editIndex === -1) {
+        orders.push({ date, shop, desc });
+      } else {
+        orders[editIndex] = { date, shop, desc };
+      }
+
+      localStorage.setItem('orders', JSON.stringify(orders));
+      showPopup();
+      hide('formContainer');
+      loadOrders();
+    }
+
+    function loadOrders() {
+      const tbody = document.querySelector('#orderTable tbody');
+      tbody.innerHTML = '';
+      const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+      orders.forEach((order, index) => {
+        const row = `<tr>
+          <td>${order.date}</td>
+          <td>${order.shop}</td>
+          <td>${order.desc}</td>
+          <td>
+            <button onclick="editOrder(${index})">Edit</button>
+            <button onclick="deleteOrder(${index})">Delete</button>
+          </td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    function deleteOrder(index) {
+      const orders = JSON.parse(localStorage.getItem('orders')) || [];
+      orders.splice(index, 1);
+      localStorage.setItem('orders', JSON.stringify(orders));
+      loadOrders();
+    }
+
+    function editOrder(index) {
+      const orders = JSON.parse(localStorage.getItem('orders')) || [];
+      const order = orders[index];
+      document.getElementById('date').value = order.date;
+      document.getElementById('shop').value = order.shop;
+      document.getElementById('desc').value = order.desc;
+      document.getElementById('formTitle').innerText = "Edit Order";
+      document.getElementById('submitBtn').innerText = "Update";
+      document.getElementById('formContainer').style.display = 'block';
+      editIndex = index;
+    }
+
+    function showPopup() {
+      const popup = document.getElementById('popup');
+      popup.style.display = 'block';
+      setTimeout(() => {
+        popup.style.display = 'none';
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
