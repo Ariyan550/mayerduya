@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💰 খরচ ম্যানেজমেন্ট</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: black; color: white; font-size: 20px; text-align: center; font-weight: 500; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
+    .modal-content { background: #1e1e1e; padding: 20px; border-radius: 10px; width: 90%; max-width: 500px; }
+    table { width: 100%; margin-top: 10px; border-collapse: collapse; }
+    th, td { border: 1px solid white; padding: 10px; }
+    th { background: #333; }
+    .material-icons { vertical-align: middle; }
+  </style>
+</head>
+<body>
+  <div class="p-4">
+    <div class="flex justify-center gap-4 mb-4">
+      <button id="openFormBtn" class="bg-blue-600 hover:bg-blue-800 px-4 rounded">Cost Entry</button>
+      <button onclick="resetAll()" class="bg-red-600 hover:bg-red-800 px-4 py-2 rounded">সব রিসেট করুন</button>
+      <button id="openListBtn" class=""></button>
+    </div>
+
+    <div id="totalDisplay" class="mb-3 text-lg mt-3">মোট খরচ: <span id="totalCost">0</span> টাকা</div>
+    <div class="mb-2">
+      <input type="date" id="filterDate" class="text-black px-2 py-1 rounded" />
+      <button onclick="filterTable()" class="bg-yellow-500 px-3 py-1 rounded">তারিখ ফিল্টার</button>
+    </div>
+
+    <div>
+      <table id="costTable">
+        <thead>
+          <tr>
+            <th>তারিখ</th>
+            <th>আইটেম</th>
+            <th>টাকা</th>
+            <th>অ্যাকশন</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="pagination" class="mt-4 flex justify-center gap-2"></div>
+    </div>
+
+    
+  </div>
+
+  <!-- Modal Form -->
+  <div id="formModal" class="modal">
+    <div class="modal-content">
+      <h2 class="text-xl mb-4">খরচ এন্ট্রি</h2>
+      <form id="costForm">
+        <input required type="date" id="entryDate" class="text-black w-full mb-2 px-2 py-1 rounded" />
+        <select id="itemSelect" required class="text-black w-full mb-2 px-2 py-1 rounded">
+          <option value="অয়েল">অয়েল</option>
+          <option value="লাকড়ি">লাকড়ি</option>
+          <option value="পলি">পলি</option>
+          <option value="কার্টুন">কার্টুন</option>
+        </select>
+        <input required type="number" id="amount" placeholder="টাকার পরিমাণ" class="text-black w-full mb-2 px-2 py-1 rounded" />
+        <button type="submit" class="bg-blue-600 hover:bg-blue-800 px-4 py-2 rounded">সাবমিট</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let data = JSON.parse(localStorage.getItem('costData')) || [];
+    let currentPage = 1;
+    const rowsPerPage = 8;
+
+    const modal = document.getElementById('formModal');
+    document.getElementById('openFormBtn').onclick = () => modal.style.display = 'flex';
+    document.getElementById('openListBtn').onclick = () => renderTable();
+    window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
+
+    document.getElementById('costForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const entry = {
+        date: document.getElementById('entryDate').value,
+        item: document.getElementById('itemSelect').value,
+        amount: parseFloat(document.getElementById('amount').value)
+      };
+      data.push(entry);
+      localStorage.setItem('costData', JSON.stringify(data));
+      modal.style.display = 'none';
+      renderTable();
+    });
+
+    function renderTable(page = 1) {
+      currentPage = page;
+      const tbody = document.querySelector('#costTable tbody');
+      tbody.innerHTML = '';
+      const start = (page - 1) * rowsPerPage;
+      const paginatedData = data.slice(start, start + rowsPerPage);
+
+      paginatedData.forEach((entry, index) => {
+        const row = `<tr>
+          <td>${entry.date}</td>
+          <td>${entry.item}</td>
+          <td>${entry.amount}</td>
+          <td>
+            <button onclick="editEntry(${start + index})" class="text-yellow-400">✏️</button>
+            <button onclick="deleteEntry(${start + index})" class="text-red-500">🗑️</button>
+          </td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+      updateTotal();
+      renderPagination();
+    }
+
+    function updateTotal() {
+      const total = data.reduce((sum, e) => sum + e.amount, 0);
+      document.getElementById('totalCost').textContent = total.toFixed(2);
+    }
+
+    function deleteEntry(index) {
+      if (confirm('আপনি কি নিশ্চিত আপনি এই এন্ট্রি মুছতে চান?')) {
+        data.splice(index, 1);
+        localStorage.setItem('costData', JSON.stringify(data));
+        renderTable(currentPage);
+      }
+    }
+
+    function editEntry(index) {
+      const entry = data[index];
+      document.getElementById('entryDate').value = entry.date;
+      document.getElementById('itemSelect').value = entry.item;
+      document.getElementById('amount').value = entry.amount;
+      modal.style.display = 'flex';
+      data.splice(index, 1);
+    }
+
+    function resetAll() {
+      if (confirm('আপনি কি নিশ্চিত আপনি সব তথ্য মুছে ফেলতে চান?')) {
+        localStorage.removeItem('costData');
+        data = [];
+        renderTable();
+      }
+    }
+
+    function renderPagination() {
+      const pageCount = Math.ceil(data.length / rowsPerPage);
+      const container = document.getElementById('pagination');
+      container.innerHTML = '';
+      for (let i = 1; i <= pageCount; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.className = `px-3 py-1 rounded ${i === currentPage ? 'bg-blue-700' : 'bg-gray-700'}`;
+        btn.onclick = () => renderTable(i);
+        container.appendChild(btn);
+      }
+    }
+
+    function filterTable() {
+      const date = document.getElementById('filterDate').value;
+      if (!date) return renderTable();
+      const filtered = data.filter(entry => entry.date === date);
+      const tbody = document.querySelector('#costTable tbody');
+      tbody.innerHTML = '';
+      filtered.forEach((entry, index) => {
+        const row = `<tr>
+          <td>${entry.date}</td>
+          <td>${entry.item}</td>
+          <td>${entry.amount}</td>
+          <td>—</td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+      const total = filtered.reduce((sum, e) => sum + e.amount, 0);
+      document.getElementById('totalCost').textContent = total.toFixed(2);
+      document.getElementById('pagination').innerHTML = '';
+    }
+
+    // Initial render
+    renderTable();
+  </script>
+</body>
+</html>
