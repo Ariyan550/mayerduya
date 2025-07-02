@@ -31,17 +31,6 @@
       text-align: left;
       border-bottom: 1px solid #555;
     }
-    .screen-boxes {
-      display: flex;
-      gap: 20px;
-      margin: 20px 0;
-    }
-    .screen-boxes div {
-      background: #222;
-      padding: 10px;
-      border-radius: 10px;
-      flex: 1;
-    }
     .modal {
       position: fixed;
       top: 0;
@@ -60,6 +49,17 @@
       border-radius: 10px;
       max-height: 90vh;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .form-row label {
+      flex: 1 1 200px;
     }
     .pagination {
       margin-top: 10px;
@@ -76,45 +76,68 @@
     .pagination button.active {
       background-color: #00bcd4;
     }
+    #reportBox {
+      margin-bottom: 30px;
+      background-color: #111;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    #reportTable th, #reportTable td {
+      border-bottom: 1px solid #666;
+    }
   </style>
 </head>
 <body>
-  <button onclick="openModal()">ক্রয়</button>
-
-  <div class="screen-boxes">
-    <div>মোট টাকা: <span id="totalTaka">0</span></div>
-    <div>স্টিয়েরিক: <span id="totalStearic">0</span> কেজি</div>
-    <div>মোম: <span id="totalWax">0</span> কেজি</div>
+  <div id="reportBox">
+    <h2>📊 মাসিক রিপোর্ট</h2>
+    <label>মাস নির্বাচন করুন:
+      <input type="month" id="reportMonth" onchange="generateReport()">
+    </label>
+    <table id="reportTable">
+      <thead>
+        <tr><th>Total Wax</th><th>Total Stearic</th><th>Total Amount</th><th>Total Payment</th><th>Total Due</th></tr>
+      </thead>
+      <tbody id="reportBody"></tbody>
+    </table>
   </div>
+
+  <button onclick="openModal()">ক্রয়</button>
 
   <div class="modal" id="purchaseModal">
     <div class="modal-content">
       <h2>ক্রয় ফর্ম</h2>
-      <label>তারিখ: <input type="date" id="date"></label><br>
-      <label>Wax Quantity (কেজি): <input type="number" id="waxQty" oninput="calculateAll()"></label><br>
-      <label>Rate: <input type="number" id="waxRate" oninput="calculateAll()"></label><br>
-      <label>Amount: <input type="number" id="waxAmount" readonly></label><br>
-      <label>Stearic (কেজি): <input type="number" id="stearicQty" oninput="calculateAll()"></label><br>
-      <label>Rate: <input type="number" id="stearicRate" oninput="calculateAll()"></label><br>
-      <label>Amount: <input type="number" id="stearicAmount" readonly></label><br>
-      <label>A to Z: <input type="number" id="atoz" oninput="calculateAll()"></label>
-      <label>Total: <input type="number" id="grandTotal" readonly></label><br>
-      <label>Previous Due: <input type="number" id="prevDue" oninput="calculateAll()"></label>
-      <label>Payment: <input type="number" id="payment" oninput="calculateAll()"></label><br>
-      <label>Bank Name: 
-        <select id="bank">
-          <option value="IBBL">IBBL</option>
-          <option value="JB">JB</option>
-        </select>
-      </label>
-      <label>Payment Date: <input type="date" id="paymentDate"></label>
-      <label>Total Due: <input type="number" id="totalDue" readonly></label><br>
-      <button onclick="submitData()">Submit</button>
-      <button onclick="closeModal()">Close</button>
+      <div class="form-row">
+        <label>তারিখ: <input type="date" id="date"></label>
+        <label>Wax Quantity (কেজি): <input type="number" id="waxQty" oninput="calculateAll()"></label>
+        <label>Rate: <input type="number" id="waxRate" oninput="calculateAll()"></label>
+        <label>Amount: <input type="number" id="waxAmount" readonly></label>
+        <label>Stearic (কেজি): <input type="number" id="stearicQty" oninput="calculateAll()"></label>
+        <label>Rate: <input type="number" id="stearicRate" oninput="calculateAll()"></label>
+        <label>Amount: <input type="number" id="stearicAmount" readonly></label>
+        <label>A to Z: <input type="number" id="atoz" oninput="calculateAll()"></label>
+        <label>Total: <input type="number" id="grandTotal" readonly></label>
+        <label>Previous Due: <input type="number" id="prevDue" oninput="calculateAll()"></label>
+        <label>Payment: <input type="number" id="payment" oninput="calculateAll()"></label>
+        <label>Bank Name: 
+          <select id="bank">
+            <option value="IBBL">IBBL</option>
+            <option value="JB">JB</option>
+          </select>
+        </label>
+        <label>Payment Date: <input type="date" id="paymentDate"></label>
+        <label>Total Due: <input type="number" id="totalDue" readonly></label>
+      </div>
+      <div>
+        <button onclick="submitData()">Submit</button>
+        <button onclick="closeModal()">Close</button>
+      </div>
     </div>
   </div>
 
-  <input type="date" id="filterInput" placeholder="ফিল্টার করুন" onkeyup="filterTable()">
+  <div style="margin-top: 20px; display: flex; align-items: center; gap: 10px">
+    <input type="date" id="filterInput" placeholder="তারিখ দিয়ে ফিল্টার করুন" oninput="filterTable()">
+    <button onclick="filterTable()">ফিল্টার করুন</button>
+  </div>
 
   <table id="purchaseTable">
     <thead>
@@ -134,18 +157,6 @@
     let currentPage = 1;
     const rowsPerPage = 8;
 
-    const waxQty = document.getElementById('waxQty');
-    const waxRate = document.getElementById('waxRate');
-    const waxAmount = document.getElementById('waxAmount');
-    const stearicQty = document.getElementById('stearicQty');
-    const stearicRate = document.getElementById('stearicRate');
-    const stearicAmount = document.getElementById('stearicAmount');
-    const atoz = document.getElementById('atoz');
-    const grandTotal = document.getElementById('grandTotal');
-    const prevDue = document.getElementById('prevDue');
-    const payment = document.getElementById('payment');
-    const totalDue = document.getElementById('totalDue');
-
     function openModal() {
       modal.style.display = 'flex';
     }
@@ -155,33 +166,41 @@
     }
 
     function calculateAll() {
-      const waxAmt = (+waxQty.value || 0) * (+waxRate.value || 0);
-      const stearicAmt = (+stearicQty.value || 0) * (+stearicRate.value || 0);
-      const atozVal = (+atoz.value || 0);
-      const total = waxAmt + stearicAmt + atozVal;
-      const due = total + (+prevDue.value || 0) - (+payment.value || 0);
-      waxAmount.value = waxAmt;
-      stearicAmount.value = stearicAmt;
-      grandTotal.value = total;
-      totalDue.value = due;
+      const waxQty = +document.getElementById('waxQty').value;
+      const waxRate = +document.getElementById('waxRate').value;
+      const stearicQty = +document.getElementById('stearicQty').value;
+      const stearicRate = +document.getElementById('stearicRate').value;
+      const atoz = +document.getElementById('atoz').value;
+      const prevDue = +document.getElementById('prevDue').value;
+      const payment = +document.getElementById('payment').value;
+
+      const waxAmount = waxQty * waxRate;
+      const stearicAmount = stearicQty * stearicRate;
+      const total = waxAmount + stearicAmount + atoz;
+      const totalDue = total + prevDue - payment;
+
+      document.getElementById('waxAmount').value = waxAmount || 0;
+      document.getElementById('stearicAmount').value = stearicAmount || 0;
+      document.getElementById('grandTotal').value = total || 0;
+      document.getElementById('totalDue').value = totalDue || 0;
     }
 
     function submitData() {
       const data = {
-        date: document.getElementById('date').value,
+        date: date.value,
         waxQty: +waxQty.value,
         waxRate: +waxRate.value,
-        waxAmount: +waxAmount.value,
+        waxAmount: +waxQty.value * +waxRate.value,
         stearicQty: +stearicQty.value,
         stearicRate: +stearicRate.value,
-        stearicAmount: +stearicAmount.value,
+        stearicAmount: +stearicQty.value * +stearicRate.value,
         atoz: +atoz.value,
-        total: +grandTotal.value,
+        total: ((+waxQty.value * +waxRate.value) + (+stearicQty.value * +stearicRate.value) + (+atoz.value)),
         prevDue: +prevDue.value,
         payment: +payment.value,
-        bank: document.getElementById('bank').value,
-        paymentDate: document.getElementById('paymentDate').value,
-        totalDue: +totalDue.value
+        bank: bank.value,
+        paymentDate: paymentDate.value,
+        totalDue: ((+waxQty.value * +waxRate.value) + (+stearicQty.value * +stearicRate.value) + (+atoz.value) + (+prevDue.value)) - (+payment.value)
       };
 
       const purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
@@ -194,11 +213,13 @@
 
     function renderTable() {
       const data = JSON.parse(localStorage.getItem('purchases') || '[]');
+      const filterDate = document.getElementById('filterInput').value;
       const tbody = document.getElementById('tableBody');
       tbody.innerHTML = '';
+      const filtered = filterDate ? data.filter(item => item.date === filterDate) : data;
 
       const start = (currentPage - 1) * rowsPerPage;
-      const paginatedData = data.slice(start, start + rowsPerPage);
+      const paginatedData = filtered.slice(start, start + rowsPerPage);
 
       paginatedData.forEach((item, index) => {
         const row = `<tr>
@@ -206,20 +227,12 @@
           <td>${item.stearicQty}</td><td>${item.stearicRate}</td><td>${item.stearicAmount}</td><td>${item.atoz}</td>
           <td>${item.total}</td><td>${item.prevDue}</td><td>${item.payment}</td><td>${item.bank}</td>
           <td>${item.paymentDate}</td><td>${item.totalDue}</td>
-          <td><button onclick="deleteRow(${start + index})">Delete</button></td>
+          <td><button onclick="deleteRow(${data.indexOf(item)})">Delete</button></td>
         </tr>`;
         tbody.innerHTML += row;
       });
 
-      const totalWax = data.reduce((sum, item) => sum + item.waxQty, 0);
-      const totalStearic = data.reduce((sum, item) => sum + item.stearicQty, 0);
-      const totalTaka = data.reduce((sum, item) => sum + item.total, 0);
-
-      document.getElementById('totalWax').innerText = totalWax;
-      document.getElementById('totalStearic').innerText = totalStearic;
-      document.getElementById('totalTaka').innerText = totalTaka;
-
-      renderPagination(data.length);
+      renderPagination(filtered.length);
     }
 
     function renderPagination(totalRows) {
@@ -250,11 +263,33 @@
     }
 
     function filterTable() {
-      const filter = document.getElementById('filterInput').value.toLowerCase();
-      const rows = document.querySelectorAll('#purchaseTable tbody tr');
-      rows.forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+      currentPage = 1;
+      renderTable();
+    }
+
+    function generateReport() {
+      const selectedMonth = document.getElementById('reportMonth').value;
+      const data = JSON.parse(localStorage.getItem('purchases') || '[]');
+      const filtered = data.filter(item => item.date.startsWith(selectedMonth));
+
+      let totalWax = 0, totalStearic = 0, totalAmount = 0, totalPayment = 0, totalDue = 0;
+      filtered.forEach(item => {
+        totalWax += item.waxQty;
+        totalStearic += item.stearicQty;
+        totalAmount += item.total;
+        totalPayment += item.payment;
+        totalDue += item.totalDue;
       });
+
+      document.getElementById('reportBody').innerHTML = `
+        <tr>
+          <td>${totalWax}</td>
+          <td>${totalStearic}</td>
+          <td>${totalAmount}</td>
+          <td>${totalPayment}</td>
+          <td>${totalDue}</td>
+        </tr>
+      `;
     }
 
     window.onload = renderTable;
