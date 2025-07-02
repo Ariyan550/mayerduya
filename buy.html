@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ক্রয় ফর্ম ড্যাশবোর্ড</title>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: 'Noto Sans Bengali', sans-serif;
+      font-size: 20px;
+      padding: 20px;
+    }
+    button, input, select {
+      font-size: 20px;
+      margin: 5px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      border: none;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #555;
+    }
+    .screen-boxes {
+      display: flex;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    .screen-boxes div {
+      background: #222;
+      padding: 10px;
+      border-radius: 10px;
+      flex: 1;
+    }
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      display: none;
+    }
+    .modal-content {
+      background-color: #222;
+      padding: 20px;
+      border-radius: 10px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .pagination {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .pagination button {
+      background-color: #444;
+      color: white;
+      border: 1px solid #888;
+      cursor: pointer;
+    }
+    .pagination button.active {
+      background-color: #00bcd4;
+    }
+  </style>
+</head>
+<body>
+  <button onclick="openModal()">ক্রয়</button>
+
+  <div class="screen-boxes">
+    <div>মোট টাকা: <span id="totalTaka">0</span></div>
+    <div>স্টিয়েরিক: <span id="totalStearic">0</span> কেজি</div>
+    <div>মোম: <span id="totalWax">0</span> কেজি</div>
+  </div>
+
+  <div class="modal" id="purchaseModal">
+    <div class="modal-content">
+      <h2>ক্রয় ফর্ম</h2>
+      <label>তারিখ: <input type="date" id="date"></label><br>
+      <label>Wax Quantity (কেজি): <input type="number" id="waxQty" oninput="calculateAll()"></label><br>
+      <label>Rate: <input type="number" id="waxRate" oninput="calculateAll()"></label><br>
+      <label>Amount: <input type="number" id="waxAmount" readonly></label><br>
+      <label>Stearic (কেজি): <input type="number" id="stearicQty" oninput="calculateAll()"></label><br>
+      <label>Rate: <input type="number" id="stearicRate" oninput="calculateAll()"></label><br>
+      <label>Amount: <input type="number" id="stearicAmount" readonly></label><br>
+      <label>A to Z: <input type="number" id="atoz" oninput="calculateAll()"></label>
+      <label>Total: <input type="number" id="grandTotal" readonly></label><br>
+      <label>Previous Due: <input type="number" id="prevDue" oninput="calculateAll()"></label>
+      <label>Payment: <input type="number" id="payment" oninput="calculateAll()"></label><br>
+      <label>Bank Name: 
+        <select id="bank">
+          <option value="IBBL">IBBL</option>
+          <option value="JB">JB</option>
+        </select>
+      </label>
+      <label>Payment Date: <input type="date" id="paymentDate"></label>
+      <label>Total Due: <input type="number" id="totalDue" readonly></label><br>
+      <button onclick="submitData()">Submit</button>
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <input type="date" id="filterInput" placeholder="ফিল্টার করুন" onkeyup="filterTable()">
+
+  <table id="purchaseTable">
+    <thead>
+      <tr>
+        <th>তারিখ</th><th>Wax (কেজি)</th><th>Rate</th><th>Amount</th>
+        <th>Stearic</th><th>Rate</th><th>Amount</th><th>A-Z</th>
+        <th>Total</th><th>Prev Due</th><th>Payment</th><th>Bank</th>
+        <th>Payment Date</th><th>Total Due</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+  <div class="pagination" id="pagination"></div>
+
+  <script>
+    const modal = document.getElementById('purchaseModal');
+    let currentPage = 1;
+    const rowsPerPage = 8;
+
+    const waxQty = document.getElementById('waxQty');
+    const waxRate = document.getElementById('waxRate');
+    const waxAmount = document.getElementById('waxAmount');
+    const stearicQty = document.getElementById('stearicQty');
+    const stearicRate = document.getElementById('stearicRate');
+    const stearicAmount = document.getElementById('stearicAmount');
+    const atoz = document.getElementById('atoz');
+    const grandTotal = document.getElementById('grandTotal');
+    const prevDue = document.getElementById('prevDue');
+    const payment = document.getElementById('payment');
+    const totalDue = document.getElementById('totalDue');
+
+    function openModal() {
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    function calculateAll() {
+      const waxAmt = (+waxQty.value || 0) * (+waxRate.value || 0);
+      const stearicAmt = (+stearicQty.value || 0) * (+stearicRate.value || 0);
+      const atozVal = (+atoz.value || 0);
+      const total = waxAmt + stearicAmt + atozVal;
+      const due = total + (+prevDue.value || 0) - (+payment.value || 0);
+      waxAmount.value = waxAmt;
+      stearicAmount.value = stearicAmt;
+      grandTotal.value = total;
+      totalDue.value = due;
+    }
+
+    function submitData() {
+      const data = {
+        date: document.getElementById('date').value,
+        waxQty: +waxQty.value,
+        waxRate: +waxRate.value,
+        waxAmount: +waxAmount.value,
+        stearicQty: +stearicQty.value,
+        stearicRate: +stearicRate.value,
+        stearicAmount: +stearicAmount.value,
+        atoz: +atoz.value,
+        total: +grandTotal.value,
+        prevDue: +prevDue.value,
+        payment: +payment.value,
+        bank: document.getElementById('bank').value,
+        paymentDate: document.getElementById('paymentDate').value,
+        totalDue: +totalDue.value
+      };
+
+      const purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
+      purchases.push(data);
+      localStorage.setItem('purchases', JSON.stringify(purchases));
+
+      renderTable();
+      closeModal();
+    }
+
+    function renderTable() {
+      const data = JSON.parse(localStorage.getItem('purchases') || '[]');
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      const start = (currentPage - 1) * rowsPerPage;
+      const paginatedData = data.slice(start, start + rowsPerPage);
+
+      paginatedData.forEach((item, index) => {
+        const row = `<tr>
+          <td>${item.date}</td><td>${item.waxQty}</td><td>${item.waxRate}</td><td>${item.waxAmount}</td>
+          <td>${item.stearicQty}</td><td>${item.stearicRate}</td><td>${item.stearicAmount}</td><td>${item.atoz}</td>
+          <td>${item.total}</td><td>${item.prevDue}</td><td>${item.payment}</td><td>${item.bank}</td>
+          <td>${item.paymentDate}</td><td>${item.totalDue}</td>
+          <td><button onclick="deleteRow(${start + index})">Delete</button></td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+
+      const totalWax = data.reduce((sum, item) => sum + item.waxQty, 0);
+      const totalStearic = data.reduce((sum, item) => sum + item.stearicQty, 0);
+      const totalTaka = data.reduce((sum, item) => sum + item.total, 0);
+
+      document.getElementById('totalWax').innerText = totalWax;
+      document.getElementById('totalStearic').innerText = totalStearic;
+      document.getElementById('totalTaka').innerText = totalTaka;
+
+      renderPagination(data.length);
+    }
+
+    function renderPagination(totalRows) {
+      const pageCount = Math.ceil(totalRows / rowsPerPage);
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = '';
+
+      for (let i = 1; i <= pageCount; i++) {
+        const btn = document.createElement('button');
+        btn.innerText = i;
+        btn.className = i === currentPage ? 'active' : '';
+        btn.onclick = () => {
+          currentPage = i;
+          renderTable();
+        };
+        pagination.appendChild(btn);
+      }
+    }
+
+    function deleteRow(index) {
+      const data = JSON.parse(localStorage.getItem('purchases') || '[]');
+      data.splice(index, 1);
+      localStorage.setItem('purchases', JSON.stringify(data));
+      if ((currentPage - 1) * rowsPerPage >= data.length) {
+        currentPage = Math.max(1, currentPage - 1);
+      }
+      renderTable();
+    }
+
+    function filterTable() {
+      const filter = document.getElementById('filterInput').value.toLowerCase();
+      const rows = document.querySelectorAll('#purchaseTable tbody tr');
+      rows.forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(filter) ? '' : 'none';
+      });
+    }
+
+    window.onload = renderTable;
+  </script>
+</body>
+</html>
