@@ -2,66 +2,63 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>💰 খরচ ম্যানেজমেন্ট</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>💰 খরচ ও ডিউ ম্যানেজমেন্ট</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { background-color: black; color: white; font-size: 20px; text-align: center; font-weight: 500; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
-    .modal-content { background: #1e1e1e; padding: 20px; border-radius: 10px; width: 90%; max-width: 500px; }
-    table { width: 100%; margin-top: 10px; border-collapse: collapse; }
-    th, td { border: 1px solid white; padding: 10px; }
-    th { background: #333; }
-    .material-icons { vertical-align: middle; }
+    body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
   </style>
 </head>
-<body>
-  <div class="p-4">
-    <div class="flex justify-center gap-4 mb-4">
-      <button id="openFormBtn" class="bg-blue-600 hover:bg-blue-800 px-4 rounded">Cost Entry</button>
-      <button onclick="resetAll()" class="bg-red-600 hover:bg-red-800 px-4 py-2 rounded">সব রিসেট করুন</button>
-      <button id="openListBtn" class=""></button>
+<body class="p-4">
+  <div class="text-center mb-6">
+    <h1 class="text-3xl font-bold mb-2">💰 খরচ ও ডিউ হিসাব</h1>
+    <div class="flex justify-center gap-4">
+      <button id="openFormBtn" class="bg-blue-600 hover:bg-blue-800 px-4 py-2 rounded">নতুন খরচ</button>
+      <button onclick="resetAll()" class="bg-red-600 hover:bg-red-800 px-4 py-2 rounded">সব রিসেট</button>
     </div>
-
-    <div id="totalDisplay" class="mb-3 text-lg mt-3">মোট খরচ: <span id="totalCost">0</span> টাকা</div>
-    <div class="mb-2">
-      <input type="date" id="filterDate" class="text-black px-2 py-1 rounded" />
-      <button onclick="filterTable()" class="bg-yellow-500 px-3 py-1 rounded">তারিখ ফিল্টার</button>
-    </div>
-
-    <div>
-      <table id="costTable">
-        <thead>
-          <tr>
-            <th>তারিখ</th>
-            <th>আইটেম</th>
-            <th>টাকা</th>
-            <th>অ্যাকশন</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <div id="pagination" class="mt-4 flex justify-center gap-2"></div>
-    </div>
-
-    
   </div>
 
-  <!-- Modal Form -->
+  <div class="text-center mb-4">
+    <div class="text-xl mb-2">মোট খরচ: <span id="totalCost">0</span> টাকা</div>
+    <div class="text-xl mb-2 text-yellow-300">মোট ডিউ: <span id="totalDue">0</span> টাকা</div>
+    <input type="date" id="filterDate" class="text-black px-2 py-1 rounded" />
+    <button onclick="filterTable()" class="bg-yellow-500 hover:bg-yellow-600 text-black px-3 py-1 rounded ml-2">তারিখ ফিল্টার</button>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full text-center border border-gray-600">
+      <thead class="bg-gray-800">
+        <tr>
+          <th class="p-2 border">তারিখ</th>
+          <th class="p-2 border">আইটেম</th>
+          <th class="p-2 border">টাকা</th>
+          <th class="p-2 border">পেমেন্ট</th>
+          <th class="p-2 border">ডিউ</th>
+          <th class="p-2 border">অ্যাকশন</th>
+        </tr>
+      </thead>
+      <tbody id="costTable" class="text-white"></tbody>
+    </table>
+    <div id="pagination" class="mt-4 flex justify-center gap-2"></div>
+  </div>
+
+  <!-- Modal -->
   <div id="formModal" class="modal">
-    <div class="modal-content">
-      <h2 class="text-xl mb-4">খরচ এন্ট্রি</h2>
+    <div class="bg-gray-900 text-white p-6 rounded-lg w-[90%] max-w-md">
+      <h2 class="text-xl font-bold mb-4">নতুন খরচ এন্ট্রি</h2>
       <form id="costForm">
-        <input required type="date" id="entryDate" class="text-black w-full mb-2 px-2 py-1 rounded" />
-        <select id="itemSelect" required class="text-black w-full mb-2 px-2 py-1 rounded">
+        <input required type="date" id="entryDate" class="text-black w-full mb-2 px-3 py-2 rounded" />
+        <select id="itemSelect" required class="text-black w-full mb-2 px-3 py-2 rounded">
           <option value="অয়েল">অয়েল</option>
           <option value="লাকড়ি">লাকড়ি</option>
           <option value="পলি">পলি</option>
           <option value="কার্টুন">কার্টুন</option>
+          <option value="others">others</option>
         </select>
-        <input required type="number" id="amount" placeholder="টাকার পরিমাণ" class="text-black w-full mb-2 px-2 py-1 rounded" />
-        <button type="submit" class="bg-blue-600 hover:bg-blue-800 px-4 py-2 rounded">সাবমিট</button>
+        <input required type="number" id="amount" placeholder="মোট টাকা" class="text-black w-full mb-2 px-3 py-2 rounded" />
+        <input required type="number" id="payment" placeholder="পেমেন্ট" class="text-black w-full mb-2 px-3 py-2 rounded" />
+        <button type="submit" class="bg-blue-600 hover:bg-blue-800 px-4 py-2 w-full rounded">সাবমিট</button>
       </form>
     </div>
   </div>
@@ -73,15 +70,19 @@
 
     const modal = document.getElementById('formModal');
     document.getElementById('openFormBtn').onclick = () => modal.style.display = 'flex';
-    document.getElementById('openListBtn').onclick = () => renderTable();
     window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
 
     document.getElementById('costForm').addEventListener('submit', e => {
       e.preventDefault();
+      const amount = parseFloat(document.getElementById('amount').value);
+      const payment = parseFloat(document.getElementById('payment').value);
+      const due = amount - payment;
       const entry = {
         date: document.getElementById('entryDate').value,
         item: document.getElementById('itemSelect').value,
-        amount: parseFloat(document.getElementById('amount').value)
+        amount,
+        payment,
+        due
       };
       data.push(entry);
       localStorage.setItem('costData', JSON.stringify(data));
@@ -91,19 +92,21 @@
 
     function renderTable(page = 1) {
       currentPage = page;
-      const tbody = document.querySelector('#costTable tbody');
+      const tbody = document.getElementById('costTable');
       tbody.innerHTML = '';
       const start = (page - 1) * rowsPerPage;
       const paginatedData = data.slice(start, start + rowsPerPage);
 
       paginatedData.forEach((entry, index) => {
-        const row = `<tr>
-          <td>${entry.date}</td>
-          <td>${entry.item}</td>
-          <td>${entry.amount}</td>
-          <td>
+        const row = `<tr class="border-t border-gray-700">
+          <td class="p-2 border">${entry.date}</td>
+          <td class="p-2 border">${entry.item}</td>
+          <td class="p-2 border">${entry.amount}</td>
+          <td class="p-2 border">${entry.payment}</td>
+          <td class="p-2 border text-red-400">${entry.due}</td>
+          <td class="p-2 border">
             <button onclick="editEntry(${start + index})" class="text-yellow-400">✏️</button>
-            <button onclick="deleteEntry(${start + index})" class="text-red-500">🗑️</button>
+            <button onclick="deleteEntry(${start + index})" class="text-red-500 ml-2">🗑️</button>
           </td>
         </tr>`;
         tbody.innerHTML += row;
@@ -114,7 +117,9 @@
 
     function updateTotal() {
       const total = data.reduce((sum, e) => sum + e.amount, 0);
+      const dueTotal = data.reduce((sum, e) => sum + e.due, 0);
       document.getElementById('totalCost').textContent = total.toFixed(2);
+      document.getElementById('totalDue').textContent = dueTotal.toFixed(2);
     }
 
     function deleteEntry(index) {
@@ -130,8 +135,9 @@
       document.getElementById('entryDate').value = entry.date;
       document.getElementById('itemSelect').value = entry.item;
       document.getElementById('amount').value = entry.amount;
-      modal.style.display = 'flex';
+      document.getElementById('payment').value = entry.payment;
       data.splice(index, 1);
+      modal.style.display = 'flex';
     }
 
     function resetAll() {
@@ -159,19 +165,23 @@
       const date = document.getElementById('filterDate').value;
       if (!date) return renderTable();
       const filtered = data.filter(entry => entry.date === date);
-      const tbody = document.querySelector('#costTable tbody');
+      const tbody = document.getElementById('costTable');
       tbody.innerHTML = '';
-      filtered.forEach((entry, index) => {
-        const row = `<tr>
-          <td>${entry.date}</td>
-          <td>${entry.item}</td>
-          <td>${entry.amount}</td>
-          <td>—</td>
+      filtered.forEach((entry) => {
+        const row = `<tr class="border-t border-gray-700">
+          <td class="p-2 border">${entry.date}</td>
+          <td class="p-2 border">${entry.item}</td>
+          <td class="p-2 border">${entry.amount}</td>
+          <td class="p-2 border">${entry.payment}</td>
+          <td class="p-2 border">${entry.due}</td>
+          <td class="p-2 border">—</td>
         </tr>`;
         tbody.innerHTML += row;
       });
       const total = filtered.reduce((sum, e) => sum + e.amount, 0);
+      const totalDue = filtered.reduce((sum, e) => sum + e.due, 0);
       document.getElementById('totalCost').textContent = total.toFixed(2);
+      document.getElementById('totalDue').textContent = totalDue.toFixed(2);
       document.getElementById('pagination').innerHTML = '';
     }
 
