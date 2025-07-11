@@ -4,282 +4,200 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mayer Duya Enterprise</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Roboto', sans-serif;
-    }
-    body {
-      margin: 0;
-      background-color: #1f1f1f;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    header, footer {
-      background-color: #333;
-      text-align: center;
-      padding: 10px;
-    }
-    footer {
-      font-size: 14px;
-    }
-    main {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      flex-direction: column;
-    }
-    .btn {
-      background-color: #e91e63;
-      border: none;
-      color: white;
-      padding: 10px 20px;
-      margin: 10px;
-      cursor: pointer;
-      font-size: 20px;
-      text-decoration:none;
-      border-radius: 5px;
-    }
-    .action-btn {
-      padding: 5px 10px;
-      margin: 2px;
-      border: none;
-      border-radius: 4px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    .edit-btn {
-      background-color: #03a9f4;
-      color: white;
-    }
-    .delete-btn {
-      background-color: #4caf50;
-      color: white;
-    }
-    .form-container, .list-container {
-      background: #2c2c2c;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 20px;
-      width: 100%;
-      max-width: 800px;
-      overflow-x: auto;
-      position: relative;
-      z-index: 10;
-    }
-    label, input, textarea {
-      display: block;
-      width: 100%;
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-    input, textarea {
-      padding: 8px;
-      border: none;
-      border-radius: 5px;
-    }
-    table {
-      min-width: 500px;
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 16px;
-    }
-    th, td {
-      border: 1px solid #444;
-      padding: 8px;
-      text-align: center;
-      word-break: break-word;
-    }
-    .close-btn {
-      float: right;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 20px;
-      cursor: pointer;
-    }
-    .popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #4caf50;
-      color: white;
-      padding: 20px 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #000;
-      display: none;
-      z-index: 1000;
-      font-size: 18px;
-    }
-    #buttonContainer {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    @media(max-width: 600px) {
-      .btn {
-        font-size: 16px;
-        padding: 8px 16px;
-      }
-      label, input, textarea {
-        font-size: 14px;
-      }
-    }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <header>
-    <h1>Mayer Duya Enterprise</h1>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+  <header class="bg-gray-800 p-4 text-center shadow-md">
+    <h1 class="text-3xl font-bold">Mayer Duya Enterprise</h1>
   </header>
-  <main>
-    <div id="buttonContainer">
-      <button class="btn" onclick="showForm()">Order</button>
-      <button class="btn" onclick="showList()">Order List</button>
-      <a href="sell.html" class="btn">Sell</a>
-      <a href="due.html" class="btn">Due</a>
-      <a href="buy.html" class="btn">Buy</a>
-       <a href="cost.html" class="btn">Cost</a>
-       <a href="worker.html" class="btn">Employ</a>
-       <a href="note.html" class="btn">Note Down</a>
-     
+
+  <!-- Password Screen -->
+  <div id="passwordScreen" class="flex-1 flex items-center justify-center p-4">
+    <div class="bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-sm">
+      <h2 class="text-xl font-semibold mb-4 text-center">Enter Password</h2>
+      <input type="password" id="passwordInput" placeholder="Enter password..." class="w-full mb-4 p-2 rounded bg-gray-700 border-none">
+      <button onclick="checkPassword()" class="w-full bg-pink-600 hover:bg-pink-700 px-4 py-2 rounded-lg">Submit</button>
+      <p id="passwordError" class="text-red-500 text-sm mt-2 hidden">Wrong password. Try again.</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main id="mainContent" class="flex-1 p-4 flex-col items-center hidden">
+    <div id="buttonContainer" class="flex flex-wrap justify-center gap-4 my-6">
+      <button onclick="showForm()" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg">Order</button>
+      <button onclick="showList()" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg">Order List</button>
+      <a href="sell.html" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg">Sell</a>
+      <a href="due.html" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg">Due</a>
+      <a href="buy.html" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg">Buy</a>
+      <a href="cost.html" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg">Cost</a>
+      <a href="worker.html" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg">Employ</a>
+      <a href="note.html" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg">Note Down</a>
     </div>
 
-    <div id="formContainer" class="form-container" style="display:none;">
-      <button class="close-btn" onclick="hideForm()">✖</button>
-      <h2 id="formTitle">New Order</h2>
-      <label>Date:</label>
-      <input type="date" id="date">
-      <label>Shop Name:</label>
-      <input type="text" id="shop">
-      <label>Address:</label>
-      <input type="text" id="address">
-      <label>Description:</label>
-      <textarea id="desc"></textarea>
-      <button class="btn" onclick="submitForm()" id="submitBtn">Submit</button>
+    <div id="formContainer" class="w-full max-w-xl bg-gray-800 p-6 rounded-xl shadow-lg hidden">
+      <div class="flex justify-between items-center mb-4">
+        <h2 id="formTitle" class="text-xl font-semibold">New Order</h2>
+        <button onclick="hideForm()" class="text-white text-2xl">&times;</button>
+      </div>
+      <label class="block mb-2">Date</label>
+      <input type="date" id="date" class="w-full mb-4 p-2 rounded bg-gray-700 border-none">
+
+      <label class="block mb-2">Shop Name</label>
+      <input type="text" id="shop" class="w-full mb-4 p-2 rounded bg-gray-700 border-none">
+
+      <label class="block mb-2">Address</label>
+      <input type="text" id="address" class="w-full mb-4 p-2 rounded bg-gray-700 border-none">
+
+      <label class="block mb-2">Description</label>
+      <textarea id="desc" rows="3" class="w-full mb-4 p-2 rounded bg-gray-700 border-none"></textarea>
+
+      <button onclick="submitForm()" id="submitBtn" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg">Submit</button>
     </div>
 
-    <div id="listContainer" class="list-container" style="display:none;">
-      <button class="close-btn" onclick="hideList()">✖</button>
-      <h2>Order List</h2>
-      <table id="orderTable">
+    <div id="listContainer" class="w-full max-w-5xl bg-gray-800 p-6 rounded-xl shadow-lg hidden overflow-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">Order List</h2>
+        <button onclick="hideList()" class="text-white text-2xl">&times;</button>
+      </div>
+      <table class="w-full text-left text-sm border border-gray-700">
         <thead>
-          <tr>
-            <th>Date</th>
-            <th>Shop</th>
-            <th>Address</th>
-            <th>Description</th>
-            <th>Action</th>
+          <tr class="bg-gray-700">
+            <th class="p-2 border border-gray-600">Date</th>
+            <th class="p-2 border border-gray-600">Shop</th>
+            <th class="p-2 border border-gray-600">Address</th>
+            <th class="p-2 border border-gray-600">Description</th>
+            <th class="p-2 border border-gray-600">Action</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody id="orderTableBody"></tbody>
       </table>
     </div>
 
-    <div id="popup" class="popup">Data saved successfully!</div>
+    <div id="popup" class="fixed bottom-6 right-6 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg hidden">
+      Data saved successfully!
+    </div>
   </main>
-  <footer>
+
+  <footer class="bg-gray-800 text-center text-sm p-4">
     Mayer Duya Enterprise © 2025 All Rights Reserved
   </footer>
 
   <script>
     let editIndex = -1;
+
+    function checkPassword() {
+      const input = document.getElementById('passwordInput').value;
+      const error = document.getElementById('passwordError');
+      if (input === '1010') {
+        document.getElementById('passwordScreen').classList.add('hidden');
+        document.getElementById('mainContent').classList.remove('hidden');
+      } else {
+        error.classList.remove('hidden');
+      }
+    }
+
     function showForm() {
       hide('listContainer');
       document.getElementById('formTitle').innerText = "New Order";
       document.getElementById('submitBtn').innerText = "Submit";
-      document.getElementById('formContainer').style.display = 'block';
-      document.getElementById('buttonContainer').style.display = 'none';
+      document.getElementById('formContainer').classList.remove('hidden');
+      document.getElementById('buttonContainer').classList.add('hidden');
       document.getElementById('date').value = '';
       document.getElementById('shop').value = '';
       document.getElementById('address').value = '';
       document.getElementById('desc').value = '';
       editIndex = -1;
     }
+
     function showList() {
       hide('formContainer');
-      document.getElementById('listContainer').style.display = 'block';
-      document.getElementById('buttonContainer').style.display = 'none';
+      document.getElementById('listContainer').classList.remove('hidden');
+      document.getElementById('buttonContainer').classList.add('hidden');
       loadOrders();
     }
+
     function hideForm() {
-      document.getElementById('formContainer').style.display = 'none';
-      document.getElementById('buttonContainer').style.display = 'flex';
+      document.getElementById('formContainer').classList.add('hidden');
+      document.getElementById('buttonContainer').classList.remove('hidden');
     }
+
     function hideList() {
-      document.getElementById('listContainer').style.display = 'none';
-      document.getElementById('buttonContainer').style.display = 'flex';
+      document.getElementById('listContainer').classList.add('hidden');
+      document.getElementById('buttonContainer').classList.remove('hidden');
     }
+
     function hide(id) {
-      document.getElementById(id).style.display = 'none';
+      document.getElementById(id).classList.add('hidden');
     }
+
     function submitForm() {
       const date = document.getElementById('date').value;
       const shop = document.getElementById('shop').value;
       const address = document.getElementById('address').value;
       const desc = document.getElementById('desc').value;
+
       if (!date || !shop || !address || !desc) return alert('Please fill all fields');
+
       const orders = JSON.parse(localStorage.getItem('orders')) || [];
       if (editIndex === -1) {
         orders.push({ date, shop, address, desc });
       } else {
         orders[editIndex] = { date, shop, address, desc };
       }
+
       localStorage.setItem('orders', JSON.stringify(orders));
       showPopup();
       hideForm();
       loadOrders();
     }
+
     function loadOrders() {
-      const tbody = document.querySelector('#orderTable tbody');
+      const tbody = document.getElementById('orderTableBody');
       tbody.innerHTML = '';
       const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
       orders.forEach((order, index) => {
-        const row = `<tr>
-          <td>${order.date}</td>
-          <td>${order.shop}</td>
-          <td>${order.address}</td>
-          <td>${order.desc}</td>
-          <td>
-            <button class='action-btn edit-btn' onclick="editOrder(${index})">Edit</button>
-            <button class='action-btn delete-btn' onclick="deleteOrder(${index})">Complete</button>
-          </td>
-        </tr>`;
-        tbody.innerHTML += row;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class='border border-gray-700 p-2'>${order.date}</td>
+          <td class='border border-gray-700 p-2'>${order.shop}</td>
+          <td class='border border-gray-700 p-2'>${order.address}</td>
+          <td class='border border-gray-700 p-2'>${order.desc}</td>
+          <td class='border border-gray-700 p-2'>
+            <button onclick="editOrder(${index})" class="bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded">Edit</button>
+            <button onclick="deleteOrder(${index})" class="bg-green-600 hover:bg-green-700 px-2 py-1 rounded">Complete</button>
+          </td>`;
+        tbody.appendChild(row);
       });
     }
+
     function deleteOrder(index) {
       const orders = JSON.parse(localStorage.getItem('orders')) || [];
       orders.splice(index, 1);
       localStorage.setItem('orders', JSON.stringify(orders));
       loadOrders();
     }
+
     function editOrder(index) {
       const orders = JSON.parse(localStorage.getItem('orders')) || [];
       const order = orders[index];
+
       document.getElementById('date').value = order.date;
       document.getElementById('shop').value = order.shop;
       document.getElementById('address').value = order.address;
       document.getElementById('desc').value = order.desc;
+
       document.getElementById('formTitle').innerText = "Edit Order";
       document.getElementById('submitBtn').innerText = "Update";
-      document.getElementById('formContainer').style.display = 'block';
-      document.getElementById('buttonContainer').style.display = 'none';
+      document.getElementById('formContainer').classList.remove('hidden');
+      document.getElementById('buttonContainer').classList.add('hidden');
       editIndex = index;
     }
+
     function showPopup() {
       const popup = document.getElementById('popup');
-      popup.style.display = 'block';
-      setTimeout(() => {
-        popup.style.display = 'none';
-      }, 2000);
+      popup.classList.remove('hidden');
+      setTimeout(() => popup.classList.add('hidden'), 2000);
     }
   </script>
 </body>
