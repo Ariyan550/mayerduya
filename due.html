@@ -2,129 +2,69 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Due Manager</title>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet" />
-  <style>
-    body {
-      background-color: #000;
-      color: white;
-      font-size: 20px;
-    }
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 20px;
-    }
-    .center-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 20px;
-      margin-top: 20px;
-    }
-    .center-buttons a {
-      font-size: 22px;
-      font-weight: bold;
-    }
-    .total-due-card {
-      background-color: #1e1e1e;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .total-due-card h4, .total-due-card h5 {
-      font-weight: bold;
-    }
-    table.striped > thead th {
-      border: 1px solid #888;
-    }
-    table.striped > tbody > tr:nth-child(odd) {
-      background-color: rgba(255, 255, 255, 0.05);
-    }
-    .modal {
-      color: black;
-    }
-    .input-field input {
-      border: 1px solid #2c2c2c !important;
-      color: #ffffff !important;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1) !important;
-      padding: 8px !important;
-      border-radius: 8px !important;
-      margin-top: 10px!important;
-    }
-    
-    .input-field #desc{
-        color :white!important;
-    } 
-    .pagination-container {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-    }
-    @media (max-width: 600px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
-      }
-      td::before {
-        content: attr(data-label);
-        font-weight: bold;
-        display: block;
-      }
-    }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="container">
-    <div class="center-buttons">
-      <a class="waves-effect waves-light btn" onclick="showForm()">Due Entry</a>
-      <a class="waves-effect waves-light btn" onclick="showList()">Due List</a>
-    </div>
+<body class="bg-black text-white min-h-screen p-4 text-[18px]">
+  <div class="max-w-5xl mx-auto">
+    <!-- Toast container -->
+    <div id="toastContainer" class="fixed top-4 right-4 space-y-2 z-50"></div>
 
-    <div id="formSection" style="display: none;">
-      <a class="btn red right" onclick="hideSections()">Close</a>
-      <div class="input-field"><input type="date" id="date"><label for="date">Date</label></div>
-      <div class="input-field"><input type="text" id="shop"><label for="shop">Shop Name</label></div>
-      <div class="input-field"><input type="text" id="address"><label for="address">Address</label></div>
-      <div class="input-field"><textarea id="desc" class="materialize-textarea"></textarea><label for="desc">Description</label></div>
-      <div class="input-field"><input type="number" id="amount"><label for="amount">Amount</label></div>
-      <div class="input-field"><input type="number" id="prev"><label for="prev">Previous Amount</label></div>
-      <div class="input-field"><input type="number" id="total" readonly><label for="total">Total Due</label></div>
-      <a class="btn green" onclick="submitData()">Submit</a>
-    </div>
-
-    <div id="listSection" style="display: none;">
-      <a class="btn red right" onclick="hideSections()">Close</a>
-      <div class="total-due-card">
-        <h5>Total Due</h5>
-        <h4 id="totalDue">0</h4>
+    <!-- Modal -->
+    <div id="modalBackdrop" class="fixed inset-0 bg-black bg-opacity-60 hidden z-40"></div>
+    <div id="formModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-xl hidden z-50">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">Add Due</h2>
+        <button onclick="hideForm()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">Close</button>
       </div>
-      <table class="striped highlight responsive-table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Shop</th>
-            <th>Amount</th>
-            <th>Total Due</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="dueTable"></tbody>
-      </table>
-      <div class="pagination-container">
-        <ul class="pagination" id="pagination"></ul>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="date" id="date" class="p-2 rounded bg-gray-800 text-white" placeholder="Date" />
+        <input type="text" id="shop" class="p-2 rounded bg-gray-800 text-white" placeholder="Shop Name" />
+        <input type="text" id="address" class="p-2 rounded bg-gray-800 text-white" placeholder="Address" />
+        <input type="text" id="desc" class="p-2 rounded bg-gray-800 text-white" placeholder="Description" />
+        <input type="number" id="amount" class="p-2 rounded bg-gray-800 text-white" placeholder="Amount" />
+        <input type="number" id="prev" class="p-2 rounded bg-gray-800 text-white" placeholder="Previous Due" />
+        <input type="number" id="total" readonly class="p-2 rounded bg-gray-700 text-white" placeholder="Total Due" />
+      </div>
+      <div class="mt-4">
+        <button onclick="submitData()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Submit</button>
+      </div>
+    </div>
+
+    <div class="flex justify-center gap-4 mb-6">
+      <button onclick="showForm()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Due Entry</button>
+    </div>
+
+    <div id="listSection" class="mt-10">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold">Due List</h2>
+        <div class="bg-gray-800 px-4 py-2 rounded text-right">
+          <p class="text-sm">Total Due</p>
+          <h3 class="text-2xl font-bold" id="totalDue">0</h3>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-gray-800 rounded">
+          <thead class="bg-gray-700">
+            <tr>
+              <th class="p-3 text-left">Date</th>
+              <th class="p-3 text-left">Shop</th>
+              <th class="p-3 text-left">Amount</th>
+              <th class="p-3 text-left">Total Due</th>
+              <th class="p-3 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="dueTable"></tbody>
+        </table>
+      </div>
+      <div class="flex justify-center mt-6">
+        <div id="pagination" class="flex gap-2"></div>
       </div>
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      M.AutoInit();
-    });
-
     const date = document.getElementById('date');
     const shop = document.getElementById('shop');
     const address = document.getElementById('address');
@@ -134,8 +74,11 @@
     const total = document.getElementById('total');
     const tableBody = document.getElementById('dueTable');
     const totalDue = document.getElementById('totalDue');
+    const modal = document.getElementById('formModal');
+    const backdrop = document.getElementById('modalBackdrop');
+    const toastContainer = document.getElementById('toastContainer');
     const pagination = document.getElementById('pagination');
-
+    
     let currentPage = 1;
     const rowsPerPage = 5;
 
@@ -147,29 +90,26 @@
     }
 
     function showForm() {
-      document.getElementById('formSection').style.display = 'block';
-      document.getElementById('listSection').style.display = 'none';
-      M.updateTextFields();
+      modal.classList.remove('hidden');
+      backdrop.classList.remove('hidden');
     }
 
-    function showList() {
-      document.getElementById('listSection').style.display = 'block';
-      document.getElementById('formSection').style.display = 'none';
-      renderTable();
+    function hideForm() {
+      modal.classList.add('hidden');
+      backdrop.classList.add('hidden');
     }
 
-    function hideSections() {
-      document.getElementById('formSection').style.display = 'none';
-      document.getElementById('listSection').style.display = 'none';
-    }
-
-    function showToast(msg) {
-      M.toast({html: msg, classes: 'rounded'});
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `px-4 py-2 rounded shadow text-white ${type === 'success' ? 'bg-green-600' : 'bg-red-600'}`;
+      toast.innerText = message;
+      toastContainer.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
     }
 
     function submitData() {
       if (!date.value || !shop.value || !address.value || !amount.value) {
-        showToast('⚠️ Please fill in all required fields');
+        showToast('Please fill in all required fields', 'error');
         return;
       }
 
@@ -183,35 +123,36 @@
         prev: +prev.value,
         total: +total.value,
       };
+
       let data = JSON.parse(localStorage.getItem('dues')) || [];
       data.push(entry);
       localStorage.setItem('dues', JSON.stringify(data));
       clearForm();
-      showToast('✅ Data saved successfully!');
+      renderTable();
+      hideForm();
+      showToast('Due entry added successfully!');
     }
 
     function clearForm() {
       date.value = shop.value = address.value = desc.value = amount.value = prev.value = total.value = '';
-      M.updateTextFields();
     }
 
     function renderTable() {
       let data = JSON.parse(localStorage.getItem('dues')) || [];
       tableBody.innerHTML = '';
-      let totalSum = 0;
-      let start = (currentPage - 1) * rowsPerPage;
-      let paginatedItems = data.slice(start, start + rowsPerPage);
 
-      paginatedItems.forEach((item) => {
-        totalSum += item.total;
-        let row = `<tr>
-          <td data-label="Date">${item.date}</td>
-          <td data-label="Shop">${item.shop}</td>
-          <td data-label="Amount">${item.amount}</td>
-          <td data-label="Total">${item.total}</td>
-          <td data-label="Actions">
-            <a class="btn-small yellow" onclick="editEntry(${item.id})">Edit</a>
-            <a class="btn-small red" onclick="deleteEntry(${item.id})">Delete</a>
+      const start = (currentPage - 1) * rowsPerPage;
+      const paginatedData = data.slice(start, start + rowsPerPage);
+
+      paginatedData.forEach((item) => {
+        let row = `<tr class='border-b border-gray-700'>
+          <td class='p-3'>${item.date}</td>
+          <td class='p-3'>${item.shop}</td>
+          <td class='p-3'>${item.amount}</td>
+          <td class='p-3'>${item.total}</td>
+          <td class='p-3'>
+            <button onclick="editEntry(${item.id})" class='bg-yellow-500 text-black px-2 py-1 rounded mr-2'>Edit</button>
+            <button onclick="deleteEntry(${item.id})" class='bg-red-600 px-2 py-1 rounded'>Delete</button>
           </td>
         </tr>`;
         tableBody.innerHTML += row;
@@ -223,19 +164,18 @@
 
     function renderPagination(totalItems) {
       pagination.innerHTML = '';
-      let totalPages = Math.ceil(totalItems / rowsPerPage);
+      const totalPages = Math.ceil(totalItems / rowsPerPage);
 
       for (let i = 1; i <= totalPages; i++) {
-        let li = document.createElement('li');
-        li.className = i === currentPage ? 'active' : 'waves-effect';
-        li.innerHTML = `<a href="#" onclick="changePage(${i})">${i}</a>`;
-        pagination.appendChild(li);
+        const btn = document.createElement('button');
+        btn.innerText = i;
+        btn.className = `px-3 py-1 rounded ${i === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-700 hover:bg-gray-600 text-white'}`;
+        btn.onclick = () => {
+          currentPage = i;
+          renderTable();
+        };
+        pagination.appendChild(btn);
       }
-    }
-
-    function changePage(page) {
-      currentPage = page;
-      renderTable();
     }
 
     function deleteEntry(id) {
@@ -243,7 +183,7 @@
       data = data.filter(d => d.id !== id);
       localStorage.setItem('dues', JSON.stringify(data));
       renderTable();
-      showToast('🗑️ Entry deleted');
+      showToast('Entry deleted', 'success');
     }
 
     function editEntry(id) {
@@ -258,10 +198,11 @@
         amount.value = item.amount;
         prev.value = item.prev;
         updateTotal();
-        M.updateTextFields();
         deleteEntry(id);
       }
     }
+
+    renderTable();
   </script>
 </body>
 </html>
