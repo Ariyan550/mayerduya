@@ -57,16 +57,16 @@
     <div class="flex gap-4 mb-4">
       <button onclick="printMemo()" class="bg-green-600 text-white px-4 py-2 rounded">Print</button>
       <button onclick="downloadImage()" class="bg-gray-700 text-white px-4 py-2 rounded">Save as Image</button>
+      <a id="whatsappShare" target="_blank" class="bg-green-500 text-white px-4 py-2 rounded">WhatsApp Share</a>
     </div>
 
-    <div id="preview" class="bg-white p-4 border" style="width: 100%;">
+    <div id="preview" class="bg-white p-6 border mx-auto" style="width: 595px; min-height: 842px;">
       <div class="text-center">
         <h2 class="text-xl font-bold">Mayer Duya Enterprise</h2>
-         <p>All Kinds Of Garments Chalk Whole Sales Suppliers
-         </p>
-        <p>Ashulia,Savar,Dhaka</p>
+        <p>All Kinds Of Garments Chalk Whole Sales Suppliers</p>
+        <p>Ashulia, Savar, Dhaka</p>
         <p>Phone: 01724655226</p>
-         <p>Phone: 01644705929 (Bkash,Nogod,Rocket,Whatsapp)</p>
+        <p>Phone: 01644705929 (Bkash, Nogod, Rocket, Whatsapp)</p>
         <hr class="my-2">
         <p><strong>Memo ID:</strong> <span id="pMemoId"></span> | <strong>Date:</strong> <span id="pDate"></span></p>
         <p><strong>Name:</strong> <span id="pName"></span> | <strong>Address:</strong> <span id="pAddress"></span></p>
@@ -221,6 +221,10 @@
       else memos.push(memoObj);
       localStorage.setItem('memos', JSON.stringify(memos));
       renderMemoList();
+
+      const text = `🧾 Mayer Duya Enterprise Cash Memo\n\n📅 Date: ${memoObj.date}\n🧑 Customer: ${memoObj.name}\n🛒 Total Amount: ${memoObj.total} Taka\n💵 Paid: ${memoObj.adv.toFixed(2)} Taka\n📌 Due: ${due.toFixed(2)} Taka\n\n📍 Address: ${memoObj.address}\n📞 Contact: 01724655226\n\nThank you for your purchase!`;
+      const encoded = encodeURIComponent(text);
+      document.getElementById("whatsappShare").href = `https://wa.me/?text=${encoded}`;
     }
 
     function printMemo() {
