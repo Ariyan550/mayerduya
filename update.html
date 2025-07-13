@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wax & Chalk Sales - Modern Tailwind</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans min-h-screen flex flex-col">
+
+  <header class="p-6 text-center">
+    <h1 class="text-4xl font-semibold mb-4">Wax & English Chalk Sales Dashboard</h1>
+    <div class="space-x-4">
+      <button
+        onclick="openModal('wax')"
+        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition"
+      >Sell Wax</button>
+      <button
+        onclick="openModal('chalk')"
+        class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition"
+      >Sell English Chalk</button>
+      <button
+        onclick="resetAll()"
+        class="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-semibold transition"
+      >Reset</button>
+    </div>
+  </header>
+
+  <main class="flex flex-wrap gap-8 justify-center px-6 flex-1 mb-12">
+
+    <!-- Wax Section -->
+    <section id="waxSection" class="w-full md:w-5/12 bg-gray-800 rounded-xl p-6 shadow-lg flex flex-col">
+      <div class="flex justify-around mb-6 text-center">
+        <div class="bg-gray-700 rounded-lg p-4 w-1/3">
+          <p class="text-sm uppercase font-medium text-gray-400">Total Qty</p>
+          <p id="waxTotalQty" class="text-2xl font-bold text-blue-400">0</p>
+        </div>
+        <div class="bg-gray-700 rounded-lg p-4 w-1/3 mx-2">
+          <p class="text-sm uppercase font-medium text-gray-400">Total ৳</p>
+          <p id="waxTotalAmt" class="text-2xl font-bold text-blue-400">0</p>
+        </div>
+        <div class="bg-gray-700 rounded-lg p-4 w-1/3">
+          <p class="text-sm uppercase font-medium text-gray-400">Profit ৳</p>
+          <p id="waxProfit" class="text-2xl font-bold text-blue-400">0</p>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <input
+          type="date"
+          id="waxFilterDate"
+          onchange="filterData('wax')"
+          class="w-full rounded-lg px-4 py-2 bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div class="overflow-x-auto">
+        <table
+          id="waxTable"
+          class="w-full table-auto border-collapse text-sm"
+        >
+          <thead>
+            <tr class="bg-gray-700 text-gray-300 uppercase text-xs font-semibold tracking-wide">
+              <th class="border border-gray-600 px-3 py-2">Date</th>
+              <th class="border border-gray-600 px-3 py-2">Shop</th>
+              <th class="border border-gray-600 px-3 py-2">Qty</th>
+              <th class="border border-gray-600 px-3 py-2">Rate</th>
+              <th class="border border-gray-600 px-3 py-2">Amount</th>
+              <th class="border border-gray-600 px-3 py-2">Profit</th>
+              <th class="border border-gray-600 px-3 py-2">Edit</th>
+              <th class="border border-gray-600 px-3 py-2">Delete</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-100"></tbody>
+        </table>
+      </div>
+
+      <div
+        id="waxPagination"
+        class="flex justify-center mt-4 space-x-2"
+      ></div>
+    </section>
+
+    <!-- Chalk Section -->
+    <section id="chalkSection" class="w-full md:w-5/12 bg-gray-800 rounded-xl p-6 shadow-lg flex flex-col">
+      <div class="flex justify-around mb-6 text-center">
+        <div class="bg-gray-700 rounded-lg p-4 w-1/3">
+          <p class="text-sm uppercase font-medium text-gray-400">Total Qty</p>
+          <p id="chalkTotalQty" class="text-2xl font-bold text-green-400">0</p>
+        </div>
+        <div class="bg-gray-700 rounded-lg p-4 w-1/3 mx-2">
+          <p class="text-sm uppercase font-medium text-gray-400">Total ৳</p>
+          <p id="chalkTotalAmt" class="text-2xl font-bold text-green-400">0</p>
+        </div>
+        <div class="bg-gray-700 rounded-lg p-4 w-1/3">
+          <p class="text-sm uppercase font-medium text-gray-400">Profit ৳</p>
+          <p id="chalkProfit" class="text-2xl font-bold text-green-400">0</p>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <input
+          type="date"
+          id="chalkFilterDate"
+          onchange="filterData('chalk')"
+          class="w-full rounded-lg px-4 py-2 bg-gray-700 text-gray-100 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
+      </div>
+
+      <div class="overflow-x-auto">
+        <table
+          id="chalkTable"
+          class="w-full table-auto border-collapse text-sm"
+        >
+          <thead>
+            <tr class="bg-gray-700 text-gray-300 uppercase text-xs font-semibold tracking-wide">
+              <th class="border border-gray-600 px-3 py-2">Date</th>
+              <th class="border border-gray-600 px-3 py-2">Shop</th>
+              <th class="border border-gray-600 px-3 py-2">Size</th>
+              <th class="border border-gray-600 px-3 py-2">Qty</th>
+              <th class="border border-gray-600 px-3 py-2">Rate</th>
+              <th class="border border-gray-600 px-3 py-2">Amount</th>
+              <th class="border border-gray-600 px-3 py-2">Profit</th>
+              <th class="border border-gray-600 px-3 py-2">Edit</th>
+              <th class="border border-gray-600 px-3 py-2">Delete</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-100"></tbody>
+        </table>
+      </div>
+
+      <div
+        id="chalkPagination"
+        class="flex justify-center mt-4 space-x-2"
+      ></div>
+    </section>
+  </main>
+
+  <!-- Modals -->
+  <!-- Wax Modal -->
+  <div
+    id="waxModal"
+    class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden"
+  >
+    <div
+      class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-lg w-full mx-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="waxModalTitle"
+    >
+      <h2
+        id="waxModalTitle"
+        class="text-2xl font-semibold mb-4 text-blue-400 text-center"
+      >
+        Sell Wax
+      </h2>
+      <form
+        onsubmit="event.preventDefault(); submitForm('wax')"
+        class="space-y-4"
+        autocomplete="off"
+      >
+        <input
+          type="date"
+          id="waxDate"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+        />
+        <input
+          type="text"
+          id="waxShop"
+          placeholder="Shop Name"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+        />
+        <input
+          type="number"
+          id="waxQty"
+          placeholder="Quantity"
+          min="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+        />
+        <input
+          type="number"
+          id="waxRate"
+          placeholder="Rate"
+          min="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+        />
+        <input
+          type="number"
+          id="waxAmount"
+          placeholder="Amount"
+          min="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+        />
+        <input
+          type="number"
+          id="waxProfitInput"
+          placeholder="Profit"
+          min="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+        />
+        <div class="flex justify-end space-x-4">
+          <button
+            type="button"
+            onclick="closeModal('wax')"
+            class="px-5 py-2 bg-gray-600 hover:bg-gray-700 rounded-md font-semibold transition"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-5 py-2 bg-blue-600 hover:bg-blue-700 rounded-md font-semibold transition"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Chalk Modal -->
+  <div
+    id="chalkModal"
+    class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden"
+  >
+    <div
+      class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-lg w-full mx-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="chalkModalTitle"
+    >
+      <h2
+        id="chalkModalTitle"
+        class="text-2xl font-semibold mb-4 text-green-400 text-center"
+      >
+        Sell English Chalk
+      </h2>
+      <form
+        onsubmit="event.preventDefault(); submitForm('chalk')"
+        class="space-y-4"
+        autocomplete="off"
+      >
+        <input
+          type="date"
+          id="chalkDate"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
+        />
+        <input
+          type="text"
+          id="chalkShop"
+          placeholder="Shop Name"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
+        />
+        <input
+          type="text"
+          id="chalkSize"
+          placeholder="Size"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
+        />
+        <input
+          type="number"
+          id="chalkQty"
+          placeholder="Quantity"
+          min="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
+        />
+        <input
+          type="number"
+          id="chalkRate"
+          placeholder="Rate"
+          min="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
+        />
+        <input
+          type="number"
+          id="chalkAmount"
+          placeholder="Amount"
+          min="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
+        />
+        <input
+          type="number"
+          id="chalkProfitInput"
+          placeholder="Profit"
+          min="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
+        />
+        <div class="flex justify-end space-x-4">
+          <button
+            type="button"
+            onclick="closeModal('chalk')"
+            class="px-5 py-2 bg-gray-600 hover:bg-gray-700 rounded-md font-semibold transition"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-5 py-2 bg-green-600 hover:bg-green-700 rounded-md font-semibold transition"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const DATA_KEY = { wax: 'waxData', chalk: 'chalkData' };
+    const PER_PAGE = 8;
+
+    function openModal(type) {
+      const modal = document.getElementById(type + 'Modal');
+      if (modal.classList.contains('hidden')) {
+        modal.classList.remove('hidden');
+      }
+    }
+
+    function closeModal(type) {
+      const modal = document.getElementById(type + 'Modal');
+      modal.classList.add('hidden');
+      clearForm(type);
+    }
+
+    window.onclick = function (event) {
+      ['waxModal', 'chalkModal'].forEach((id) => {
+        const modal = document.getElementById(id);
+        if (event.target === modal) closeModal(id.replace('Modal', ''));
+      });
+    };
+
+    function getInputValues(type) {
+      return type === 'wax'
+        ? {
+            date: waxDate.value,
+            shop: waxShop.value,
+            qty: +waxQty.value,
+            rate: +waxRate.value,
+            amount: +waxAmount.value,
+            profit: +waxProfitInput.value,
+          }
+        : {
+            date: chalkDate.value,
+            shop: chalkShop.value,
+            size: chalkSize.value,
+            qty: +chalkQty.value,
+            rate: +chalkRate.value,
+            amount: +chalkAmount.value,
+            profit: +chalkProfitInput.value,
+          };
+    }
+
+    function submitForm(type) {
+      const values = getInputValues(type);
+      const data = JSON.parse(localStorage.getItem(DATA_KEY[type]) || '[]');
+      data.push(values);
+      localStorage.setItem(DATA_KEY[type], JSON.stringify(data));
+      closeModal(type);
+      renderTable(type);
+    }
+
+    function clearForm(type) {
+      if (type === 'wax') {
+        waxDate.value = '';
+        waxShop.value = '';
+        waxQty.value = '';
+        waxRate.value = '';
+        waxAmount.value = '';
+        waxProfitInput.value = '';
+      } else {
+        chalkDate.value = '';
+        chalkShop.value = '';
+        chalkSize.value = '';
+        chalkQty.value = '';
+        chalkRate.value = '';
+        chalkAmount.value = '';
+        chalkProfitInput.value = '';
+      }
+    }
+
+    function renderTable(type, page = 1) {
+      const rawData = JSON.parse(localStorage.getItem(DATA_KEY[type]) || '[]');
+      const filterDate = document.getElementById(type + 'FilterDate').value;
+      const data = filterDate ? rawData.filter((d) => d.date === filterDate) : rawData;
+      const tbody = document.querySelector(`#${type}Table tbody`);
+      tbody.innerHTML = '';
+      const start = (page - 1) * PER_PAGE;
+      const paginated = data.slice(start, start + PER_PAGE);
+
+      paginated.forEach((d, i) => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-700 hover:bg-gray-700';
+        tr.innerHTML =
+          type === 'wax'
+            ? `<td class="px-3 py-2">${d.date}</td><td class="px-3 py-2">${d.shop}</td><td class="px-3 py-2">${d.qty}</td><td class="px-3 py-2">${d.rate}</td><td class="px-3 py-2">${d.amount}</td><td class="px-3 py-2">${d.profit}</td><td class="px-3 py-2"><button onclick='editEntry("${type}", ${start + i})' class="text-blue-400 hover:text-blue-600 font-semibold">Edit</button></td><td class="px-3 py-2"><button onclick='deleteEntry("${type}", ${start + i})' class="text-red-500 hover:text-red-700 font-semibold">Delete</button></td>`
+            : `<td class="px-3 py-2">${d.date}</td><td class="px-3 py-2">${d.shop}</td><td class="px-3 py-2">${d.size}</td><td class="px-3 py-2">${d.qty}</td><td class="px-3 py-2">${d.rate}</td><td class="px-3 py-2">${d.amount}</td><td class="px-3 py-2">${d.profit}</td><td class="px-3 py-2"><button onclick='editEntry("${type}", ${start + i})' class="text-green-400 hover:text-green-600 font-semibold">Edit</button></td><td class="px-3 py-2"><button onclick='deleteEntry("${type}", ${start + i})' class="text-red-500 hover:text-red-700 font-semibold">Delete</button></td>`;
+        tbody.appendChild(tr);
+      });
+
+      renderPagination(type, data.length, page);
+      renderSummary(type, data);
+    }
+
+    function renderPagination(type, total, currentPage) {
+      const pages = Math.ceil(total / PER_PAGE);
+      const container = document.getElementById(type + 'Pagination');
+      container.innerHTML = '';
+      for (let i = 1; i <= pages; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.className = `px-3 py-1 rounded ${
+          i === currentPage
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+        } transition`;
+        btn.onclick = () => renderTable(type, i);
+        container.appendChild(btn);
+      }
+    }
+
+    function renderSummary(type, data) {
+      const totalQty = data.reduce((sum, d) => sum + d.qty, 0);
+      const totalAmt = data.reduce((sum, d) => sum + d.amount, 0);
+      const profit = data.reduce((sum, d) => sum + d.profit, 0);
+      document.getElementById(`${type}TotalQty`).textContent = totalQty;
+      document.getElementById(`${type}TotalAmt`).textContent = totalAmt;
+      document.getElementById(`${type}Profit`).textContent = profit;
+    }
+
+    function filterData(type) {
+      renderTable(type);
+    }
+
+    function editEntry(type, index) {
+      const data = JSON.parse(localStorage.getItem(DATA_KEY[type]) || '[]');
+      const d = data[index];
+      if (!d) return;
+      if (type === 'wax') {
+        waxDate.value = d.date;
+        waxShop.value = d.shop;
+        waxQty.value = d.qty;
+        waxRate.value = d.rate;
+        waxAmount.value = d.amount;
+        waxProfitInput.value = d.profit;
+        openModal('wax');
+      } else {
+        chalkDate.value = d.date;
+        chalkShop.value = d.shop;
+        chalkSize.value = d.size;
+        chalkQty.value = d.qty;
+        chalkRate.value = d.rate;
+        chalkAmount.value = d.amount;
+        chalkProfitInput.value = d.profit;
+        openModal('chalk');
+      }
+      data.splice(index, 1);
+      localStorage.setItem(DATA_KEY[type], JSON.stringify(data));
+    }
+
+    function deleteEntry(type, index) {
+      if (confirm('ডাটা মুছে ফেলতে চান?')) {
+        const data = JSON.parse(localStorage.getItem(DATA_KEY[type]) || '[]');
+        data.splice(index, 1);
+        localStorage.setItem(DATA_KEY[type], JSON.stringify(data));
+        renderTable(type);
+      }
+    }
+
+    function resetAll() {
+      if (confirm('সব তথ্য মুছে ফেলবেন?')) {
+        localStorage.removeItem(DATA_KEY.wax);
+        localStorage.removeItem(DATA_KEY.chalk);
+        renderTable('wax');
+        renderTable('chalk');
+      }
+    }
+
+    window.onload = () => {
+      renderTable('wax');
+      renderTable('chalk');
+    };
+  </script>
+</body>
+</html>
+
+
