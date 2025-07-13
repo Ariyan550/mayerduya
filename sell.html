@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Wax & Chalk Sales - With Due & Shop Management</title>
+  <title>Wax & Chalk Sales - Modern Tailwind</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-gray-100 font-sans min-h-screen flex flex-col">
 
   <header class="p-6 text-center">
     <h1 class="text-4xl font-semibold mb-4">Wax & English Chalk Sales Dashboard</h1>
-    <div class="space-x-4 mb-4">
+    <div class="space-x-4">
       <button
         onclick="openModal('wax')"
         class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition"
@@ -21,13 +22,9 @@
         class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition"
       >Sell English Chalk</button>
       <button
-        onclick="openModal('shop')"
-        class="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-semibold transition"
-      >Manage Shops</button>
-      <button
         onclick="resetAll()"
         class="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-semibold transition"
-      >Reset All Data</button>
+      >Reset</button>
     </div>
   </header>
 
@@ -35,20 +32,16 @@
 
     <!-- Wax Section -->
     <section id="waxSection" class="w-full md:w-5/12 bg-gray-800 rounded-xl p-6 shadow-lg flex flex-col">
-      <div class="flex justify-between items-center mb-3">
-        <h2 class="text-xl font-semibold text-blue-400">Wax Sales</h2>
-        <p class="text-yellow-400 font-semibold">Total Due: ৳ <span id="waxTotalDue">0</span></p>
-      </div>
       <div class="flex justify-around mb-6 text-center">
-        <div class="bg-gray-700 rounded-lg p-4 w-1/4">
+        <div class="bg-gray-700 rounded-lg p-4 w-1/3">
           <p class="text-sm uppercase font-medium text-gray-400">Total Qty</p>
           <p id="waxTotalQty" class="text-2xl font-bold text-blue-400">0</p>
         </div>
-        <div class="bg-gray-700 rounded-lg p-4 w-1/4 mx-2">
+        <div class="bg-gray-700 rounded-lg p-4 w-1/3 mx-2">
           <p class="text-sm uppercase font-medium text-gray-400">Total ৳</p>
           <p id="waxTotalAmt" class="text-2xl font-bold text-blue-400">0</p>
         </div>
-        <div class="bg-gray-700 rounded-lg p-4 w-1/4">
+        <div class="bg-gray-700 rounded-lg p-4 w-1/3">
           <p class="text-sm uppercase font-medium text-gray-400">Profit ৳</p>
           <p id="waxProfit" class="text-2xl font-bold text-blue-400">0</p>
         </div>
@@ -63,7 +56,7 @@
         />
       </div>
 
-      <div class="overflow-x-auto mb-6">
+      <div class="overflow-x-auto">
         <table
           id="waxTable"
           class="w-full table-auto border-collapse text-sm"
@@ -75,8 +68,6 @@
               <th class="border border-gray-600 px-3 py-2">Qty</th>
               <th class="border border-gray-600 px-3 py-2">Rate</th>
               <th class="border border-gray-600 px-3 py-2">Amount</th>
-              <th class="border border-gray-600 px-3 py-2">Payment</th>
-              <th class="border border-gray-600 px-3 py-2">Due</th>
               <th class="border border-gray-600 px-3 py-2">Profit</th>
               <th class="border border-gray-600 px-3 py-2">Edit</th>
               <th class="border border-gray-600 px-3 py-2">Delete</th>
@@ -84,14 +75,6 @@
           </thead>
           <tbody class="text-gray-100"></tbody>
         </table>
-      </div>
-
-      <!-- Due List for Wax -->
-      <div class="bg-gray-700 rounded-lg p-4 mb-6">
-        <h3 class="text-lg font-semibold mb-3 text-yellow-400">Due List (Wax)</h3>
-        <div id="waxDueList" class="overflow-x-auto max-h-48 overflow-y-auto">
-          <!-- Due entries inserted here -->
-        </div>
       </div>
 
       <div
@@ -102,20 +85,16 @@
 
     <!-- Chalk Section -->
     <section id="chalkSection" class="w-full md:w-5/12 bg-gray-800 rounded-xl p-6 shadow-lg flex flex-col">
-      <div class="flex justify-between items-center mb-3">
-        <h2 class="text-xl font-semibold text-green-400">English Chalk Sales</h2>
-        <p class="text-yellow-400 font-semibold">Total Due: ৳ <span id="chalkTotalDue">0</span></p>
-      </div>
       <div class="flex justify-around mb-6 text-center">
-        <div class="bg-gray-700 rounded-lg p-4 w-1/5">
+        <div class="bg-gray-700 rounded-lg p-4 w-1/3">
           <p class="text-sm uppercase font-medium text-gray-400">Total Qty</p>
           <p id="chalkTotalQty" class="text-2xl font-bold text-green-400">0</p>
         </div>
-        <div class="bg-gray-700 rounded-lg p-4 w-1/5 mx-2">
+        <div class="bg-gray-700 rounded-lg p-4 w-1/3 mx-2">
           <p class="text-sm uppercase font-medium text-gray-400">Total ৳</p>
           <p id="chalkTotalAmt" class="text-2xl font-bold text-green-400">0</p>
         </div>
-        <div class="bg-gray-700 rounded-lg p-4 w-1/5 mx-2">
+        <div class="bg-gray-700 rounded-lg p-4 w-1/3">
           <p class="text-sm uppercase font-medium text-gray-400">Profit ৳</p>
           <p id="chalkProfit" class="text-2xl font-bold text-green-400">0</p>
         </div>
@@ -130,7 +109,7 @@
         />
       </div>
 
-      <div class="overflow-x-auto mb-6">
+      <div class="overflow-x-auto">
         <table
           id="chalkTable"
           class="w-full table-auto border-collapse text-sm"
@@ -143,8 +122,6 @@
               <th class="border border-gray-600 px-3 py-2">Qty</th>
               <th class="border border-gray-600 px-3 py-2">Rate</th>
               <th class="border border-gray-600 px-3 py-2">Amount</th>
-              <th class="border border-gray-600 px-3 py-2">Payment</th>
-              <th class="border border-gray-600 px-3 py-2">Due</th>
               <th class="border border-gray-600 px-3 py-2">Profit</th>
               <th class="border border-gray-600 px-3 py-2">Edit</th>
               <th class="border border-gray-600 px-3 py-2">Delete</th>
@@ -152,14 +129,6 @@
           </thead>
           <tbody class="text-gray-100"></tbody>
         </table>
-      </div>
-
-      <!-- Due List for Chalk -->
-      <div class="bg-gray-700 rounded-lg p-4 mb-6">
-        <h3 class="text-lg font-semibold mb-3 text-yellow-400">Due List (English Chalk)</h3>
-        <div id="chalkDueList" class="overflow-x-auto max-h-48 overflow-y-auto">
-          <!-- Due entries inserted here -->
-        </div>
       </div>
 
       <div
@@ -198,13 +167,13 @@
           required
           class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
         />
-        <select
+        <input
+          type="text"
           id="waxShop"
+          placeholder="Shop Name"
           required
           class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
-        >
-          <!-- shop options inserted dynamically -->
-        </select>
+        />
         <input
           type="number"
           id="waxQty"
@@ -212,7 +181,6 @@
           min="0"
           required
           class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
-          oninput="calcAmountDue('wax')"
         />
         <input
           type="number"
@@ -221,33 +189,14 @@
           min="0"
           required
           class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
-          oninput="calcAmountDue('wax')"
         />
         <input
           type="number"
           id="waxAmount"
           placeholder="Amount"
           min="0"
-          readonly
-          class="w-full rounded-md px-4 py-2 bg-gray-600 border border-gray-600 text-gray-400 cursor-not-allowed"
-        />
-        <input
-          type="number"
-          id="waxPayment"
-          placeholder="Payment"
-          min="0"
-          value="0"
           required
           class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
-          oninput="calcDue('wax')"
-        />
-        <input
-          type="number"
-          id="waxDue"
-          placeholder="Due"
-          min="0"
-          readonly
-          class="w-full rounded-md px-4 py-2 bg-gray-600 border border-gray-600 text-gray-400 cursor-not-allowed"
         />
         <input
           type="number"
@@ -304,13 +253,13 @@
           required
           class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
         />
-        <select
+        <input
+          type="text"
           id="chalkShop"
+          placeholder="Shop Name"
           required
           class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
-        >
-          <!-- shop options inserted dynamically -->
-        </select>
+        />
         <input
           type="text"
           id="chalkSize"
@@ -325,7 +274,6 @@
           min="0"
           required
           class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
-          oninput="calcAmountDue('chalk')"
         />
         <input
           type="number"
@@ -334,33 +282,14 @@
           min="0"
           required
           class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
-          oninput="calcAmountDue('chalk')"
         />
         <input
           type="number"
           id="chalkAmount"
           placeholder="Amount"
           min="0"
-          readonly
-          class="w-full rounded-md px-4 py-2 bg-gray-600 border border-gray-600 text-gray-400 cursor-not-allowed"
-        />
-        <input
-          type="number"
-          id="chalkPayment"
-          placeholder="Payment"
-          min="0"
-          value="0"
           required
           class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
-          oninput="calcDue('chalk')"
-        />
-        <input
-          type="number"
-          id="chalkDue"
-          placeholder="Due"
-          min="0"
-          readonly
-          class="w-full rounded-md px-4 py-2 bg-gray-600 border border-gray-600 text-gray-400 cursor-not-allowed"
         />
         <input
           type="number"
@@ -389,744 +318,182 @@
     </div>
   </div>
 
-  <!-- Shop Management Modal -->
-  <div
-    id="shopModal"
-    class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden"
-  >
-    <div
-      class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full mx-4"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="shopModalTitle"
-    >
-      <h2
-        id="shopModalTitle"
-        class="text-2xl font-semibold mb-4 text-yellow-400 text-center"
-      >
-        Manage Shops
-      </h2>
-      <form
-        id="shopForm"
-        onsubmit="event.preventDefault(); addShop()"
-        class="space-y-4"
-      >
-        <input
-          type="text"
-          id="shopNameInput"
-          placeholder="Shop Name"
-          required
-          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-gray-100"
-        />
-        <input
-          type="text"
-          id="shopAddressInput"
-          placeholder="Shop Address"
-          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-gray-100"
-        />
-        <input
-          type="text"
-          id="shopMobileInput"
-          placeholder="Mobile Number"
-          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-gray-100"
-        />
-        <div class="flex justify-end space-x-4">
-          <button
-            type="button"
-            onclick="closeModal('shop')"
-            class="px-5 py-2 bg-gray-600 hover:bg-gray-700 rounded-md font-semibold transition"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            class="px-5 py-2 bg-yellow-500 hover:bg-yellow-600 rounded-md font-semibold transition"
-          >
-            Add Shop
-          </button>
-        </div>
-      </form>
-      <hr class="my-4 border-gray-600" />
-      <h3 class="text-xl font-semibold mb-2">Existing Shops</h3>
-      <div id="shopList" class="max-h-48 overflow-y-auto"></div>
-    </div>
-  </div>
-
-
- <!-- Expense Section -->
-  <section class="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg mt-10">
-    <h2 class="text-2xl font-bold text-yellow-400 mb-4">Expense Management</h2>
-    <form onsubmit="event.preventDefault(); addExpense()" class="flex flex-col gap-4 md:flex-row md:items-end">
-      <div class="flex-1">
-        <label class="block text-sm mb-1">Date</label>
-        <input type="date" id="expenseDate" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded" required />
-      </div>
-      <div class="flex-1">
-        <label class="block text-sm mb-1">Item</label>
-        <input type="text" id="expenseItem" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded" placeholder="Item name" required />
-      </div>
-      <div class="flex-1">
-        <label class="block text-sm mb-1">Amount</label>
-        <input type="number" id="expenseAmount" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded" placeholder="৳" required min="0" />
-      </div>
-      <div>
-        <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 px-6 py-2 rounded font-semibold">Add</button>
-      </div>
-    </form>
-
-    <div class="mt-6">
-      <h3 class="text-xl font-semibold mb-2">Expenses List</h3>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm border border-gray-600">
-          <thead class="bg-gray-700 text-gray-300">
-            <tr>
-              <th class="p-2 border border-gray-600">Date</th>
-              <th class="p-2 border border-gray-600">Item</th>
-              <th class="p-2 border border-gray-600">Amount (৳)</th>
-              <th class="p-2 border border-gray-600">Action</th>
-            </tr>
-          </thead>
-          <tbody id="expenseTableBody" class="text-gray-100">
-          </tbody>
-        </table>
-      </div>
-      <div class="text-right mt-4 text-lg font-bold text-green-400">
-        Total Expense: ৳ <span id="totalExpense">0</span>
-      </div>
-    </div>
-  </section>
-
-
-
-
-
-
-
-
-  <footer class="p-4 text-center text-gray-400">
-    Developed for Mayer Duya Enterprise
-  </footer>
-
   <script>
-    // Data keys for localStorage
-    const LS_KEYS = {
-      wax: 'waxSales',
-      chalk: 'chalkSales',
-      shops: 'shops',
+    const DATA_KEY = { wax: 'waxData', chalk: 'chalkData' };
+    const PER_PAGE = 8;
+
+    function openModal(type) {
+      const modal = document.getElementById(type + 'Modal');
+      if (modal.classList.contains('hidden')) {
+        modal.classList.remove('hidden');
+      }
+    }
+
+    function closeModal(type) {
+      const modal = document.getElementById(type + 'Modal');
+      modal.classList.add('hidden');
+      clearForm(type);
+    }
+
+    window.onclick = function (event) {
+      ['waxModal', 'chalkModal'].forEach((id) => {
+        const modal = document.getElementById(id);
+        if (event.target === modal) closeModal(id.replace('Modal', ''));
+      });
     };
 
-    // Pagination settings
-    const PAGE_SIZE = 10;
-
-    // State variables
-    let waxData = [];
-    let chalkData = [];
-    let shops = [];
-
-    // Pagination indexes
-    let waxPage = 1;
-    let chalkPage = 1;
-
-    // Filter dates
-    let waxFilter = '';
-    let chalkFilter = '';
-
-    // Modal open function
-    function openModal(type) {
-      if (type === 'wax') {
-        document.getElementById('waxModal').classList.remove('hidden');
-        resetForm('wax');
-        populateShopOptions('waxShop');
-      } else if (type === 'chalk') {
-        document.getElementById('chalkModal').classList.remove('hidden');
-        resetForm('chalk');
-        populateShopOptions('chalkShop');
-      } else if (type === 'shop') {
-        document.getElementById('shopModal').classList.remove('hidden');
-        resetShopForm();
-        renderShopList();
-      }
+    function getInputValues(type) {
+      return type === 'wax'
+        ? {
+            date: waxDate.value,
+            shop: waxShop.value,
+            qty: +waxQty.value,
+            rate: +waxRate.value,
+            amount: +waxAmount.value,
+            profit: +waxProfitInput.value,
+          }
+        : {
+            date: chalkDate.value,
+            shop: chalkShop.value,
+            size: chalkSize.value,
+            qty: +chalkQty.value,
+            rate: +chalkRate.value,
+            amount: +chalkAmount.value,
+            profit: +chalkProfitInput.value,
+          };
     }
 
-    // Modal close function
-    function closeModal(type) {
-      if (type === 'wax') {
-        document.getElementById('waxModal').classList.add('hidden');
-      } else if (type === 'chalk') {
-        document.getElementById('chalkModal').classList.add('hidden');
-      } else if (type === 'shop') {
-        document.getElementById('shopModal').classList.add('hidden');
-      }
-    }
-
-    // Reset forms
-    function resetForm(type) {
-      if (type === 'wax') {
-        document.getElementById('waxDate').value = '';
-        document.getElementById('waxShop').value = '';
-        document.getElementById('waxQty').value = '';
-        document.getElementById('waxRate').value = '';
-        document.getElementById('waxAmount').value = '';
-        document.getElementById('waxPayment').value = '0';
-        document.getElementById('waxDue').value = '';
-        document.getElementById('waxProfitInput').value = '';
-      } else if (type === 'chalk') {
-        document.getElementById('chalkDate').value = '';
-        document.getElementById('chalkShop').value = '';
-        document.getElementById('chalkSize').value = '';
-        document.getElementById('chalkQty').value = '';
-        document.getElementById('chalkRate').value = '';
-        document.getElementById('chalkAmount').value = '';
-        document.getElementById('chalkPayment').value = '0';
-        document.getElementById('chalkDue').value = '';
-        document.getElementById('chalkProfitInput').value = '';
-      }
-    }
-
-    // Reset shop form
-    function resetShopForm() {
-      document.getElementById('shopNameInput').value = '';
-      document.getElementById('shopAddressInput').value = '';
-      document.getElementById('shopMobileInput').value = '';
-    }
-
-    // Load data from localStorage
-    function loadData() {
-      waxData = JSON.parse(localStorage.getItem(LS_KEYS.wax)) || [];
-      chalkData = JSON.parse(localStorage.getItem(LS_KEYS.chalk)) || [];
-      shops = JSON.parse(localStorage.getItem(LS_KEYS.shops)) || [];
-    }
-
-    // Save data to localStorage
-    function saveData(type) {
-      if (type === 'wax') {
-        localStorage.setItem(LS_KEYS.wax, JSON.stringify(waxData));
-      } else if (type === 'chalk') {
-        localStorage.setItem(LS_KEYS.chalk, JSON.stringify(chalkData));
-      } else if (type === 'shops') {
-        localStorage.setItem(LS_KEYS.shops, JSON.stringify(shops));
-      }
-    }
-
-    // Populate shop options in form select dropdown
-    function populateShopOptions(selectId) {
-      const select = document.getElementById(selectId);
-      select.innerHTML = '<option value="" disabled selected>-- Select Shop --</option>';
-      shops.forEach((shop, index) => {
-        const opt = document.createElement('option');
-        opt.value = shop.name;
-        opt.textContent = shop.name;
-        select.appendChild(opt);
-      });
-    }
-
-    // Submit wax or chalk form
     function submitForm(type) {
+      const values = getInputValues(type);
+      const data = JSON.parse(localStorage.getItem(DATA_KEY[type]) || '[]');
+      data.push(values);
+      localStorage.setItem(DATA_KEY[type], JSON.stringify(data));
+      closeModal(type);
+      renderTable(type);
+    }
+
+    function clearForm(type) {
       if (type === 'wax') {
-        const date = document.getElementById('waxDate').value;
-        const shop = document.getElementById('waxShop').value.trim();
-        const qty = parseFloat(document.getElementById('waxQty').value);
-        const rate = parseFloat(document.getElementById('waxRate').value);
-        const amount = parseFloat(document.getElementById('waxAmount').value);
-        const payment = parseFloat(document.getElementById('waxPayment').value);
-        const due = parseFloat(document.getElementById('waxDue').value);
-        const profit = parseFloat(document.getElementById('waxProfitInput').value);
-
-        if (!date || !shop || isNaN(qty) || isNaN(rate) || isNaN(amount) || isNaN(payment) || isNaN(due) || isNaN(profit)) {
-          alert('Please fill all fields correctly.');
-          return;
-        }
-
-        waxData.push({ date, shop, qty, rate, amount, payment, due, profit });
-        saveData('wax');
-        renderTable('wax');
-        renderDueList('wax');
-        closeModal('wax');
-      } else if (type === 'chalk') {
-        const date = document.getElementById('chalkDate').value;
-        const shop = document.getElementById('chalkShop').value.trim();
-        const size = document.getElementById('chalkSize').value.trim();
-        const qty = parseFloat(document.getElementById('chalkQty').value);
-        const rate = parseFloat(document.getElementById('chalkRate').value);
-        const amount = parseFloat(document.getElementById('chalkAmount').value);
-        const payment = parseFloat(document.getElementById('chalkPayment').value);
-        const due = parseFloat(document.getElementById('chalkDue').value);
-        const profit = parseFloat(document.getElementById('chalkProfitInput').value);
-
-        if (!date || !shop || !size || isNaN(qty) || isNaN(rate) || isNaN(amount) || isNaN(payment) || isNaN(due) || isNaN(profit)) {
-          alert('Please fill all fields correctly.');
-          return;
-        }
-
-        chalkData.push({ date, shop, size, qty, rate, amount, payment, due, profit });
-        saveData('chalk');
-        renderTable('chalk');
-        renderDueList('chalk');
-        closeModal('chalk');
+        waxDate.value = '';
+        waxShop.value = '';
+        waxQty.value = '';
+        waxRate.value = '';
+        waxAmount.value = '';
+        waxProfitInput.value = '';
+      } else {
+        chalkDate.value = '';
+        chalkShop.value = '';
+        chalkSize.value = '';
+        chalkQty.value = '';
+        chalkRate.value = '';
+        chalkAmount.value = '';
+        chalkProfitInput.value = '';
       }
     }
 
-    // Calculate Amount and Due for forms
-    function calcAmountDue(type) {
-      if (type === 'wax') {
-        const qty = parseFloat(document.getElementById('waxQty').value) || 0;
-        const rate = parseFloat(document.getElementById('waxRate').value) || 0;
-        const amount = qty * rate;
-        document.getElementById('waxAmount').value = amount.toFixed(2);
-        // recalc due
-        calcDue('wax');
-      } else if (type === 'chalk') {
-        const qty = parseFloat(document.getElementById('chalkQty').value) || 0;
-        const rate = parseFloat(document.getElementById('chalkRate').value) || 0;
-        const amount = qty * rate;
-        document.getElementById('chalkAmount').value = amount.toFixed(2);
-        // recalc due
-        calcDue('chalk');
-      }
-    }
-
-    // Calculate Due based on Amount and Payment
-    function calcDue(type) {
-      if (type === 'wax') {
-        const amount = parseFloat(document.getElementById('waxAmount').value) || 0;
-        const payment = parseFloat(document.getElementById('waxPayment').value) || 0;
-        let due = amount - payment;
-        if (due < 0) due = 0;
-        document.getElementById('waxDue').value = due.toFixed(2);
-      } else if (type === 'chalk') {
-        const amount = parseFloat(document.getElementById('chalkAmount').value) || 0;
-        const payment = parseFloat(document.getElementById('chalkPayment').value) || 0;
-        let due = amount - payment;
-        if (due < 0) due = 0;
-        document.getElementById('chalkDue').value = due.toFixed(2);
-      }
-    }
-
-    // Render Wax or Chalk table with pagination & filtering
-    function renderTable(type) {
-      let data = type === 'wax' ? waxData : chalkData;
-      const tbody = document.getElementById(type + 'Table').querySelector('tbody');
-
-      // filter by date if set
-      const filterDate = type === 'wax' ? waxFilter : chalkFilter;
-      if (filterDate) {
-        data = data.filter((d) => d.date === filterDate);
-      }
-
-      // Pagination
-      const page = type === 'wax' ? waxPage : chalkPage;
-      const totalPages = Math.ceil(data.length / PAGE_SIZE);
-      const start = (page - 1) * PAGE_SIZE;
-      const end = start + PAGE_SIZE;
-      const pageData = data.slice(start, end);
-
-      // Build table rows
+    function renderTable(type, page = 1) {
+      const rawData = JSON.parse(localStorage.getItem(DATA_KEY[type]) || '[]');
+      const filterDate = document.getElementById(type + 'FilterDate').value;
+      const data = filterDate ? rawData.filter((d) => d.date === filterDate) : rawData;
+      const tbody = document.querySelector(`#${type}Table tbody`);
       tbody.innerHTML = '';
-      pageData.forEach((item, idx) => {
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-gray-700';
+      const start = (page - 1) * PER_PAGE;
+      const paginated = data.slice(start, start + PER_PAGE);
 
-        if (type === 'wax') {
-          tr.innerHTML = `
-            <td class="border border-gray-600 px-2 py-1">${item.date}</td>
-            <td class="border border-gray-600 px-2 py-1">${item.shop}</td>
-            <td class="border border-gray-600 px-2 py-1 text-right">${item.qty}</td>
-            <td class="border border-gray-600 px-2 py-1 text-right">${item.rate.toFixed(2)}</td>
-            <td class="border border-gray-600 px-2 py-1 text-right">${item.amount.toFixed(2)}</td>
-            <td class="border border-gray-600 px-2 py-1 text-right">${item.payment.toFixed(2)}</td>
-            <td class="border border-gray-600 px-2 py-1 text-right">${item.due.toFixed(2)}</td>
-            <td class="border border-gray-600 px-2 py-1 text-right">${item.profit.toFixed(2)}</td>
-            <td class="border border-gray-600 px-2 py-1 text-center">
-              <button onclick="editEntry('wax', ${start + idx})" class="text-yellow-400 hover:text-yellow-300 material-icons">edit</button>
-            </td>
-            <td class="border border-gray-600 px-2 py-1 text-center">
-              <button onclick="deleteEntry('wax', ${start + idx})" class="text-red-500 hover:text-red-400 material-icons">delete</button>
-            </td>
-          `;
-        } else {
-          tr.innerHTML = `
-            <td class="border border-gray-600 px-2 py-1">${item.date}</td>
-            <td class="border border-gray-600 px-2 py-1">${item.shop}</td>
-            <td class="border border-gray-600 px-2 py-1">${item.size}</td>
-            <td class="border border-gray-600 px-2 py-1 text-right">${item.qty}</td>
-            <td class="border border-gray-600 px-2 py-1 text-right">${item.rate.toFixed(2)}</td>
-            <td class="border border-gray-600 px-2 py-1 text-right">${item.amount.toFixed(2)}</td>
-            <td class="border border-gray-600 px-2 py-1 text-right">${item.payment.toFixed(2)}</td>
-            <td class="border border-gray-600 px-2 py-1 text-right">${item.due.toFixed(2)}</td>
-            <td class="border border-gray-600 px-2 py-1 text-right">${item.profit.toFixed(2)}</td>
-            <td class="border border-gray-600 px-2 py-1 text-center">
-              <button onclick="editEntry('chalk', ${start + idx})" class="text-yellow-400 hover:text-yellow-300 material-icons">edit</button>
-            </td>
-            <td class="border border-gray-600 px-2 py-1 text-center">
-              <button onclick="deleteEntry('chalk', ${start + idx})" class="text-red-500 hover:text-red-400 material-icons">delete</button>
-            </td>
-          `;
-        }
+      paginated.forEach((d, i) => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-700 hover:bg-gray-700';
+        tr.innerHTML =
+          type === 'wax'
+            ? `<td class="px-3 py-2">${d.date}</td><td class="px-3 py-2">${d.shop}</td><td class="px-3 py-2">${d.qty}</td><td class="px-3 py-2">${d.rate}</td><td class="px-3 py-2">${d.amount}</td><td class="px-3 py-2">${d.profit}</td><td class="px-3 py-2"><button onclick='editEntry("${type}", ${start + i})' class="text-blue-400 hover:text-blue-600 font-semibold">Edit</button></td><td class="px-3 py-2"><button onclick='deleteEntry("${type}", ${start + i})' class="text-red-500 hover:text-red-700 font-semibold">Delete</button></td>`
+            : `<td class="px-3 py-2">${d.date}</td><td class="px-3 py-2">${d.shop}</td><td class="px-3 py-2">${d.size}</td><td class="px-3 py-2">${d.qty}</td><td class="px-3 py-2">${d.rate}</td><td class="px-3 py-2">${d.amount}</td><td class="px-3 py-2">${d.profit}</td><td class="px-3 py-2"><button onclick='editEntry("${type}", ${start + i})' class="text-green-400 hover:text-green-600 font-semibold">Edit</button></td><td class="px-3 py-2"><button onclick='deleteEntry("${type}", ${start + i})' class="text-red-500 hover:text-red-700 font-semibold">Delete</button></td>`;
         tbody.appendChild(tr);
       });
 
-      // Pagination buttons
-      renderPagination(type, totalPages);
-      // Update totals
-      updateTotals(type, data);
+      renderPagination(type, data.length, page);
+      renderSummary(type, data);
     }
 
-    // Render pagination buttons
-    function renderPagination(type, totalPages) {
+    function renderPagination(type, total, currentPage) {
+      const pages = Math.ceil(total / PER_PAGE);
       const container = document.getElementById(type + 'Pagination');
       container.innerHTML = '';
-      if (totalPages <= 1) return;
-
-      const page = type === 'wax' ? waxPage : chalkPage;
-
-      // Previous button
-      const prevBtn = document.createElement('button');
-      prevBtn.textContent = 'Prev';
-      prevBtn.disabled = page === 1;
-      prevBtn.className = 'px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50';
-      prevBtn.onclick = () => {
-        if (type === 'wax') waxPage--;
-        else chalkPage--;
-        renderTable(type);
-      };
-      container.appendChild(prevBtn);
-
-      // Page numbers
-      for (let i = 1; i <= totalPages; i++) {
+      for (let i = 1; i <= pages; i++) {
         const btn = document.createElement('button');
         btn.textContent = i;
-        btn.className =
-          'px-3 py-1 rounded ' +
-          (i === page ? 'bg-blue-600 text-white' : 'bg-gray-700 hover:bg-gray-600');
-        btn.onclick = () => {
-          if (type === 'wax') waxPage = i;
-          else chalkPage = i;
-          renderTable(type);
-        };
+        btn.className = `px-3 py-1 rounded ${
+          i === currentPage
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+        } transition`;
+        btn.onclick = () => renderTable(type, i);
         container.appendChild(btn);
       }
-
-      // Next button
-      const nextBtn = document.createElement('button');
-      nextBtn.textContent = 'Next';
-      nextBtn.disabled = page === totalPages;
-      nextBtn.className = 'px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 disabled:opacity-50';
-      nextBtn.onclick = () => {
-        if (type === 'wax') waxPage++;
-        else chalkPage++;
-        renderTable(type);
-      };
-      container.appendChild(nextBtn);
     }
 
-    // Filter data by date
+    function renderSummary(type, data) {
+      const totalQty = data.reduce((sum, d) => sum + d.qty, 0);
+      const totalAmt = data.reduce((sum, d) => sum + d.amount, 0);
+      const profit = data.reduce((sum, d) => sum + d.profit, 0);
+      document.getElementById(`${type}TotalQty`).textContent = totalQty;
+      document.getElementById(`${type}TotalAmt`).textContent = totalAmt;
+      document.getElementById(`${type}Profit`).textContent = profit;
+    }
+
     function filterData(type) {
-      if (type === 'wax') {
-        waxFilter = document.getElementById('waxFilterDate').value;
-        waxPage = 1;
-        renderTable('wax');
-        renderDueList('wax');
-      } else {
-        chalkFilter = document.getElementById('chalkFilterDate').value;
-        chalkPage = 1;
-        renderTable('chalk');
-        renderDueList('chalk');
-      }
-    }
-
-    // Update totals and total due display
-    function updateTotals(type, data) {
-      let totalQty = 0;
-      let totalAmt = 0;
-      let totalProfit = 0;
-      let totalDue = 0;
-      data.forEach((d) => {
-        totalQty += d.qty;
-        totalAmt += d.amount;
-        totalProfit += d.profit;
-        totalDue += d.due;
-      });
-      if (type === 'wax') {
-        document.getElementById('waxTotalQty').textContent = totalQty.toFixed(2);
-        document.getElementById('waxTotalAmt').textContent = totalAmt.toFixed(2);
-        document.getElementById('waxProfit').textContent = totalProfit.toFixed(2);
-        document.getElementById('waxTotalDue').textContent = totalDue.toFixed(2);
-      } else {
-        document.getElementById('chalkTotalQty').textContent = totalQty.toFixed(2);
-        document.getElementById('chalkTotalAmt').textContent = totalAmt.toFixed(2);
-        document.getElementById('chalkProfit').textContent = totalProfit.toFixed(2);
-        document.getElementById('chalkTotalDue').textContent = totalDue.toFixed(2);
-      }
-    }
-
-    // Render Due List with Complete button
-    function renderDueList(type) {
-      const container = document.getElementById(type + 'DueList');
-      const data = type === 'wax' ? waxData : chalkData;
-      const filterDate = type === 'wax' ? waxFilter : chalkFilter;
-
-      // Filter due > 0 and date filter if set
-      let dueItems = data.filter(d => d.due > 0);
-      if (filterDate) {
-        dueItems = dueItems.filter(d => d.date === filterDate);
-      }
-
-      if (dueItems.length === 0) {
-        container.innerHTML = '<p class="text-gray-400">No due entries.</p>';
-        return;
-      }
-
-      let html = `<table class="w-full text-sm text-left text-gray-100">
-      <thead>
-        <tr class="border-b border-gray-600">
-          <th class="px-2 py-1">Date</th>
-          <th class="px-2 py-1">Shop</th>
-          ${type === 'chalk' ? '<th class="px-2 py-1">Size</th>' : ''}
-          <th class="px-2 py-1 text-right">Due Amount</th>
-          <th class="px-2 py-1 text-center">Action</th>
-        </tr>
-      </thead>
-      <tbody>`;
-
-      dueItems.forEach((item, idx) => {
-        html += `<tr class="border-b border-gray-700 hover:bg-gray-700">
-          <td class="px-2 py-1">${item.date}</td>
-          <td class="px-2 py-1">${item.shop}</td>
-          ${type === 'chalk' ? `<td class="px-2 py-1">${item.size}</td>` : ''}
-          <td class="px-2 py-1 text-right">${item.due.toFixed(2)}</td>
-          <td class="px-2 py-1 text-center">
-            <button
-              onclick="completeDue('${type}', ${findIndexInData(type, item)})"
-              class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm font-semibold"
-            >
-              Complete
-            </button>
-          </td>
-        </tr>`;
-      });
-
-      html += '</tbody></table>';
-      container.innerHTML = html;
-    }
-
-    // Find index of item in original data (needed for completing due)
-    function findIndexInData(type, item) {
-      let arr = type === 'wax' ? waxData : chalkData;
-      for (let i = 0; i < arr.length; i++) {
-        // Simple matching by all fields (date + shop + qty + rate + amount + profit)
-        if (
-          arr[i].date === item.date &&
-          arr[i].shop === item.shop &&
-          arr[i].qty === item.qty &&
-          arr[i].rate === item.rate &&
-          arr[i].amount === item.amount &&
-          arr[i].profit === item.profit
-        ) {
-          if (type === 'chalk') {
-            if (arr[i].size === item.size) return i;
-          } else {
-            return i;
-          }
-        }
-      }
-      return -1;
-    }
-
-    // Complete due action (remove due by marking due=0 and payment=amount)
-    function completeDue(type, index) {
-      if (index === -1) return;
-      let data = type === 'wax' ? waxData : chalkData;
-      const item = data[index];
-      item.payment = item.amount; // full payment
-      item.due = 0;
-      saveData(type);
       renderTable(type);
-      renderDueList(type);
     }
 
-    // Delete entry (wax or chalk)
-    function deleteEntry(type, index) {
-      if (!confirm('Are you sure you want to delete this entry?')) return;
-      if (type === 'wax') {
-        waxData.splice(index, 1);
-        saveData('wax');
-        renderTable('wax');
-        renderDueList('wax');
-      } else {
-        chalkData.splice(index, 1);
-        saveData('chalk');
-        renderTable('chalk');
-        renderDueList('chalk');
-      }
-    }
-
-    // Edit entry (open modal pre-filled)
     function editEntry(type, index) {
-      let data = type === 'wax' ? waxData : chalkData;
-      const item = data[index];
-      if (!item) return;
-      openModal(type);
-
+      const data = JSON.parse(localStorage.getItem(DATA_KEY[type]) || '[]');
+      const d = data[index];
+      if (!d) return;
       if (type === 'wax') {
-        document.getElementById('waxDate').value = item.date;
-        document.getElementById('waxShop').value = item.shop;
-        document.getElementById('waxQty').value = item.qty;
-        document.getElementById('waxRate').value = item.rate;
-        document.getElementById('waxAmount').value = item.amount;
-        document.getElementById('waxPayment').value = item.payment;
-        document.getElementById('waxDue').value = item.due;
-        document.getElementById('waxProfitInput').value = item.profit;
+        waxDate.value = d.date;
+        waxShop.value = d.shop;
+        waxQty.value = d.qty;
+        waxRate.value = d.rate;
+        waxAmount.value = d.amount;
+        waxProfitInput.value = d.profit;
+        openModal('wax');
       } else {
-        document.getElementById('chalkDate').value = item.date;
-        document.getElementById('chalkShop').value = item.shop;
-        document.getElementById('chalkSize').value = item.size;
-        document.getElementById('chalkQty').value = item.qty;
-        document.getElementById('chalkRate').value = item.rate;
-        document.getElementById('chalkAmount').value = item.amount;
-        document.getElementById('chalkPayment').value = item.payment;
-        document.getElementById('chalkDue').value = item.due;
-        document.getElementById('chalkProfitInput').value = item.profit;
+        chalkDate.value = d.date;
+        chalkShop.value = d.shop;
+        chalkSize.value = d.size;
+        chalkQty.value = d.qty;
+        chalkRate.value = d.rate;
+        chalkAmount.value = d.amount;
+        chalkProfitInput.value = d.profit;
+        openModal('chalk');
       }
-
-      // Remove the old entry on submit and add new, so on submit we do edit.
-      if (type === 'wax') {
-        // Remove old entry for wax
-        waxData.splice(index, 1);
-      } else {
-        chalkData.splice(index, 1);
-      }
-      saveData(type);
+      data.splice(index, 1);
+      localStorage.setItem(DATA_KEY[type], JSON.stringify(data));
     }
 
-    // Shop management
-    function addShop() {
-      const name = document.getElementById('shopNameInput').value.trim();
-      if (!name) {
-        alert('Shop name is required');
-        return;
+    function deleteEntry(type, index) {
+      if (confirm('ডাটা মুছে ফেলতে চান?')) {
+        const data = JSON.parse(localStorage.getItem(DATA_KEY[type]) || '[]');
+        data.splice(index, 1);
+        localStorage.setItem(DATA_KEY[type], JSON.stringify(data));
+        renderTable(type);
       }
-      const address = document.getElementById('shopAddressInput').value.trim();
-      const mobile = document.getElementById('shopMobileInput').value.trim();
-
-      // Check for duplicates
-      const existing = shops.find((s) => s.name.toLowerCase() === name.toLowerCase());
-      if (existing) {
-        alert('Shop already exists');
-        return;
-      }
-
-      shops.push({ name, address, mobile });
-      saveData('shops');
-      resetShopForm();
-      renderShopList();
     }
 
-    function renderShopList() {
-      const container = document.getElementById('shopList');
-      if (shops.length === 0) {
-        container.innerHTML = '<p class="text-gray-400">No shops added yet.</p>';
-        return;
-      }
-      let html = '<ul class="space-y-2">';
-      shops.forEach((shop, idx) => {
-        html += `<li class="flex justify-between items-center border border-gray-600 rounded px-3 py-2">
-          <div>
-            <p class="font-semibold">${shop.name}</p>
-            <p class="text-sm text-gray-400">${shop.address || ''} ${shop.mobile ? '| ' + shop.mobile : ''}</p>
-          </div>
-          <button onclick="deleteShop(${idx})" class="text-red-500 hover:text-red-400 material-icons">delete</button>
-        </li>`;
-      });
-      html += '</ul>';
-      container.innerHTML = html;
-    }
-
-    function deleteShop(index) {
-      if (!confirm('Delete this shop?')) return;
-      shops.splice(index, 1);
-      saveData('shops');
-      renderShopList();
-    }
-
-    // Reset all data
     function resetAll() {
-      if (!confirm('This will delete ALL your data. Are you sure?')) return;
-      localStorage.clear();
-      waxData = [];
-      chalkData = [];
-      shops = [];
-      waxFilter = '';
-      chalkFilter = '';
-      waxPage = 1;
-      chalkPage = 1;
+      if (confirm('সব তথ্য মুছে ফেলবেন?')) {
+        localStorage.removeItem(DATA_KEY.wax);
+        localStorage.removeItem(DATA_KEY.chalk);
+        renderTable('wax');
+        renderTable('chalk');
+      }
+    }
+
+    window.onload = () => {
       renderTable('wax');
       renderTable('chalk');
-      renderDueList('wax');
-      renderDueList('chalk');
-      renderShopList();
-    }
-
-    // Initialize all
-    function init() {
-      loadData();
-      renderTable('wax');
-      renderTable('chalk');
-      renderDueList('wax');
-      renderDueList('chalk');
-    }
-    const expenseKey = 'expenses';
-    let expenses = JSON.parse(localStorage.getItem(expenseKey)) || [];
-
-    function addExpense() {
-      const date = document.getElementById('expenseDate').value;
-      const item = document.getElementById('expenseItem').value.trim();
-      const amount = parseFloat(document.getElementById('expenseAmount').value);
-      if (!date || !item || isNaN(amount)) return;
-      expenses.push({ date, item, amount });
-      saveExpenses();
-      renderExpenses();
-      document.getElementById('expenseDate').value = '';
-      document.getElementById('expenseItem').value = '';
-      document.getElementById('expenseAmount').value = '';
-    }
-
-    function deleteExpense(index) {
-      if (!confirm('Delete this expense?')) return;
-      expenses.splice(index, 1);
-      saveExpenses();
-      renderExpenses();
-    }
-
-    function saveExpenses() {
-      localStorage.setItem(expenseKey, JSON.stringify(expenses));
-    }
-
-    function renderExpenses() {
-      const tbody = document.getElementById('expenseTableBody');
-      tbody.innerHTML = '';
-      let total = 0;
-      expenses.forEach((e, i) => {
-        total += e.amount;
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="border border-gray-600 px-2 py-1">${e.date}</td>
-          <td class="border border-gray-600 px-2 py-1">${e.item}</td>
-          <td class="border border-gray-600 px-2 py-1 text-right">${e.amount.toFixed(2)}</td>
-          <td class="border border-gray-600 px-2 py-1 text-center">
-            <button onclick="deleteExpense(${i})" class="text-red-500 hover:text-red-300">Delete</button>
-          </td>`;
-        tbody.appendChild(tr);
-      });
-      document.getElementById('totalExpense').textContent = total.toFixed(2);
-    }
-
-   
-    // Run init on page load
-    window.onload = init;
-     window.onload = function() {
-      if (typeof init === 'function') init(); // Keep existing init if defined
-      renderExpenses();
-    }
+    };
   </script>
 </body>
 </html>
+
+
