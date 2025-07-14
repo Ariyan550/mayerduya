@@ -5,18 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mayer Duya Enterprise</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+  .calc-btn {
+    @apply bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-2xl p-4 rounded-lg transition font-semibold;
+  }
+</style>
+
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {},
+      },
+    };
+  </script>
+
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex flex-col">
-  <header class="bg-gray-800 p-4 text-center shadow-md">
+<body class="bg-gray-100 dark:bg-gray-900 dark:text-white min-h-screen flex flex-col transition-colors duration-500">
+  <header class="bg-gray-200 dark:bg-gray-800 p-4 text-center shadow-md flex justify-between items-center">
     <h1 class="text-3xl font-bold">Mayer Duya Enterprise</h1>
+    <button onclick="toggleDarkMode()" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition">Dark Mode</button>
   </header>
 
   <!-- Password Screen -->
   <div id="passwordScreen" class="flex-1 flex items-center justify-center p-4">
-    <div class="bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-sm">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-sm">
       <h2 class="text-xl font-semibold mb-4 text-center">Enter Password</h2>
-      <input type="password" id="passwordInput" placeholder="Enter password..." class="w-full mb-4 p-2 rounded bg-gray-700 border-none">
-      <button onclick="checkPassword()" class="w-full bg-pink-600 hover:bg-pink-700 px-4 py-2 rounded-lg">Submit</button>
+      <input type="password" id="passwordInput" placeholder="Enter password..." class="w-full mb-4 p-3 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-none focus:outline-none focus:ring-2 focus:ring-pink-500">
+      <button onclick="checkPassword()" class="w-full bg-pink-600 hover:bg-pink-700 px-4 py-2 rounded-lg transition">Submit</button>
       <p id="passwordError" class="text-red-500 text-sm mt-2 hidden">Wrong password. Try again.</p>
     </div>
   </div>
@@ -24,64 +42,112 @@
   <!-- Main Content -->
   <main id="mainContent" class="flex-1 p-4 flex-col items-center hidden">
     <div id="buttonContainer" class="flex flex-wrap justify-center gap-4 my-6">
-      <button onclick="showForm()" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg">Order</button>
-      <button onclick="showList()" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg">Order List</button>
-      <a href="sell.html" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg">Sell</a>
-      <a href="buy.html" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg">Buy</a>
-      <a href="worker.html" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg">Employ</a>
-      <a href="cash.html" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-lg">Cash Memo</a>
+      <button onclick="showForm()" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-xl shadow hover:shadow-lg transition">Order</button>
+      <button onclick="showList()" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-xl shadow hover:shadow-lg transition">Order List</button>
+      <a href="sell.html" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-xl shadow hover:shadow-lg transition">Sell</a>
+      <a href="buy.html" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-xl shadow hover:shadow-lg transition">Buy</a>
+      <a href="worker.html" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-xl shadow hover:shadow-lg transition">Employ</a>
+      <a href="cash.html" class="bg-pink-600 hover:bg-pink-700 text-white px-6 py-2 rounded-xl shadow hover:shadow-lg transition">Cash Memo</a>
     </div>
 
-    <div id="formContainer" class="w-full max-w-xl bg-gray-800 p-6 rounded-xl shadow-lg hidden">
+    <div id="formContainer" class="w-full max-w-xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hidden">
       <div class="flex justify-between items-center mb-4">
         <h2 id="formTitle" class="text-xl font-semibold">New Order</h2>
-        <button onclick="hideForm()" class="text-white text-2xl">&times;</button>
+        <button onclick="hideForm()" class="text-2xl">&times;</button>
       </div>
       <label class="block mb-2">Date</label>
-      <input type="date" id="date" class="w-full mb-4 p-2 rounded bg-gray-700 border-none">
+      <input type="date" id="date" class="w-full mb-4 p-3 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-none focus:outline-none focus:ring-2 focus:ring-pink-500">
 
       <label class="block mb-2">Shop Name</label>
-      <input type="text" id="shop" class="w-full mb-4 p-2 rounded bg-gray-700 border-none">
+      <input type="text" id="shop" class="w-full mb-4 p-3 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-none focus:outline-none focus:ring-2 focus:ring-pink-500">
 
       <label class="block mb-2">Address</label>
-      <input type="text" id="address" class="w-full mb-4 p-2 rounded bg-gray-700 border-none">
+      <input type="text" id="address" class="w-full mb-4 p-3 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-none focus:outline-none focus:ring-2 focus:ring-pink-500">
 
       <label class="block mb-2">Description</label>
-      <textarea id="desc" rows="3" class="w-full mb-4 p-2 rounded bg-gray-700 border-none"></textarea>
+      <textarea id="desc" rows="3" class="w-full mb-4 p-3 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-none focus:outline-none focus:ring-2 focus:ring-pink-500"></textarea>
 
-      <button onclick="submitForm()" id="submitBtn" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg">Submit</button>
+      <button onclick="submitForm()" id="submitBtn" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg transition">Submit</button>
     </div>
 
-    <div id="listContainer" class="w-full max-w-5xl bg-gray-800 p-6 rounded-xl shadow-lg hidden overflow-auto">
+    <div id="listContainer" class="w-full max-w-5xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hidden overflow-auto">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-semibold">Order List</h2>
-        <button onclick="hideList()" class="text-white text-2xl">&times;</button>
+        <button onclick="hideList()" class="text-2xl">&times;</button>
       </div>
-      <table class="w-full text-left text-sm border border-gray-700">
-        <thead>
-          <tr class="bg-gray-700">
-            <th class="p-2 border border-gray-600">Date</th>
-            <th class="p-2 border border-gray-600">Shop</th>
-            <th class="p-2 border border-gray-600">Address</th>
-            <th class="p-2 border border-gray-600">Description</th>
-            <th class="p-2 border border-gray-600">Action</th>
+      <table class="w-full text-left text-sm border border-gray-300 dark:border-gray-700">
+        <thead class="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+          <tr>
+            <th class="p-3 border-b">Date</th>
+            <th class="p-3 border-b">Shop</th>
+            <th class="p-3 border-b">Address</th>
+            <th class="p-3 border-b">Description</th>
+            <th class="p-3 border-b">Action</th>
           </tr>
         </thead>
         <tbody id="orderTableBody"></tbody>
       </table>
     </div>
 
-    <div id="popup" class="fixed bottom-6 right-6 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg hidden">
-      Data saved successfully!
+    <div id="popup" class="fixed bottom-6 right-6 bg-green-600 text-white px-6 py-3 rounded-xl shadow-xl hidden animate-bounce">
+      ✅ Data saved successfully!
     </div>
+
+
+
+<!-- Calculator Section -->
+<div class="flex justify-center my-10">
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-4 text-center">Calculator</h2>
+    <input type="text" id="calcDisplay" class="w-full mb-4 text-right text-3xl p-4 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-none" disabled>
+
+    <div class="grid grid-cols-4 gap-4">
+      <button onclick="appendCalc('7')" class="calc-btn">7</button>
+      <button onclick="appendCalc('8')" class="calc-btn">8</button>
+      <button onclick="appendCalc('9')" class="calc-btn">9</button>
+      <button onclick="appendCalc('/')" class="calc-btn bg-pink-500 text-white">÷</button>
+
+      <button onclick="appendCalc('4')" class="calc-btn">4</button>
+      <button onclick="appendCalc('5')" class="calc-btn">5</button>
+      <button onclick="appendCalc('6')" class="calc-btn">6</button>
+      <button onclick="appendCalc('*')" class="calc-btn bg-pink-500 text-white">×</button>
+
+      <button onclick="appendCalc('1')" class="calc-btn">1</button>
+      <button onclick="appendCalc('2')" class="calc-btn">2</button>
+      <button onclick="appendCalc('3')" class="calc-btn">3</button>
+      <button onclick="appendCalc('-')" class="calc-btn bg-pink-500 text-white">−</button>
+
+      <button onclick="clearCalc()" class="calc-btn text-red-600 font-bold">C</button>
+      <button onclick="appendCalc('0')" class="calc-btn">0</button>
+      <button onclick="calculateCalc()" class="calc-btn text-green-600 font-bold">=</button>
+      <button onclick="appendCalc('+')" class="calc-btn bg-pink-500 text-white">+</button>
+    </div>
+  </div>
+</div>
+
+
+
+
   </main>
 
-  <footer class="bg-gray-800 text-center text-sm p-4">
+
+
+
+
+
+
+
+
+  <footer class="bg-gray-200 dark:bg-gray-800 text-center text-sm p-4">
     Mayer Duya Enterprise © 2025 All Rights Reserved
   </footer>
 
   <script>
     let editIndex = -1;
+
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+    }
 
     function checkPassword() {
       const input = document.getElementById('passwordInput').value;
@@ -157,13 +223,13 @@
       orders.forEach((order, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-          <td class='border border-gray-700 p-2'>${order.date}</td>
-          <td class='border border-gray-700 p-2'>${order.shop}</td>
-          <td class='border border-gray-700 p-2'>${order.address}</td>
-          <td class='border border-gray-700 p-2'>${order.desc}</td>
-          <td class='border border-gray-700 p-2'>
-            <button onclick="editOrder(${index})" class="bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded">Edit</button>
-            <button onclick="deleteOrder(${index})" class="bg-green-600 hover:bg-green-700 px-2 py-1 rounded">Complete</button>
+          <td class='p-3 border-b'>${order.date}</td>
+          <td class='p-3 border-b'>${order.shop}</td>
+          <td class='p-3 border-b'>${order.address}</td>
+          <td class='p-3 border-b'>${order.desc}</td>
+          <td class='p-3 border-b'>
+            <button onclick="editOrder(${index})" class="bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded text-white transition">Edit</button>
+            <button onclick="deleteOrder(${index})" class="bg-green-600 hover:bg-green-700 px-2 py-1 rounded text-white transition ml-2">Complete</button>
           </td>`;
         tbody.appendChild(row);
       });
@@ -197,6 +263,56 @@
       popup.classList.remove('hidden');
       setTimeout(() => popup.classList.add('hidden'), 2000);
     }
+
+
+
+
+let calcInput = "";
+
+function appendCalc(value) {
+  calcInput += value;
+  updateDisplay();
+}
+
+function clearCalc() {
+  calcInput = "";
+  updateDisplay();
+}
+
+function calculateCalc() {
+  try {
+    calcInput = eval(calcInput).toString();
+    updateDisplay();
+  } catch (e) {
+    calcInput = "Error";
+    updateDisplay();
+    setTimeout(() => {
+      calcInput = "";
+      updateDisplay();
+    }, 1500);
+  }
+}
+
+function updateDisplay() {
+  document.getElementById("calcDisplay").value = calcInput;
+}
+
+// ✅ Keyboard Support
+document.addEventListener("keydown", function (e) {
+  const key = e.key;
+  if ("0123456789+-*/.".includes(key)) {
+    appendCalc(key);
+  } else if (key === "Enter") {
+    calculateCalc();
+  } else if (key === "Backspace") {
+    calcInput = calcInput.slice(0, -1);
+    updateDisplay();
+  } else if (key === "Escape") {
+    clearCalc();
+  }
+});
+
+
   </script>
 </body>
 </html>
