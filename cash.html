@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cash Memo - Mayer Duya Enterprise</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body class="bg-gray-100 p-6 min-h-screen flex flex-col">
+
+  <div class="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-6 mb-8">
+    <h1 class="text-center text-3xl font-extrabold text-blue-900 mb-6 tracking-wide">MAYER DUYA ENTERPRISE ক্যাশ মেমো</h1>
+
+    <div class="flex justify-between items-center mb-4">
+      <div class="text-sm text-gray-700 font-semibold">Memo ID: <span id="memoId" class="text-blue-700"></span></div>
+      <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow-md transition">Add Items</button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div>
+        <label class="font-semibold text-gray-700 mb-1 block">Date</label>
+        <input type="date" id="date" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+      <div>
+        <label class="font-semibold text-gray-700 mb-1 block">Name</label>
+        <input type="text" id="name" placeholder="Customer Name" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+      <div>
+        <label class="font-semibold text-gray-700 mb-1 block">Address</label>
+        <input type="text" id="address" placeholder="Customer Address" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full border border-gray-300 text-sm rounded-md overflow-hidden shadow-sm">
+        <thead class="bg-blue-800 text-white select-none">
+          <tr>
+            <th class="border border-blue-900 px-3 py-2 text-center">Sl</th>
+            <th class="border border-blue-900 px-3 py-2 text-left">Description</th>
+            <th class="border border-blue-900 px-3 py-2 text-center">Unit</th>
+            <th class="border border-blue-900 px-3 py-2 text-center">Qty</th>
+            <th class="border border-blue-900 px-3 py-2 text-center">Unit Price</th>
+            <th class="border border-blue-900 px-3 py-2 text-center">Amount</th>
+            <th class="border border-blue-900 px-3 py-2 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="dataTable" class="bg-white"></tbody>
+      </table>
+    </div>
+
+    <div class="mt-6 max-w-md ml-auto text-right space-y-2 text-gray-800">
+      <div class="text-lg font-semibold">Total: <span id="total">0.00</span> টাকা</div>
+      <div class="flex justify-end items-center gap-2">
+        <label for="advance" class="font-semibold">Payment:</label>
+        <input id="advance" type="number" min="0" value="0" oninput="updatePreview()" class="border border-gray-300 rounded px-3 py-1 w-32 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
+      <div class="text-lg font-semibold">Due: <span id="due" class="text-red-600 font-bold">0.00</span> টাকা</div>
+    </div>
+
+    <div class="flex gap-4 mt-8 justify-center">
+      <button onclick="printMemo()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded shadow-md transition">Print</button>
+      <button onclick="downloadImage()" class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded shadow-md transition">Save as Image</button>
+      <a id="whatsappShare" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded shadow-md transition inline-block">WhatsApp Share</a>
+    </div>
+
+    <!-- Preview (printable) -->
+    <div id="preview" class="bg-white p-6 border border-gray-300 mx-auto mt-10" style="width:595px; min-height:842px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+      <div class="text-left mb-3">
+        <h2 class="text-2xl font-bold tracking-wide">Mayer Duya Enterprise</h2>
+        <p class="text-gray-700 mb-0">All Kinds Of Garments Chalk Whole Sales Suppliers</p>
+        <p class="text-gray-700 mb-0">Ashulia, Savar, Dhaka</p>
+        <p class="text-gray-700 mb-1">Phone: 01724655226</p>
+        <p class="text-gray-800 font-semibold mb-4">Phone: 01644705929 (Bkash, Nogod, Rocket, Whatsapp)</p>
+        <hr />
+        <p class="mt-3 text-gray-800 font-semibold"><strong>Memo ID:</strong> <span id="pMemoId"></span> | <strong>Date:</strong> <span id="pDate"></span></p>
+        <p class="text-gray-800 font-semibold"><strong>Name:</strong> <span id="pName"></span> | <strong>Address:</strong> <span id="pAddress"></span></p>
+      </div>
+      <table class="w-full border border-gray-300 text-sm">
+        <thead class="bg-blue-800 text-white select-none">
+          <tr>
+            <th class="border border-blue-900 px-2 py-1 text-center">Sl</th>
+            <th class="border border-blue-900 px-2 py-1 text-left">Description</th>
+            <th class="border border-blue-900 px-2 py-1 text-center">Unit</th>
+            <th class="border border-blue-900 px-2 py-1 text-center">Qty</th>
+            <th class="border border-blue-900 px-2 py-1 text-center">Unit Price</th>
+            <th class="border border-blue-900 px-2 py-1 text-center">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="pTable" class="bg-white"></tbody>
+      </table>
+      <div class="text-right mt-6 space-y-1 text-gray-800 font-semibold">
+        <p><strong>Total:</strong> <span id="pTotal"></span> টাকা</p>
+        <p><strong>Payment:</strong> <span id="pAdv"></span> টাকা</p>
+        <p><strong>Due:</strong> <span id="pDue" class="text-red-600 font-bold"></span> টাকা</p>
+        <p><strong>In Words:</strong> <span id="inWords"></span></p>
+      </div>
+      <div class="mt-16 flex justify-end">
+        <div class="text-center text-gray-700">
+          <p>--------------------------</p>
+          <p>Customer Signature</p>
+        </div>
+      </div>
+
+      <p class="text-center mt-10 text-xs text-gray-500">This Memo Generated Automatically on MDE Own Software</p>
+    </div>
+
+    <!-- Saved Memos -->
+    <h2 class="text-2xl font-bold mt-12 mb-4 text-gray-800">Saved Memos</h2>
+    <input type="text" id="searchMemo" placeholder="Search by name/date" class="border border-gray-300 px-3 py-2 rounded w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="renderMemoList()">
+    <div id="memoList" class="space-y-2 text-sm text-gray-700"></div>
+  </div>
+
+  <!-- Modal backdrop -->
+  <div id="modalBackdrop" class="fixed inset-0 bg-black bg-opacity-40 hidden z-40"></div>
+
+  <!-- Multi-item Input Modal -->
+  <div id="itemModal" class="fixed inset-0 flex items-center justify-center p-4 hidden z-50">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-3xl max-h-[80vh] overflow-auto p-6 relative">
+      <h3 class="text-xl font-bold mb-4 text-blue-800">Add / Edit Items</h3>
+      <table class="w-full border border-gray-300 text-sm rounded-md mb-4">
+        <thead class="bg-blue-700 text-white select-none">
+          <tr>
+            <th class="border border-blue-800 px-3 py-2 text-center">Sl</th>
+            <th class="border border-blue-800 px-3 py-2 text-left">Description</th>
+            <th class="border border-blue-800 px-3 py-2 text-center">Unit</th>
+            <th class="border border-blue-800 px-3 py-2 text-center">Qty</th>
+            <th class="border border-blue-800 px-3 py-2 text-center">Unit Price</th>
+            <th class="border border-blue-800 px-3 py-2 text-center">Amount</th>
+            <th class="border border-blue-800 px-3 py-2 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="modalTable"></tbody>
+      </table>
+
+      <form id="itemForm" class="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
+        <div class="col-span-2">
+          <label for="modalDesc" class="block font-semibold mb-1">Description</label>
+          <input type="text" id="modalDesc" class="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+        </div>
+        <div>
+          <label for="modalUnit" class="block font-semibold mb-1">Unit</label>
+          <input type="text" id="modalUnit" placeholder="pcs/kg/box" class="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+        </div>
+        <div>
+          <label for="modalQty" class="block font-semibold mb-1">Qty</label>
+          <input type="number" id="modalQty" min="0.01" step="0.01" value="1" class="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+        </div>
+        <div>
+          <label for="modalPrice" class="block font-semibold mb-1">Unit Price</label>
+          <input type="number" id="modalPrice" min="0" step="0.01" value="0" class="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+        </div>
+        <div class="flex gap-2 col-span-1 md:col-span-1">
+          <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded shadow-md transition">Add / Update</button>
+          <button type="button" onclick="closeModal()" class="bg-gray-400 hover:bg-gray-500 text-white px-5 py-2 rounded shadow-md transition">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let items = [];
+    let editIndex = -1;
+
+    function generateMemoId() {
+      const date = new Date();
+      const yyyyMMdd = date.toISOString().slice(0, 10).replace(/-/g, '');
+      const rand = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      return `INV-${yyyyMMdd}-${rand}`;
+    }
+
+    function renderMemoList() {
+      const list = document.getElementById('memoList');
+      const keyword = document.getElementById('searchMemo').value.toLowerCase();
+      const memos = JSON.parse(localStorage.getItem('memos') || '[]');
+      list.innerHTML = '';
+      memos.filter(m => m.name.toLowerCase().includes(keyword) || m.date.includes(keyword)).reverse().forEach((m, i) => {
+        const div = document.createElement('div');
+        div.className = "p-2 border rounded bg-gray-50 hover:bg-blue-50 flex justify-between items-center group cursor-pointer";
+        div.innerHTML = `
+          <span class="text-blue-700" onclick='loadMemo(${JSON.stringify(m).replace(/"/g, "&quot;")})'>
+            Memo ID: ${m.memoId} | Name: ${m.name} | Date: ${m.date} | Total: ${m.total} টাকা
+          </span>
+          <button onclick='deleteMemo("${m.memoId}")' class='text-red-600 text-xs opacity-0 group-hover:opacity-100 px-2' title="Delete Memo">🗑️</button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function deleteMemo(id) {
+      if (!confirm("Are you sure to delete this memo?")) return;
+      let memos = JSON.parse(localStorage.getItem('memos') || '[]');
+      memos = memos.filter(m => m.memoId !== id);
+      localStorage.setItem('memos', JSON.stringify(memos));
+      renderMemoList();
+      if(document.getElementById('memoId').textContent === id) {
+        clearForm();
+      }
+    }
+
+    function loadMemo(memo) {
+      document.getElementById('memoId').textContent = memo.memoId;
+      document.getElementById('date').value = memo.date;
+      document.getElementById('name').value = memo.name;
+      document.getElementById('address').value = memo.address || '';
+      items = memo.items || [];
+      document.getElementById('advance').value = memo.adv || 0;
+      renderTable();
+      updatePreview();
+    }
+
+    function clearForm() {
+      document.getElementById('memoId').textContent = generateMemoId();
+      document.getElementById('date').value = new Date().toISOString().slice(0, 10);
+      document.getElementById('name').value = '';
+      document.getElementById('address').value = '';
+      items = [];
+      document.getElementById('advance').value = 0;
+      renderTable();
+      updatePreview();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('dataTable');
+      tbody.innerHTML = '';
+      items.forEach((item, index) => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-gray-100">
+            <td class='border border-gray-300 px-3 py-1 text-center'>${index + 1}</td>
+            <td class='border border-gray-300 px-3 py-1 text-left'>${item.desc}</td>
+            <td class='border border-gray-300 px-3 py-1 text-center'>${item.unit}</td>
+            <td class='border border-gray-300 px-3 py-1 text-center'>${item.qty}</td>
+            <td class='border border-gray-300 px-3 py-1 text-center'>${item.price.toFixed(2)}</td>
+            <td class='border border-gray-300 px-3 py-1 text-center'>${item.amount.toFixed(2)}</td>
+            <td class='border border-gray-300 px-3 py-1 text-center space-x-2'>
+              <button onclick="editItem(${index})" class="text-blue-600 hover:text-blue-800 font-semibold" title="Edit Item">✏️</button>
+              <button onclick="deleteItem(${index})" class="text-red-600 hover:text-red-800 font-semibold" title="Delete Item">🗑️</button>
+            </td>
+          </tr>`;
+      });
+      const total = items.reduce((sum, i) => sum + i.amount, 0);
+      const adv = parseFloat(document.getElementById('advance').value) || 0;
+      const due = total - adv < 0 ? 0 : total - adv;
+      document.getElementById('total').innerText = total.toFixed(2);
+      const dueEl = document.getElementById('due');
+      dueEl.innerText = due.toFixed(2);
+      if(due > 0) {
+        dueEl.classList.add('text-red-600', 'font-bold');
+      } else {
+        dueEl.classList.remove('text-red-600', 'font-bold');
+      }
+    }
+
+    function updatePreview() {
+      const memoId = document.getElementById('memoId').textContent;
+      document.getElementById('pMemoId').innerText = memoId;
+      document.getElementById('pDate').innerText = document.getElementById('date').value;
+      document.getElementById('pName').innerText = document.getElementById('name').value;
+      document.getElementById('pAddress').innerText = document.getElementById('address').value;
+
+      const pTable = document.getElementById('pTable');
+      pTable.innerHTML = '';
+      items.forEach((item, index) => {
+        pTable.innerHTML += `
+          <tr>
+            <td class='border border-gray-300 px-2 py-1 text-center'>${index + 1}</td>
+            <td class='border border-gray-300 px-2 py-1 text-left'>${item.desc}</td>
+            <td class='border border-gray-300 px-2 py-1 text-center'>${item.unit}</td>
+            <td class='border border-gray-300 px-2 py-1 text-center'>${item.qty}</td>
+            <td class='border border-gray-300 px-2 py-1 text-center'>${item.price.toFixed(2)}</td>
+            <td class='border border-gray-300 px-2 py-1 text-center'>${item.amount.toFixed(2)}</td>
+          </tr>`;
+      });
+
+      const total = items.reduce((sum, i) => sum + i.amount, 0);
+      const adv = parseFloat(document.getElementById('advance').value) || 0;
+      const due = total - adv < 0 ? 0 : total - adv;
+
+      document.getElementById('pTotal').innerText = total.toFixed(2);
+      document.getElementById('pAdv').innerText = adv.toFixed(2);
+
+      const pDueEl = document.getElementById('pDue');
+      pDueEl.innerText = due.toFixed(2);
+      if(due > 0) {
+        pDueEl.classList.add('text-red-600', 'font-bold');
+      } else {
+        pDueEl.classList.remove('text-red-600', 'font-bold');
+      }
+
+      document.getElementById('inWords').innerText = convertToWords(total);
+
+      const memoObj = {
+        memoId,
+        date: document.getElementById('date').value,
+        name: document.getElementById('name').value,
+        address: document.getElementById('address').value,
+        items,
+        adv,
+        total: total.toFixed(2)
+      };
+
+      let memos = JSON.parse(localStorage.getItem('memos') || '[]');
+      const index = memos.findIndex(m => m.memoId === memoId);
+      if (index > -1) memos[index] = memoObj;
+      else memos.push(memoObj);
+      localStorage.setItem('memos', JSON.stringify(memos));
+      renderMemoList();
+
+      const text = `🧾 Mayer Duya Enterprise Cash Memo\n\n📅 Date: ${memoObj.date}\n🧑 Customer: ${memoObj.name}\n🛒 Total Amount: ${memoObj.total} Taka\n💵 Paid: ${memoObj.adv.toFixed(2)} Taka\n📌 Due: ${due.toFixed(2)} Taka\n\n📍 Address: ${memoObj.address}\n📞 Contact: 01724655226\n\nThank you for your purchase!`;
+      const encoded = encodeURIComponent(text);
+      document.getElementById("whatsappShare").href = `https://wa.me/?text=${encoded}`;
+    }
+
+    // Modal functions
+    function openModal() {
+      document.getElementById('modalBackdrop').classList.remove('hidden');
+      document.getElementById('itemModal').classList.remove('hidden');
+      renderModalTable();
+      clearModalForm();
+      editIndex = -1;
+    }
+    function closeModal() {
+      document.getElementById('modalBackdrop').classList.add('hidden');
+      document.getElementById('itemModal').classList.add('hidden');
+      clearModalForm();
+      editIndex = -1;
+    }
+    function clearModalForm() {
+      document.getElementById('modalDesc').value = '';
+      document.getElementById('modalUnit').value = '';
+      document.getElementById('modalQty').value = 1;
+      document.getElementById('modalPrice').value = 0;
+    }
+
+    function renderModalTable() {
+      const tbody = document.getElementById('modalTable');
+      tbody.innerHTML = '';
+      items.forEach((item, index) => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-gray-100">
+            <td class='border border-gray-300 px-3 py-1 text-center'>${index + 1}</td>
+            <td class='border border-gray-300 px-3 py-1 text-left'>${item.desc}</td>
+            <td class='border border-gray-300 px-3 py-1 text-center'>${item.unit}</td>
+            <td class='border border-gray-300 px-3 py-1 text-center'>${item.qty}</td>
+            <td class='border border-gray-300 px-3 py-1 text-center'>${item.price.toFixed(2)}</td>
+            <td class='border border-gray-300 px-3 py-1 text-center'>${item.amount.toFixed(2)}</td>
+            <td class='border border-gray-300 px-3 py-1 text-center space-x-2'>
+              <button onclick="editModalItem(${index})" class="text-blue-600 hover:text-blue-800 font-semibold" title="Edit Item">✏️</button>
+              <button onclick="deleteModalItem(${index})" class="text-red-600 hover:text-red-800 font-semibold" title="Delete Item">🗑️</button>
+            </td>
+          </tr>`;
+      });
+    }
+
+    // Add or update item from modal form
+    document.getElementById('itemForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const desc = document.getElementById('modalDesc').value.trim();
+      const unit = document.getElementById('modalUnit').value.trim();
+      const qty = parseFloat(document.getElementById('modalQty').value);
+      const price = parseFloat(document.getElementById('modalPrice').value);
+      if(!desc || !unit || qty <= 0 || price < 0){
+        alert('Please fill all fields correctly.');
+        return;
+      }
+      const amount = qty * price;
+
+      if(editIndex > -1){
+        // update existing
+        items[editIndex] = {desc, unit, qty, price, amount};
+      } else {
+        // add new
+        items.push({desc, unit, qty, price, amount});
+      }
+      renderModalTable();
+      renderTable();
+      updatePreview();
+      clearModalForm();
+      editIndex = -1;
+    });
+
+    function editModalItem(index){
+      const item = items[index];
+      document.getElementById('modalDesc').value = item.desc;
+      document.getElementById('modalUnit').value = item.unit;
+      document.getElementById('modalQty').value = item.qty;
+      document.getElementById('modalPrice').value = item.price;
+      editIndex = index;
+    }
+    function deleteModalItem(index){
+      if(confirm('Are you sure to delete this item?')){
+        items.splice(index,1);
+        renderModalTable();
+        renderTable();
+        updatePreview();
+        if(items.length === 0) closeModal();
+      }
+    }
+
+    // Edit/Delete from main table
+    function editItem(index){
+      openModal();
+      editModalItem(index);
+    }
+    function deleteItem(index){
+      if(confirm('Are you sure to delete this item?')){
+        items.splice(index,1);
+        renderTable();
+        renderModalTable();
+        updatePreview();
+      }
+    }
+
+    function printMemo() {
+      updatePreview();
+      const printContent = document.getElementById('preview').innerHTML;
+      const win = window.open('', '', 'width=900,height=700');
+      win.document.write('<html><head><title>Print</title><style>body{font-family:sans-serif;} table{width:100%;border-collapse:collapse} td,th{border:1px solid #000;padding:5px;text-align:left}</style></head><body>' + printContent + '</body></html>');
+      win.document.close();
+      win.focus();
+      win.print();
+      win.close();
+    }
+
+    function downloadImage() {
+      updatePreview();
+      html2canvas(document.querySelector("#preview")).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'cash-memo.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+
+    function convertToWords(num) {
+      const a = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+      const b = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+      const numberToWords = (n) => {
+        if (n < 20) return a[n];
+        if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? " " + a[n % 10] : "");
+        if (n < 1000) return a[Math.floor(n / 100)] + " Hundred" + (n % 100 ? " and " + numberToWords(n % 100) : "");
+        if (n < 100000) return numberToWords(Math.floor(n / 1000)) + " Thousand" + (n % 1000 ? " " + numberToWords(n % 1000) : "");
+        return n;
+      };
+      return numberToWords(Math.floor(num)) + " Taka Only";
+    }
+
+    window.onload = () => {
+      document.getElementById('date').value = new Date().toISOString().slice(0, 10);
+      document.getElementById('memoId').textContent = generateMemoId();
+      renderMemoList();
+    };
+  </script>
+</body>
+</html>
