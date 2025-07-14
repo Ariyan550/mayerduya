@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Employee Attendance System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+  <header class="bg-blue-900 text-white p-4 text-center text-2xl font-bold">
+    Employee Attendance and Salary System
+  </header>
+
+  <main class="p-4 space-y-8 max-w-7xl mx-auto">
+
+    <!-- Add/Edit Employee -->
+    <section class="bg-gray-800 shadow-md p-6 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4" id="formTitle">Add New Employee</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <input id="empName" type="text" placeholder="Name" class="p-2 border border-gray-600 rounded bg-gray-700 text-gray-200" />
+        <input id="empPhone" type="text" placeholder="Phone" class="p-2 border border-gray-600 rounded bg-gray-700 text-gray-200" />
+        <input id="empPost" type="text" placeholder="Position" class="p-2 border border-gray-600 rounded bg-gray-700 text-gray-200" />
+        <button onclick="submitEmployee()" class="bg-blue-600 hover:bg-blue-700 transition px-4 py-2 rounded font-semibold" id="submitBtn">Add</button>
+      </div>
+    </section>
+
+    <!-- Attendance Date Picker -->
+    <section class="bg-gray-800 shadow-md p-6 rounded-lg">
+      <h2 class="text-lg font-semibold mb-2">Select Date for Attendance: 
+        <input type="date" id="attendanceDate" class="p-2 border border-gray-600 rounded ml-2 bg-gray-700 text-gray-200" />
+      </h2>
+      <button onclick="markAttendance()" class="bg-green-600 hover:bg-green-700 transition px-4 py-2 rounded mt-2 font-semibold">Mark Attendance</button>
+    </section>
+
+    <!-- Employee Table -->
+    <section class="bg-gray-800 shadow-md p-6 rounded-lg overflow-x-auto">
+      <h2 class="text-xl font-semibold mb-4">Employee List</h2>
+      <table class="min-w-full border border-gray-600 text-center">
+        <thead>
+          <tr class="bg-blue-700 text-gray-200">
+            <th class="p-2 border border-gray-600">Attendance</th>
+            <th class="p-2 border border-gray-600">Name</th>
+            <th class="p-2 border border-gray-600">Phone</th>
+            <th class="p-2 border border-gray-600">Position</th>
+            <th class="p-2 border border-gray-600">Attendance Days</th>
+            <th class="p-2 border border-gray-600">Overtime</th>
+            <th class="p-2 border border-gray-600">Advance</th>
+            <th class="p-2 border border-gray-600">Total Salary</th>
+            <th class="p-2 border border-gray-600">Action</th>
+          </tr>
+        </thead>
+        <tbody id="employeeTable">
+          <!-- Dynamic Rows -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Attendance Check Section -->
+    <section class="bg-gray-800 shadow-md p-6 rounded-lg">
+      <h2 class="text-lg font-semibold mb-2">Attendance Report by Date</h2>
+      <input type="date" id="reportDate" class="p-2 border border-gray-600 rounded mr-2 bg-gray-700 text-gray-200" />
+      <button onclick="checkAttendanceByDate()" class="bg-purple-600 hover:bg-purple-700 transition px-4 py-2 rounded font-semibold">Check</button>
+      
+      <div id="reportResult" class="mt-4 text-gray-200 overflow-x-auto">
+        <!-- Attendance report shown here -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- jsPDF CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    const FIXED_SALARY = 8000;
+    const WORKING_DAYS = 26;
+    let employees = [];
+    let editingIndex = -1; // -1 means not editing
+
+    function saveToLocal() {
+      localStorage.setItem("employeesData", JSON.stringify(employees));
+    }
+
+    function loadFromLocal() {
+      const data = localStorage.getItem("employeesData");
+      if (data) {
+        employees = JSON.parse(data);
+      }
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('employeeTable');
+      tbody.innerHTML = '';
+
+      employees.forEach((emp, index) => {
+        const attendanceCount = emp.attendanceDates.length;
+        const baseSalary = Math.round((FIXED_SALARY / WORKING_DAYS) * attendanceCount);
+        const totalSalary = baseSalary + (emp.overtime * 30) - emp.advance;
+
+        const row = document.createElement('tr');
+        row.className = index % 2 === 0 ? 'bg-gray-700' : 'bg-gray-800';
+
+        row.innerHTML = `
+          <td class="border border-gray-600 p-2">
+            <input type="checkbox" id="attendCheck${index}" />
+          </td>
+          <td class="border border-gray-600 p-2">${emp.name}</td>
+          <td class="border border-gray-600 p-2">${emp.phone}</td>
+          <td class="border border-gray-600 p-2">${emp.post}</td>
+          <td class="border border-gray-600 p-2 text-green-400 font-bold">${attendanceCount}</td>
+          <td class="border border-gray-600 p-2">
+            <input type="number" value="${emp.overtime}" onchange="updateOvertime(${index}, this.value)" class="w-16 p-1 border border-gray-600 rounded bg-gray-700 text-gray-200">
+          </td>
+          <td class="border border-gray-600 p-2">
+            <input type="number" value="${emp.advance}" onchange="updateAdvance(${index}, this.value)" class="w-16 p-1 border border-gray-600 rounded bg-gray-700 text-gray-200">
+          </td>
+          <td class="border border-gray-600 p-2 font-bold text-blue-400">${totalSalary}৳</td>
+          <td class="border border-gray-600 p-2 space-x-2">
+            <button onclick="editEmployee(${index})" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 px-3 py-1 rounded font-semibold transition">Edit</button>
+            <button onclick="deleteEmployee(${index})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded font-semibold transition">Delete</button>
+            <button onclick="downloadEmployeeMonthlyReport(${index})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded font-semibold transition">Report</button>
+          </td>
+        `;
+
+        tbody.appendChild(row);
+      });
+    }
+
+    function addEmployee() {
+      const name = document.getElementById('empName').value.trim();
+      const phone = document.getElementById('empPhone').value.trim();
+      const post = document.getElementById('empPost').value.trim();
+
+      if (!name || !phone || !post) {
+        alert('Please fill all inputs');
+        return false;
+      }
+
+      employees.push({
+        name,
+        phone,
+        post,
+        attendanceDates: [],
+        overtime: 0,
+        advance: 0,
+      });
+
+      saveToLocal();
+      renderTable();
+      clearForm();
+    }
+
+    function updateEmployee() {
+      const name = document.getElementById('empName').value.trim();
+      const phone = document.getElementById('empPhone').value.trim();
+      const post = document.getElementById('empPost').value.trim();
+
+      if (!name || !phone || !post) {
+        alert('Please fill all inputs');
+        return false;
+      }
+
+      employees[editingIndex].name = name;
+      employees[editingIndex].phone = phone;
+      employees[editingIndex].post = post;
+
+      saveToLocal();
+      renderTable();
+      clearForm();
+      editingIndex = -1;
+      document.getElementById('formTitle').textContent = 'Add New Employee';
+      document.getElementById('submitBtn').textContent = 'Add';
+    }
+
+    function submitEmployee() {
+      if (editingIndex === -1) {
+        addEmployee();
+      } else {
+        updateEmployee();
+      }
+    }
+
+    function clearForm() {
+      document.getElementById('empName').value = '';
+      document.getElementById('empPhone').value = '';
+      document.getElementById('empPost').value = '';
+    }
+
+    function editEmployee(index) {
+      editingIndex = index;
+      const emp = employees[index];
+      document.getElementById('empName').value = emp.name;
+      document.getElementById('empPhone').value = emp.phone;
+      document.getElementById('empPost').value = emp.post;
+
+      document.getElementById('formTitle').textContent = 'Edit Employee';
+      document.getElementById('submitBtn').textContent = 'Update';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function deleteEmployee(index) {
+      if (confirm('Are you sure to delete this employee?')) {
+        employees.splice(index, 1);
+        saveToLocal();
+        renderTable();
+      }
+    }
+
+    function markAttendance() {
+      const date = document.getElementById('attendanceDate').value;
+      if (!date) {
+        alert("Please select a date");
+        return;
+      }
+
+      employees.forEach((emp, index) => {
+        const check = document.getElementById(`attendCheck${index}`);
+        if (check && check.checked) {
+          if (!emp.attendanceDates.includes(date)) {
+            emp.attendanceDates.push(date);
+          }
+        }
+      });
+
+      saveToLocal();
+      renderTable();
+    }
+
+    function updateOvertime(index, value) {
+      employees[index].overtime = parseInt(value || 0);
+      saveToLocal();
+      renderTable();
+    }
+
+    function updateAdvance(index, value) {
+      employees[index].advance = parseInt(value || 0);
+      saveToLocal();
+      renderTable();
+    }
+
+    function checkAttendanceByDate() {
+      const date = document.getElementById('reportDate').value;
+      const container = document.getElementById('reportResult');
+
+      if (!date) {
+        alert("Please select a date");
+        return;
+      }
+
+      let html = `<table class="min-w-full border text-center mt-2 border-gray-600">
+        <thead class="bg-gray-700 text-gray-200">
+          <tr>
+            <th class="border border-gray-600 p-2">Name</th>
+            <th class="border border-gray-600 p-2">Position</th>
+            <th class="border border-gray-600 p-2">Status</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+      employees.forEach(emp => {
+        const present = emp.attendanceDates.includes(date);
+        html += `
+          <tr class="${present ? 'bg-green-900' : 'bg-red-900'} text-gray-200 font-semibold">
+            <td class="border border-gray-600 p-2">${emp.name}</td>
+            <td class="border border-gray-600 p-2">${emp.post}</td>
+            <td class="border border-gray-600 p-2">
+              ${present ? '✅ Present' : '❌ Absent'}
+            </td>
+          </tr>`;
+      });
+
+      html += "</tbody></table>";
+      container.innerHTML = html;
+    }
+
+    // =================
+    // Individual employee monthly report download in PDF
+    async function downloadEmployeeMonthlyReport(index) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const emp = employees[index];
+      if (!emp) {
+        alert("Employee not found");
+        return;
+      }
+
+      // Ask user for month input (for report)
+      let monthInput = prompt("Enter month for report (YYYY-MM):");
+      if (!monthInput || !/^\d{4}-\d{2}$/.test(monthInput)) {
+        alert("Invalid month format");
+        return;
+      }
+
+      const [year, month] = monthInput.split('-');
+      const startDate = new Date(year, month -1, 1);
+      const endDate = new Date(year, month, 0); // last day of month
+
+      // Filter attendance in that month
+      const attendanceInMonth = emp.attendanceDates.filter(dateStr => {
+        const d = new Date(dateStr);
+        return d >= startDate && d <= endDate;
+      });
+
+      const attendanceCount = attendanceInMonth.length;
+      const baseSalary = Math.round((FIXED_SALARY / WORKING_DAYS) * attendanceCount);
+      const totalSalary = baseSalary + (emp.overtime * 30) - emp.advance;
+
+      // PDF Title
+      doc.setFontSize(16);
+      doc.text(`Monthly Attendance & Salary Report`, 105, 20, null, null, "center");
+      doc.setFontSize(12);
+      doc.text(`Employee: ${emp.name}`, 105, 30, null, null, "center");
+      doc.text(`Month: ${monthInput}`, 105, 38, null, null, "center");
+
+      // Table header center aligned
+      const startY = 50;
+      const colX = [30, 90, 140, 180];
+      const rowHeight = 10;
+
+      doc.setFontSize(11);
+      doc.setTextColor(0, 0, 0);
+
+      // Draw header background
+      doc.setFillColor(200, 200, 200);
+      doc.rect(20, startY - 7, 170, 10, 'F');
+
+      // Header text centered inside columns
+      doc.textCentered = function(text, x, y, width) {
+        const textWidth = this.getTextWidth(text);
+        this.text(text, x + (width - textWidth)/2, y);
+      };
+
+      // We'll define column widths:
+      const colWidths = [60, 40, 40, 40];
+      // Headers:
+      const headers = ["Field", "Value", "", ""];
+      // But better show attendance, overtime, advance, total salary as field-value pairs
+
+      // So let's do a vertical list instead of wide table (better for PDF width):
+
+      let lineY = startY;
+
+      const lines = [
+        ["Name", emp.name],
+        ["Position", emp.post],
+        ["Attendance Days", attendanceCount.toString()],
+        ["Overtime", emp.overtime.toString()],
+        ["Advance", emp.advance.toString()],
+        ["Total Salary", totalSalary + " ৳"]
+      ];
+
+      lines.forEach(([field, value]) => {
+        doc.text(field, 60, lineY);
+        doc.text(value, 140, lineY);
+        lineY += rowHeight;
+      });
+
+      doc.save(`Employee_Report_${emp.name.replace(/\s+/g,"_")}_${monthInput}.pdf`);
+    }
+
+    // =================
+
+    // Load existing data
+    window.onload = function () {
+      loadFromLocal();
+      renderTable();
+    };
+  </script>
+</body>
+</html>
