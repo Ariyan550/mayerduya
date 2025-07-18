@@ -8,9 +8,22 @@
 </head>
 <body class="bg-gray-900 text-gray-200">
 
-  <header class="bg-blue-900 text-white p-4 text-center text-2xl font-bold">
-    Employee Attendance and Salary System
-  </header>
+<header class="bg-blue-900 text-white p-4 text-center text-2xl font-bold relative flex justify-between items-center">
+  <div>Employee Attendance and Salary System</div>
+  <div class="relative">
+    <button onclick="toggleNotification()" class="relative">
+      🔔
+      <span id="notificationBadge" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+    </button>
+    <div id="notificationBox" class="absolute right-0 mt-2 w-64 bg-white text-black rounded shadow-lg hidden z-10">
+      <div class="p-2 border-b font-semibold">Missing Attendance</div>
+      <ul id="notificationList" class="max-h-60 overflow-y-auto p-2 space-y-1">
+        <!-- Dynamic list -->
+      </ul>
+    </div>
+  </div>
+</header>
+
 
   <main class="p-4 space-y-8 max-w-7xl mx-auto">
 
@@ -360,12 +373,62 @@
       doc.save(`Employee_Report_${emp.name.replace(/\s+/g,"_")}_${monthInput}.pdf`);
     }
 
+
+
+function toggleNotification() {
+  const box = document.getElementById("notificationBox");
+  box.classList.toggle("hidden");
+}
+
+function checkMissingAttendance() {
+  const today = new Date();
+  const dateList = [];
+
+  const notifyList = document.getElementById("notificationList");
+  const badge = document.getElementById("notificationBadge");
+
+  notifyList.innerHTML = "";
+
+  // We'll go back up to 7 days (you can change it)
+  for (let i = 0; i < 7; i++) {
+    const checkDate = new Date();
+    checkDate.setDate(today.getDate() - i);
+    const dateStr = checkDate.toISOString().split('T')[0];
+
+    let present = false;
+    for (let emp of employees) {
+      if (emp.attendanceDates.includes(dateStr)) {
+        present = true;
+        break;
+      }
+    }
+
+    if (!present) {
+      dateList.push(dateStr);
+      const li = document.createElement("li");
+      li.textContent = `❌ ${dateStr} attendance missing`;
+      notifyList.appendChild(li);
+    }
+  }
+
+  // Show badge if there are notifications
+  if (dateList.length > 0) {
+    badge.textContent = dateList.length;
+    badge.classList.remove("hidden");
+  } else {
+    badge.classList.add("hidden");
+  }
+}
+
+
+
     // =================
 
     // Load existing data
     window.onload = function () {
       loadFromLocal();
       renderTable();
+      checkMissingAttendance();
     };
   </script>
 </body>
