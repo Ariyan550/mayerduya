@@ -389,11 +389,13 @@ function checkMissingAttendance() {
 
   notifyList.innerHTML = "";
 
-  // We'll go back up to 7 days (you can change it)
   for (let i = 0; i < 7; i++) {
     const checkDate = new Date();
     checkDate.setDate(today.getDate() - i);
     const dateStr = checkDate.toISOString().split('T')[0];
+
+    // ⛔ শুক্রবার হলে skip করো (Friday = day 5)
+    if (checkDate.getDay() === 5) continue;
 
     let present = false;
     for (let emp of employees) {
@@ -411,7 +413,7 @@ function checkMissingAttendance() {
     }
   }
 
-  // Show badge if there are notifications
+  // 🔔 badge দেখাও যদি মিসিং attendance থাকে
   if (dateList.length > 0) {
     badge.textContent = dateList.length;
     badge.classList.remove("hidden");
