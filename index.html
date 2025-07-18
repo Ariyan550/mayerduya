@@ -7,6 +7,11 @@
   <title>Mayer Duya Enterprise</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script>
+  tailwind.config = {
+    darkMode: 'class'
+  }
+</script>
   <style>
     ::-webkit-scrollbar {
       width: 6px;
@@ -43,26 +48,26 @@
   </style>
 </head>
 
-<body class="bg-gray-900 text-white">
+<body class="font-semibold">
   <!-- Password Screen -->
   <div id="password-screen" class="fixed inset-0 flex items-center justify-center bg-gray-900 z-50">
     <div class="bg-gray-800 p-8 rounded-xl shadow-xl w-full max-w-sm">
       <h1 class="text-xl font-bold mb-4 text-center">Enter Password</h1>
       <input type="password" id="password-input"
         class="w-full px-4 py-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring focus:ring-blue-500"
-        placeholder="Password" />
+        autofocus placeholder="Password" />
       <button onclick="checkPassword()"
         class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition-all">Enter</button>
     </div>
   </div>
 
-  <div class="flex h-screen overflow-hidden">
+  <div class="flex h-screen overflow-hidden ">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 p-4 space-y-4 hidden md:block">
+    <aside class="w-64 bg-gray-800 text-white space-y-4 hidden md:block">
       <h2 class="text-2xl font-bold mb-6">Mayer Duya</h2>
       <ul class="space-y-2">
         <li><button onclick="showSection('dashboard')"
-            class="w-full text-left flex items-center gap-2 px-4 py-2 bg-gray-700 rounded-md hover:bg-blue-600"><i
+            class="w-full text-left text-white flex items-center gap-2 px-4 py-2 bg-gray-700 rounded-md hover:bg-blue-600"><i
               class="ph ph-gauge"></i> Dashboard</button></li>
         <li><button onclick="showSection('order')"
             class="w-full text-left flex items-center gap-2 px-4 py-2 bg-gray-700 rounded-md hover:bg-blue-600"><i
@@ -91,9 +96,9 @@
     <!-- Main Content -->
     <main class="flex-1 overflow-y-auto p-6 space-y-6">
       <!-- Dashboard -->
-      <section id="dashboard" class="space-y-4">
-        <h1 class="text-2xl font-bold">Dashboard</h1>
-        <h3 class="text-xl font-bold bg-gray-600 p-2">Order List</h3>
+      <section id="dashboard" class="space-y-4 text-white">
+        <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <h3 class="text-xl font-bold bg-gray-600 p-2 text-white">Order List</h3>
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="bg-gray-700">
@@ -110,7 +115,7 @@
       </section>
 
       <!-- Order Section -->
-      <section id="order" class="hidden space-y-4 max-w-3xl mx-auto">
+      <section id="order" class="hidden space-y-4 max-w-3xl mx-auto text-white">
         <h1 class="text-2xl font-bold">New Order</h1>
         <form id="order-form" class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-800 p-6 rounded-lg shadow-lg">
           <div>
@@ -141,16 +146,10 @@
         </form>
       </section>
 
-      <!-- Cash Memo Section -->
-      <section id="cashmemo" class="hidden space-y-4 max-w-3xl mx-auto">
-        <h1 class="text-2xl font-bold mb-4 text-center">Cash Memo</h1>
-        <p class="bg-gray-700 p-4 rounded-md text-center">এখানে Cash Memo এর জন্য প্রয়োজনীয় তথ্য বা ফর্ম আসবে।</p>
-      </section>
-
       <!-- Calculator Section -->
-      <section id="calculator" class="hidden space-y-4 max-w-md mx-auto">
-        <h1 class="text-2xl font-bold mb-4 text-center">Calculator</h1>
-        <div id="calculator" class="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <section id="calculator" class="hidden space-y-4 max-w-md mx-auto text-white">
+        <h1 class="text-2xl font-bold mb-4 text-center text-gray-900">Calculator</h1>
+        <div id="calculator-box" class="bg-gray-800 p-6 rounded-lg shadow-lg text-white">
           <input type="text" id="calc-display" readonly
             class="w-full text-right px-5 py-3 rounded bg-gray-700 text-xl mb-4 font-mono tracking-wide" />
           <div class="grid grid-cols-4 gap-3">
@@ -197,6 +196,37 @@
           </div>
         </div>
       </section>
+
+
+
+
+
+<section id="setting" class="hidden space-y-4 max-w-md mx-auto">
+  <h1 class="text-2xl font-bold mb-4 text-center">Setting</h1>
+  <div class="flex items-center justify-between bg-gray-800 dark:bg-gray-100 p-4 rounded-lg shadow-md">
+    <span class="text-lg dark:text-black text-white">Dark Mode</span>
+    <label class="relative inline-flex items-center cursor-pointer">
+      <input type="checkbox" id="dark-toggle" class="sr-only peer">
+      <div
+        class="w-11 h-6 bg-gray-400 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-blue-600 peer-checked:bg-blue-600 transition-all duration-300">
+      </div>
+      <div
+        class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform duration-300 peer-checked:translate-x-5">
+      </div>
+    </label>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
 
       <!-- Other Sections Placeholder -->
       <section id="sell" class="hidden text-xl">Sell Section</section>
@@ -251,7 +281,7 @@
     }
 
     // Button click events for calculator
-    document.querySelectorAll('#calculator button[data-key]').forEach(btn => {
+    document.querySelectorAll('#calculator-box button[data-key]').forEach(btn => {
       btn.addEventListener('click', () => {
         appendCalc(btn.getAttribute('data-key'));
       });
@@ -261,24 +291,57 @@
     document.getElementById('calc-clear').addEventListener('click', clearCalc);
 
     // Keyboard support for calculator
-    window.addEventListener('keydown', (e) => {
-      const allowedKeys = '0123456789+-*/.=';
-      if (allowedKeys.includes(e.key)) {
-        e.preventDefault();
-        if (e.key === '=' || e.key === 'Enter') {
-          calculateResult();
-        } else if (e.key === 'Backspace') {
-          calcDisplay.value = calcDisplay.value.slice(0, -1);
-        } else if (e.key === '.') {
-          appendCalc('.');
-        } else {
-          appendCalc(e.key);
-        }
-      } else if (e.key === 'Backspace') {
-        e.preventDefault();
-        calcDisplay.value = calcDisplay.value.slice(0, -1);
-      }
-    });
+let calculatorFocused = false;
+
+const calculatorBox = document.getElementById('calculator-box');
+const calculatorSection = document.getElementById('calculator');
+
+// শুধু calculator box-এ click করলে focus হবে
+calculatorBox.addEventListener('click', () => {
+  if (!calculatorSection.classList.contains('hidden')) {
+    calculatorFocused = true;
+  }
+});
+
+// যেকোনো অন্য জায়গায় click করলে focus চলে যাবে
+window.addEventListener('click', (e) => {
+  if (!calculatorBox.contains(e.target)) {
+    calculatorFocused = false;
+  }
+});
+
+// শুধু যখন calculator visible এবং focused তখন keyboard কাজ করবে
+window.addEventListener('keydown', (e) => {
+  const activeElement = document.activeElement;
+  const isTyping =
+    activeElement.tagName === 'INPUT' ||
+    activeElement.tagName === 'TEXTAREA' ||
+    activeElement.isContentEditable;
+
+  if (
+    !calculatorFocused ||
+    calculatorSection.classList.contains('hidden') ||
+    isTyping
+  ) {
+    return;
+  }
+
+  const allowedKeys = '0123456789+-*/.=';
+  if (allowedKeys.includes(e.key)) {
+    e.preventDefault();
+    if (e.key === '=' || e.key === 'Enter') {
+      calculateResult();
+    } else if (e.key === '.') {
+      appendCalc('.');
+    } else {
+      appendCalc(e.key);
+    }
+  } else if (e.key === 'Backspace') {
+    e.preventDefault();
+    calcDisplay.value = calcDisplay.value.slice(0, -1);
+  }
+});
+
 
     // Orders logic
     const orderForm = document.getElementById('order-form');
@@ -364,15 +427,50 @@
       }
     }
 
+
+const darkToggle = document.getElementById('dark-toggle');
+const body = document.body;
+
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    body.classList.add('bg-gray-900', 'text-white');
+    body.classList.remove('bg-gray-100', 'text-gray-900');
+    darkToggle.checked = true;
+  } else {
+    body.classList.add('bg-gray-100', 'text-gray-900');
+    body.classList.remove('bg-gray-900', 'text-white');
+    darkToggle.checked = false;
+  }
+  localStorage.setItem('theme', theme);
+}
+
+function applySavedTheme() {
+  const theme = localStorage.getItem('theme') || 'light';
+  applyTheme(theme);
+}
+
+darkToggle.addEventListener('change', () => {
+  const theme = darkToggle.checked ? 'dark' : 'light';
+  applyTheme(theme);
+  showToast(`${theme === 'dark' ? 'Dark' : 'Light'} mode activated!`);
+});
+
+applySavedTheme();
+
+
     // Initial load
-    window.onload = () => {
-      const stored = localStorage.getItem('app_pass');
-      if (stored === '1234') {
-        document.getElementById('password-screen').classList.add('hidden');
-        renderOrders();
-      }
-      showSection('dashboard');
-    }
+  window.onload = () => {
+  const stored = localStorage.getItem('app_pass');
+  if (stored === '1234') {
+    document.getElementById('password-screen').classList.add('hidden');
+    renderOrders();
+    showSection('dashboard');
+  } else {
+    // Ensure password input is focused
+    document.getElementById('password-input').focus();
+  }
+}
+
   </script>
 </body>
 
