@@ -217,7 +217,6 @@ function renderShopListTable() {
       ৳ ${getTotalDueByShop(shop.name).toFixed(2)}
     </td>
       <td class="border border-gray-600 p-2 text-center">
-
       <button onclick="editShopById('${shop.id}')" class="text-yellow-400 hover:text-yellow-200 material-icons">edit</button>
       <button onclick="deleteShopById('${shop.id}')" class="text-red-500 hover:text-red-300 material-icons">delete</button>
       </td>
@@ -1730,12 +1729,57 @@ function getTotalDueByShop(shopName) {
   return waxDue + chalkDue;
 }
 
+// send sms
+
+async function sendDueSmsToAllCustomers() {
+  const sent = [];
+  const failed = [];
+
+  for (const shop of shops) {
+    const due = getTotalDueByShop(shop.name);
+    const mobile = shop.mobile;
+
+    if (!mobile || due <= 0) continue; // মোবাইল না থাকলে বা due না থাকলে skip
+
+    const message = `Dear ${shop.name}, your total due is ৳${due.toFixed(2)}. Please clear as early as possible. Mayer Duya Enterprise visit https://www.facebook.com/chalkpoint`;
+
+    const payload = {
+      api_key: "8U0USSg4hgL9VedCUw2Y",
+      msg: message,
+      to: mobile
+    };
+
+    try {
+      const res = await fetch("https://bulksmsbd.net/api/sms/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (data && data.status === "success") {
+        sent.push(shop.name);
+      } else {
+        failed.push({ shop: shop.name, error: data.message || 'Unknown error' });
+      }
+
+    } catch (error) {
+      failed.push({ shop: shop.name, error: error.message });
+    }
+  }
+
+  showToast(`✅ SMS sent to ${sent.length} customers.\n❌ Failed: ${failed.length}`);
+  console.log("Failed list:", failed);
+}
 
 
 
 
 
 
+//loadshopform firebase
 
 
 function loadShopsFromFirebase() {
