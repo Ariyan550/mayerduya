@@ -1,13 +1,13 @@
-// Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyA6rXO-U3T9IXunkFbSTNS-SMSJ-fHIVEw",
-  authDomain: "sell-aabc1.firebaseapp.com",
-  projectId: "sell-aabc1",
-  storageBucket: "sell-aabc1.firebasestorage.app",
-  messagingSenderId: "967989130190",
-  appId: "1:967989130190:web:4784dab0ff6a0ca7b7719f",
-  measurementId: "G-GSNKKFZXZT"
+  apiKey: "AIzaSyCcNWQNlmX4O48m3mBDpKfYn6GWvziVcVI",
+  authDomain: "waxbuy.firebaseapp.com",
+  projectId: "waxbuy",
+  storageBucket: "waxbuy.firebasestorage.app",
+  messagingSenderId: "323045402936",
+  appId: "1:323045402936:web:359a691be7d8289953b9cd",
+  measurementId: "G-01FMDM31CN"
 };
+
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
