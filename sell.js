@@ -1,14 +1,13 @@
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA6rXO-U3T9IXunkFbSTNS-SMSJ-fHIVEw",
-  authDomain: "sell-aabc1.firebaseapp.com",
-  projectId: "sell-aabc1",
-  storageBucket: "sell-aabc1.firebasestorage.app",
-  messagingSenderId: "967989130190",
-  appId: "1:967989130190:web:4784dab0ff6a0ca7b7719f",
-  measurementId: "G-GSNKKFZXZT"
+  apiKey: "AIzaSyAQStIKIHdMzIzvwI7AxkCNjboI72-kHUA",
+  authDomain: "sellgit.firebaseapp.com",
+  projectId: "sellgit",
+  storageBucket: "sellgit.firebasestorage.app",
+  messagingSenderId: "202762896068",
+  appId: "1:202762896068:web:c1b7d2afd74856e99c3f91",
+  measurementId: "G-C1QG3DML39"
 };
-
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
