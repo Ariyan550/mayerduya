@@ -1295,60 +1295,52 @@ async function importAllData(event) {
     try {
       const imported = JSON.parse(e.target.result);
 
-      // Local variables update
+      // ✅ Step 1: Local variable update
       shops = imported.shops || [];
       waxData = imported.waxSales || [];
       chalkData = imported.chalkSales || [];
       expenses = imported.expenses || [];
 
-      // 🔥 Clear Firebase collections first (optional but clean)
+      // ✅ Step 2: Clear Firebase (except expenses which is local only)
       await clearFirebaseCollection("shops");
       await clearFirebaseCollection("waxSales");
       await clearFirebaseCollection("chalkSales");
-      await clearFirebaseCollection("expenses");
 
-      // 🔁 Upload to Firebase
-      for (let shop of shops) {
-        await db.collection("shops").add(shop);
-      }
+      // ✅ Step 3: Upload data to Firebase
+      for (let shop of shops) await db.collection("shops").add(shop);
+      for (let wax of waxData) await db.collection("waxSales").add(wax);
+      for (let chalk of chalkData) await db.collection("chalkSales").add(chalk);
 
-      for (let wax of waxData) {
-        await db.collection("waxSales").add(wax);
-      }
-
-      for (let chalk of chalkData) {
-        await db.collection("chalkSales").add(chalk);
-      }
-
-      for (let exp of expenses) {
-        await db.collection("expenses").add(exp);
-      }
-
-      // Save to localStorage
+      // ✅ Step 4: Save to localStorage
       saveData('shops');
       saveData('wax');
       saveData('chalk');
       saveExpenses();
 
-      // Render everything
-      renderShopList();
-      renderShopListTable();
+      // ✅ Step 5: Render everything
+      loadShopsFromFirebase(); // Dropdown & shop table update
       renderTable('wax');
       renderTable('chalk');
       renderDueList('wax');
       renderDueList('chalk');
       renderExpenses();
+      renderMonthlyChart();
 
-      alert("✅ Import complete with Firebase sync!");
+      showToast("✅ Import complete with Firebase sync!", "success");
 
     } catch (err) {
-      showToast("❌ Invalid JSON or Firebase Error");
-      console.error(err);
+      console.error("❌ Import failed:", err);
+      showToast("❌ Invalid JSON or import error", "error");
     }
   };
 
   reader.readAsText(file);
 }
+
+
+
+
+
 
 
 async function clearFirebaseCollection(collectionName) {
