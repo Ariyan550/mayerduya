@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Shop Map</title>
+    <style>
+      html, body, #map {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+    <!-- ✅ Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDw6HBYUx2eszXx66hc2d53EJyJaSSez6M"></script>
+    
+    <!-- ✅ Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    
+    <!-- ✅ Marker Clusterer -->
+    <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script>
+      // ✅ Firebase Config
+      const firebaseConfig = {
+        apiKey: "AIzaSyDw6HBYUx2eszXx66hc2d53EJyJaSSez6M",
+        authDomain: "sell-aabc1.firebaseapp.com",
+        projectId: "sell-aabc1",
+        storageBucket: "sell-aabc1.appspot.com",
+        messagingSenderId: "515244047837",
+        appId: "1:515244047837:web:aaa6d8c7a3e37eb67a1eb2"
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
+      // ✅ Map Initialization
+      function initMap() {
+        const defaultCenter = { lat: 23.8103, lng: 90.4125 }; // Dhaka
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 8,
+          center: defaultCenter,
+        });
+
+        const markers = [];
+
+        db.collection("shops").get().then(snapshot => {
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            if (data.lat && data.lng) {
+              const position = { lat: data.lat, lng: data.lng };
+
+              // 🏷️ Info window content
+              const content = `
+                <strong>${data.name || "Unnamed Shop"}</strong><br>
+                ${data.address || ""}<br>
+                ${data.mobile || ""}
+              `;
+              const infoWindow = new google.maps.InfoWindow({ content });
+
+              // 📍 Marker
+              const marker = new google.maps.Marker({
+                position,
+                map,
+                title: data.name || "Shop",
+              });
+
+              // 🖱️ Click to open InfoWindow
+              marker.addListener("click", () => {
+                infoWindow.open(map, marker);
+              });
+
+              markers.push(marker);
+            }
+          });
+
+          // ✅ Marker clustering
+          new markerClusterer.MarkerClusterer({ map, markers });
+        });
+      }
+
+      window.onload = initMap;
+    </script>
+  </body>
+</html>

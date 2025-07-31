@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Employee Attendance System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Firebase App -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<!-- Firestore -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+<header class="bg-blue-900 text-white p-4 text-center text-2xl font-bold relative flex justify-between items-center">
+  <div>Employee Attendance and Salary System</div>
+  <div class="relative">
+    <button onclick="toggleNotification()" class="relative">
+      🔔
+      <span id="notificationBadge" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+    </button>
+    <div id="notificationBox" class="absolute right-0 mt-2 w-64 bg-white text-black rounded shadow-lg hidden z-10">
+      <div class="p-2 border-b font-semibold">Missing Attendance</div>
+      <ul id="notificationList" class="max-h-60 overflow-y-auto p-2 space-y-1">
+        <!-- Dynamic list -->
+      </ul>
+    </div>
+  </div>
+</header>
+
+  <main class="p-4 space-y-8 max-w-7xl mx-auto">
+
+    <!-- Add/Edit Employee -->
+    <section class="bg-gray-800 shadow-md p-6 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4" id="formTitle">Add New Employee</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <input id="empName" type="text" placeholder="Name" class="p-2 border border-gray-600 rounded bg-gray-700 text-gray-200" />
+        <input id="empPhone" type="text" placeholder="Phone" class="p-2 border border-gray-600 rounded bg-gray-700 text-gray-200" />
+        <input id="empPost" type="text" placeholder="Position" class="p-2 border border-gray-600 rounded bg-gray-700 text-gray-200" />
+        <input id="empSalary" type="number" placeholder="Salary" class="p-2 border border-gray-600 rounded bg-gray-700 text-gray-200" />
+        <button onclick="submitEmployee()" class="bg-blue-600 hover:bg-blue-700 transition px-4 py-2 rounded font-semibold" id="submitBtn">Add</button>
+      </div>
+    </section>
+
+    <!-- Attendance Date Picker -->
+    <section class="bg-gray-800 shadow-md p-6 rounded-lg">
+      <h2 class="text-lg font-semibold mb-2">Select Date for Attendance: 
+        <input type="date" id="attendanceDate" class="p-2 border border-gray-600 rounded ml-2 bg-gray-700 text-gray-200" />
+      </h2>
+      <button onclick="markAttendance()" class="bg-green-600 hover:bg-green-700 transition px-4 py-2 rounded mt-2 font-semibold">Mark Attendance</button>
+    </section>
+
+    <!-- Employee Table -->
+    <section class="bg-gray-800 shadow-md p-6 rounded-lg overflow-x-auto">
+      <h2 class="text-xl font-semibold mb-4">Employee List</h2>
+      <table class="min-w-full border border-gray-600 text-center">
+        <thead>
+          <tr class="bg-blue-700 text-gray-200">
+            <th class="p-2 border border-gray-600">Attendance</th>
+            <th class="p-2 border border-gray-600">Name</th>
+            <th class="p-2 border border-gray-600">Phone</th>
+            <th class="p-2 border border-gray-600">Position</th>
+            <th class="p-2 border border-gray-600">Attendance Days</th>
+            <th class="p-2 border border-gray-600">Overtime</th>
+            <th class="p-2 border border-gray-600">Advance</th>
+            <th class="p-2 border border-gray-600">Total Salary</th>
+            <th class="p-2 border border-gray-600">Action</th>
+          </tr>
+        </thead>
+        <tbody id="employeeTable">
+          <!-- Dynamic Rows -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Attendance Check Section -->
+    <section class="bg-gray-800 shadow-md p-6 rounded-lg">
+      <h2 class="text-lg font-semibold mb-2">Attendance Report by Date</h2>
+      <input type="date" id="reportDate" class="p-2 border border-gray-600 rounded mr-2 bg-gray-700 text-gray-200" />
+      <button onclick="checkAttendanceByDate()" class="bg-purple-600 hover:bg-purple-700 transition px-4 py-2 rounded font-semibold">Check</button>
+      
+      <div id="reportResult" class="mt-4 text-gray-200 overflow-x-auto">
+        <!-- Attendance report shown here -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- jsPDF CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="worker.js"></script>
+</body>
+</html>
