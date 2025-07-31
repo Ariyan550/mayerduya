@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wax & Chalk Sales - With Due & Shop Management</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <link rel="stylesheet" href="manifest.json">
+  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+<style>
+   @keyframes fade-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+  }
+
+</style>
+
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans min-h-screen flex flex-col pl-64">
+
+<!-- Sidebar -->
+<div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-gray-900 to-gray-800 text-white shadow-xl backdrop-blur-md z-40 flex flex-col justify-between">
+
+  <!-- Top: Logo -->
+  <div>
+    <div class="p-6 border-b border-gray-700">
+      <h1 class="text-2xl font-bold text-green-400 flex items-center gap-2">
+        <span class="material-icons">dashboard</span> 
+      </h1>
+    </div>
+
+    <!-- Menu -->
+    <nav class="px-4 py-4 space-y-2 text-sm font-medium">
+
+      <!-- Section: Dashboard -->
+      <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-gray-400 text-xs uppercase tracking-wider px-2">Dashboard</button>
+
+      <button class="w-full flex items-center gap-3 px-4 py-2 rounded-lg border-l-4 border-green-500 bg-gray-800 text-green-300 group hover:bg-gray-700 transition-all">
+        <span class="material-icons transform group-hover:scale-110 transition">home</span> Dashboard
+      </button>
+
+      <!-- Section: Transactions -->
+      <div class="text-gray-400 text-xs uppercase tracking-wider px-2 mt-4">Accounts</div>
+
+    <!-- ✅ Order Menu with Submenu in Same Style -->
+<div class="relative group">
+  <button onclick="toggleOrderMenu()" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-700 transition group">
+    <span class="material-icons transform group-hover:scale-110 transition">inventory_2</span>Order
+  </button>
+  <span class="absolute left-full ml-2 bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Order</span>
+</div>
+
+<!-- ✅ Submenu under Order -->
+<div id="orderSubMenu" class="ml-8 mt-1 hidden space-y-1">
+  <button onclick="openOrderModal()" class="w-full text-left px-3 py-1 text-sm text-blue-500 hover:bg-blue-100 rounded">➕ New Order</button>
+  <button onclick="openOrderListModal()" class="w-full text-left px-3 py-1 text-sm text-green-500 hover:bg-green-100 rounded">📄 Order List</button>
+</div>
+
+
+
+      <div class="relative group">
+        <button onclick="openModal('wax')" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-700 transition group">
+          <span class="material-icons transform group-hover:scale-110 transition">local_fire_department</span>Sell Wax
+        </button>
+        <span class="absolute left-full ml-2 bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Sell Wax</span>
+      </div>
+
+      <div class="relative group">
+        <button onclick="openModal('chalk')" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-700 transition group">
+          <span class="material-icons transform group-hover:scale-110 transition">grid_on</span> Sell Chalk
+        </button>
+        <span class="absolute left-full ml-2 bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Sell Chalk</span>
+      </div>
+
+      <div class="relative group">
+        <button onclick="toggleShopSubmenu()" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-700 transition group">
+          <span class="material-icons transform group-hover:scale-110 transition">store</span> Manage Shop
+        </button>
+        <span class="absolute left-full ml-2 bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Manage Shop</span>
+      </div>
+      <div id="shopSubmenu" class="pl-10 space-y-1 hidden">
+      <button onclick="openModal('shop')" class="w-full text-left hover:text-yellow-400">➕ Add Shop</button>
+      <button onclick="openModal('shopList')" class="w-full text-left hover:text-yellow-400">📋 Shop List</button>
+      </div>
+
+
+  <div class="relative group">
+  <button onclick="toggleBuySubmenu()" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-700 transition group">
+    <span class="material-icons transform group-hover:scale-110 transition">shopping_cart</span> Buy
+  </button>
+  <span class="absolute left-full ml-2 bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Buy</span>
+</div>
+<div id="buySubmenu" class="pl-10 space-y-1 hidden">
+  <button onclick="openModal('buy')" class="w-full text-left hover:text-yellow-400">➕ Buy Entry</button>
+  <button onclick="openModal('buyData')" class="w-full text-left hover:text-yellow-400">➕ Buy Data</button>
+  <button onclick="showBuyReport()" class="w-full text-left hover:text-yellow-400">📄 Buy Report</button>
+</div>
+
+
+      <div class="relative group">
+        <button onclick="toggleSummarySubmenu()" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-700 transition group">
+          <span class="material-icons transform group-hover:scale-110 transition">summarize</span>Summary
+        </button>
+        <span class="absolute left-full ml-2 bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Summary</span>
+      </div>
+      <div id="summarySubmenu" class="pl-10 space-y-1 hidden">
+      <button onclick="openModal('chalkSummary')" class="w-full text-left hover:text-yellow-400">📊 Chalk Summary</button>
+      <button onclick="openModal('waxSummary')" class="sidebar-btn">📊 Wax Summary</button>
+      <button onclick="openModal('chalkProductSummary')" class="sidebar-btn">📊 Chalk Product Summary</button>
+      </div>
+
+
+        <div class="relative group">
+        <button onclick="openReport()" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-700 transition group">
+          <span class="material-icons transform group-hover:scale-110 transition">description</span>Report
+        </button>
+        <span class="absolute left-full ml-2 bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Reports</span>
+      </div>
+
+
+      <div class="relative group">
+        <button onclick="openInvoiceModal()" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-700 transition group">
+          <span class="material-icons transform group-hover:scale-110 transition">receipt</span>Invoice
+        </button>
+        <span class="absolute left-full ml-2 bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Invoice</span>
+      </div>
+
+        <div class="relative group">
+        <a href="worker.html" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-700 transition group">
+          <span class="material-icons transform group-hover:scale-110 transition">receipt</span>Worker
+        </a>
+        <span class="absolute left-full ml-2 bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Worker</span>
+      </div>
+
+
+      <!-- Section: Settings -->
+      <div class="text-gray-400 text-xs uppercase tracking-wider px-2 mt-4">Settings</div>
+
+      <div class="relative group">
+        <button onclick="openModal('settings')" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-700 transition group">
+          <span class="material-icons transform group-hover:scale-110 transition">settings</span> Settings
+        </button>
+        <span class="absolute left-full ml-2 bg-gray-700 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition">Settings</span>
+      </div>
+
+    </nav>
+  </div>
+
+  <!-- Bottom: Profile -->
+  <div class="px-4 py-4 border-t border-gray-700 flex items-center gap-3">
+    <img src="https://i.pravatar.cc/40?u=user" class="w-10 h-10 rounded-full border border-gray-600" alt="User">
+    <div>
+      <p class="text-sm font-semibold">Md Pappu Hassan</p>
+      <p class="text-xs text-gray-400">Owner</p>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+  <!-- wax and chalk section -->
+
+
+<main class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 flex-1 mb-12 mt-10">
+  
+  <!-- 🟦 Wax Section -->
+  <section id="waxSection" class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 shadow-2xl ring-1 ring-blue-500/20">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-bold text-blue-400"><span data-key="waxSales">Wax Sales</span></h2>
+      <p class="text-lg text-yellow-400 font-semibold">
+        <span data-key="totalDue">Total Due</span>: ৳ <span id="waxTotalDue">0</span>
+      </p>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-4 text-center mb-6">
+      <div class="bg-gray-700 p-4 rounded-lg shadow">
+        <p class="text-sm text-gray-300 uppercase" data-key="totalQty">Total Qty</p>
+        <p id="waxTotalQty" class="text-2xl font-extrabold text-blue-300">0</p>
+      </div>
+      <div class="bg-gray-700 p-4 rounded-lg shadow">
+        <p class="text-sm text-gray-300 uppercase" data-key="totalAmount">Total ৳</p>
+        <p id="waxTotalAmt" class="text-2xl font-extrabold text-blue-300">0</p>
+      </div>
+      <div class="bg-gray-700 p-4 rounded-lg shadow">
+        <p class="text-sm text-gray-300 uppercase" data-key="profit">Profit ৳</p>
+        <p id="waxProfit" class="text-2xl font-extrabold text-blue-300">0</p>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="mb-4">
+      <input type="date" id="waxFilterDate" onchange="filterData('wax')" class="w-full rounded-lg px-4 py-2 bg-gray-700 text-white border border-gray-600 focus:ring focus:ring-blue-500" />
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto mb-6 rounded-lg border border-gray-700">
+      <table id="waxTable" class="w-full text-sm text-left">
+        <thead class="bg-gray-700 text-gray-300">
+          <tr>
+            <th class="px-3 py-2">Date</th>
+            <th class="px-3 py-2">Shop</th>
+            <th class="px-3 py-2">Qty</th>
+            <th class="px-3 py-2">Rate</th>
+            <th class="px-3 py-2">Amount</th>
+            <th class="px-3 py-2">Payment</th>
+            <th class="px-3 py-2">Due</th>
+            <th class="px-3 py-2">Profit</th>
+            <th class="px-3 py-2">Edit</th>
+            <th class="px-3 py-2">Delete</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-100"></tbody>
+      </table>
+    </div>
+
+    <!-- Due List -->
+    <div class="bg-gray-700 rounded-lg p-4">
+      <h3 class="text-lg font-semibold text-yellow-400 mb-3" data-key="dueListWax">Due List (Wax)</h3>
+      <div id="waxDueList" class="max-h-48 overflow-y-auto"></div>
+    </div>
+
+    <div id="waxPagination" class="flex justify-center mt-4 space-x-2"></div>
+  </section>
+
+
+  <!-- 🟩 Chalk Section -->
+  <section id="chalkSection" class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 shadow-2xl ring-1 ring-green-500/20">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-bold text-green-400"><span data-key="chalkSales">English Chalk Sales</span></h2>
+      <p class="text-lg text-yellow-400 font-semibold">
+        <span data-key="totalDue">Total Due</span>: ৳ <span id="chalkTotalDue">0</span>
+      </p>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-4 text-center mb-6">
+      <div class="bg-gray-700 p-4 rounded-lg shadow">
+        <p class="text-sm text-gray-300 uppercase" data-key="totalQty">Total Qty</p>
+        <p id="chalkTotalQty" class="text-2xl font-extrabold text-green-300">0</p>
+      </div>
+      <div class="bg-gray-700 p-4 rounded-lg shadow">
+        <p class="text-sm text-gray-300 uppercase" data-key="totalAmount">Total ৳</p>
+        <p id="chalkTotalAmt" class="text-2xl font-extrabold text-green-300">0</p>
+      </div>
+      <div class="bg-gray-700 p-4 rounded-lg shadow">
+        <p class="text-sm text-gray-300 uppercase" data-key="profit">Profit ৳</p>
+        <p id="chalkProfit" class="text-2xl font-extrabold text-green-300">0</p>
+      </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="mb-4">
+      <input type="date" id="chalkFilterDate" onchange="filterData('chalk')" class="w-full rounded-lg px-4 py-2 bg-gray-700 text-white border border-gray-600 focus:ring focus:ring-green-500" />
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto mb-6 rounded-lg border border-gray-700">
+      <table id="chalkTable" class="w-full text-sm text-left">
+        <thead class="bg-gray-700 text-gray-300">
+          <tr>
+            <th class="px-3 py-2">Date</th>
+            <th class="px-3 py-2">Shop</th>
+            <th class="px-3 py-2">Size</th>
+            <th class="px-3 py-2">Qty</th>
+            <th class="px-3 py-2">Rate</th>
+            <th class="px-3 py-2">Amount</th>
+            <th class="px-3 py-2">Payment</th>
+            <th class="px-3 py-2">Due</th>
+            <th class="px-3 py-2">Profit</th>
+            <th class="px-3 py-2">Edit</th>
+            <th class="px-3 py-2">Delete</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-100"></tbody>
+      </table>
+    </div>
+
+    <!-- Due List -->
+    <div class="bg-gray-700 rounded-lg p-4">
+      <h3 class="text-lg font-semibold text-yellow-400 mb-3" data-key="dueListChalk">Due List (English Chalk)</h3>
+      <div id="chalkDueList" class="max-h-48 overflow-y-auto"></div>
+    </div>
+
+    <div id="chalkPagination" class="flex justify-center mt-4 space-x-2"></div>
+  </section>
+
+
+
+
+
+
+  <!-- 💸 Expense Section -->
+  <section class="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl shadow-2xl ring-1 ring-yellow-500/20">
+    <h2 class="text-2xl font-bold text-yellow-400 mb-4" data-key="expenses">Expense Management</h2>
+    <form onsubmit="event.preventDefault(); addExpense()" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div>
+        <label class="block text-sm mb-1" data-key="date">Date</label>
+        <input type="date" id="expenseDate" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded" required />
+      </div>
+      <div>
+        <label class="block text-sm mb-1" data-key="item">Item</label>
+        <input type="text" id="expenseItem" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded" placeholder="Item name" required />
+      </div>
+      <div>
+        <label class="block text-sm mb-1" data-key="amountOnly">Amount</label>
+        <input type="number" id="expenseAmount" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded" placeholder="৳" required min="0" />
+      </div>
+      <div class="flex items-end">
+        <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 w-full px-6 py-2 rounded font-semibold" data-key="add">Add</button>
+      </div>
+    </form>
+
+    <div class="mt-6">
+      <h3 class="text-xl font-semibold mb-2" data-key="expenses">Expenses List</h3>
+      <div class="overflow-x-auto rounded-lg border border-gray-700">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-700 text-gray-300">
+            <tr>
+              <th class="p-2 border border-gray-600" data-key="date">Date</th>
+              <th class="p-2 border border-gray-600" data-key="item">Item</th>
+              <th class="p-2 border border-gray-600" data-key="amountOnly">Amount (৳)</th>
+              <th class="p-2 border border-gray-600" data-key="action">Action</th>
+            </tr>
+          </thead>
+          <tbody id="expenseTableBody" class="text-gray-100"></tbody>
+        </table>
+      </div>
+      <div class="text-right mt-4 text-lg font-bold text-green-400">
+        <span data-key="totalExpense">Total Expense</span>: ৳ <span id="totalExpense">0</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 📊 Monthly Summary Card -->
+  <section>
+    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-2xl p-6 ring-1 ring-purple-500/20 h-full">
+      <h2 class="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+        <span class="material-icons">insights</span>
+        <span data-key="monthlyChartTitle">Monthly Profit & Expense Overview</span>
+      </h2>
+
+      <div class="bg-gray-700 rounded-lg p-4">
+        <canvas id="monthlyChart" class="w-full h-64"></canvas>
+      </div>
+
+      <div class="text-right mt-4">
+        <button onclick="resetChartHistory()" class="text-sm text-red-400 hover:text-red-300 underline" data-key="resetChartHistory">
+          🔄 Reset Chart History
+        </button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+<!-- ✅ Buy Entry Modal (Modern UI with Tailwind Only) -->
+<div id="buyModal" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 hidden transition duration-300">
+  <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-5xl text-white animate-fade-in">
+    <!-- Header -->
+    <div class="flex justify-between items-center border-b border-gray-700 pb-4 mb-6">
+      <h2 class="text-3xl font-bold text-blue-400 flex items-center gap-2">
+        <span class="material-icons">shopping_cart</span> Buy Entry
+      </h2>
+      <button onclick="closeModal('buy')" class="text-red-400 hover:text-red-300 text-3xl font-bold">&times;</button>
+    </div>
+
+    <form id="buyForm" onsubmit="event.preventDefault(); saveBuyData()" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div>
+    <label class="block text-sm text-gray-300 mb-1">Date</label>
+    <input type="date" id="buyDate" name="buyDate" required
+      class="w-full px-4 py-3 rounded-xl bg-gray-800 text-white border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition" />
+  </div>
+
+  <div>
+    <label class="block text-sm text-gray-300 mb-1">Wax Quantity (কেজি)</label>
+    <input type="number" id="waxQtyb" name="waxQty" oninput="calculateBuyTotal()"
+      class="w-full px-4 py-3 rounded-xl bg-gray-800 text-white border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition" />
+  </div>
+
+  <div>
+    <label class="block text-sm text-gray-300 mb-1">Wax Rate</label>
+    <input type="number" id="waxRateb" name="waxRate" oninput="calculateBuyTotal()"
+      class="w-full px-4 py-3 rounded-xl bg-gray-800 text-white border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition" />
+  </div>
+
+  <div>
+    <label class="block text-sm text-gray-300 mb-1">Wax Amount</label>
+    <input type="number" id="waxAmountb" name="waxAmount" readonly
+      class="w-full px-4 py-3 rounded-xl bg-gray-700 text-gray-400 border border-gray-600 cursor-not-allowed" />
+  </div>
+
+  <div>
+    <label class="block text-sm text-gray-300 mb-1">Stearic (কেজি)</label>
+    <input type="number" id="stearicQty" name="stearicQty" oninput="calculateBuyTotal()"
+      class="w-full px-4 py-3 rounded-xl bg-gray-800 text-white border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition" />
+  </div>
+
+  <div>
+    <label class="block text-sm text-gray-300 mb-1">Stearic Rate</label>
+    <input type="number" id="stearicRate" name="stearicRate" oninput="calculateBuyTotal()"
+      class="w-full px-4 py-3 rounded-xl bg-gray-800 text-white border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition" />
+  </div>
+
+  <div>
+    <label class="block text-sm text-gray-300 mb-1">Stearic Amount</label>
+    <input type="number" id="stearicAmount" name="stearicAmount" readonly
+      class="w-full px-4 py-3 rounded-xl bg-gray-700 text-gray-400 border border-gray-600 cursor-not-allowed" />
+  </div>
+
+  <div>
+    <label class="block text-sm text-gray-300 mb-1">A to Z</label>
+    <input type="number" id="atoz" name="atoz" oninput="calculateBuyTotal()"
+      class="w-full px-4 py-3 rounded-xl bg-gray-800 text-white border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition" />
+  </div>
+
+  <div>
+    <label class="block text-sm text-gray-300 mb-1">Total</label>
+    <input type="number" id="totalb" name="total" readonly
+      class="w-full px-4 py-3 rounded-xl bg-gray-700 text-gray-400 border border-gray-600 cursor-not-allowed" />
+  </div>
+
+  <div>
+    <label class="block text-sm text-gray-300 mb-1">Previous Due</label>
+    <input type="number" id="previousDue" name="previousDue" oninput="calculateBuyTotal()"
+      class="w-full px-4 py-3 rounded-xl bg-gray-800 text-white border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition" />
+  </div>
+
+  <div>
+    <label class="block text-sm text-gray-300 mb-1">Payment</label>
+    <input type="number" id="paymentb" name="payment" oninput="calculateBuyTotal()"
+      class="w-full px-4 py-3 rounded-xl bg-gray-800 text-white border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition" />
+  </div>
+
+  <div>
+    <label class="block text-sm text-gray-300 mb-1">Bank</label>
+    <select id="bank" name="bank"
+      class="w-full px-4 py-3 rounded-xl bg-gray-800 text-white border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
+      <option value="IBBL">IBBL</option>
+      <option value="JBBL">JBBL</option>
+    </select>
+  </div>
+
+  <div>
+    <label class="block text-sm text-gray-300 mb-1">Payment Date</label>
+    <input type="date" id="paymentDateb" name="paymentDate"
+      class="w-full px-4 py-3 rounded-xl bg-gray-800 text-white border border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition" />
+  </div>
+
+  <div>
+    <label class="block text-sm text-gray-300 mb-1">Total Due</label>
+    <input type="number" id="totalDueb" name="totalDue" readonly
+      class="w-full px-4 py-3 rounded-xl bg-gray-700 text-gray-400 border border-gray-600 cursor-not-allowed" />
+  </div>
+
+  <!-- Submit Button -->
+  <div class="md:col-span-2 flex justify-end gap-4 mt-6">
+    <button type="submit"
+      class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl font-semibold shadow-md transition-all">Submit</button>
+    <button type="button" onclick="closeModal('buy')"
+      class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-xl font-semibold shadow-md transition-all">Close</button>
+  </div>
+</form>
+
+  </div>
+</div>
+
+<!-- ✅ Buy Data Modal -->
+<div id="buyDataModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center text-center justify-center z-50 hidden">
+  <div class="bg-gray-900 rounded-xl p-6 w-full max-w-6xl max-h-[90vh] overflow-y-auto text-white">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-bold text-green-400">📄 Buy Records</h2>
+      <button onclick="closeModal('buyData')" class="text-red-400 hover:text-red-300 text-3xl font-bold">&times;</button>
+    </div>
+    <div class="overflow-auto rounded border border-gray-700">
+      <table class="w-full text-md">
+        <thead class="bg-gray-800 text-gray-300">
+          <tr>
+            <th class="p-2">Date</th>
+            <th class="p-2">Wax Qty</th>
+            <th class="p-2">Stearic Qty</th>
+            <th class="p-2">A to Z</th>
+            <th class="p-2">Total</th>
+            <th class="p-2">Payment</th>
+            <th class="p-2">Due</th>
+            <th class="p-2">Bank</th>
+            <th class="p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="buyDataTable" class="text-gray-100 divide-y divide-gray-700"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Buy Report Modal -->
+<div id="buyReportModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+  <div class="bg-gray-900 rounded-xl p-6 w-full max-w-4xl text-white">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-bold text-yellow-400">📊 Buy Report</h2>
+      <button onclick="closeModal('buyReport')" class="text-red-400 hover:text-red-300 text-3xl font-bold">&times;</button>
+    </div>
+    <div id="buyReportContent" class="text-sm space-y-2 text-gray-200">
+      <!-- Dynamic Report Summary -->
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<!-- ✅ Order Form Modal -->
+<div id="orderModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50 hidden">
+  <div class="bg-gray-200 rounded-2xl shadow-lg w-full max-w-lg p-6 space-y-5 animate-fadeIn">
+    <div class="flex justify-between items-center border-b pb-2">
+      <h2 class="text-xl font-semibold text-gray-800">➕ New Order</h2>
+      <button onclick="closeOrderModal()" class="text-gray-500 hover:text-red-500 text-lg">✖</button>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <label for="orderDate" class="text-sm text-gray-800 font-medium">Order Date</label>
+        <input id="orderDate" type="date" class="w-full text-gray-800 mt-1 border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div>
+        <label for="deliveryDate" class="text-sm font-medium text-gray-800">Delivery Date</label>
+        <input id="deliveryDate" type="date" class="w-full text-gray-800 mt-1 border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div>
+        <label for="orderShop" class="text-sm font-medium text-gray-600">Select Shop</label>
+        <select id="orderShop" class="w-full text-gray-800 mt-1 border border-gray-300 p-2 rounded-lg">
+          <option value="">-- Select --</option>
+        </select>
+      </div>
+      <div>
+        <label for="orderDescription" class="text-sm font-medium text-gray-800 ">Description</label>
+        <textarea id="orderDescription" rows="3" class="w-full mt-1 border text-gray-800 border-gray-300 p-2 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Write something..."></textarea>
+      </div>
+      <button id="orderSubmitBtn" onclick="submitOrder()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold shadow">
+        ✅ Submit Order
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Order List Modal -->
+<div id="orderListModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50 hidden">
+  <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl p-6 space-y-4 max-h-[90vh] overflow-y-auto animate-fadeIn">
+    
+    <!-- 🔘 Modal Header -->
+    <div class="flex justify-between items-center border-b pb-3">
+      <h2 class="text-2xl font-bold text-gray-800">📄 Order List</h2>
+      <button onclick="closeOrderListModal()" class="text-gray-500 hover:text-red-600 text-xl">✖</button>
+    </div>
+
+    <!-- 📋 Order Cards -->
+    <div id="orderListContainer" class="grid sm:grid-cols-2 gap-4">
+      <!-- JS will inject cards here -->
+    </div>
+
+  </div>
+</div>
+
+
+
+  <!-- Modals -->
+  <!-- Wax Modal -->
+  <div
+    id="waxModal"
+    class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden"
+  >
+    <div
+      class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-lg w-full mx-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="waxModalTitle"
+    >
+      <h2
+        id="waxModalTitle"
+        class="text-2xl font-semibold mb-4 text-blue-400 text-center"
+      >
+        Sell Wax
+      </h2>
+      <form
+        onsubmit="event.preventDefault(); submitForm('wax')"
+        class="space-y-4"
+        autocomplete="off"
+      >
+        <input
+          type="date"
+          id="waxDate"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+        />
+        <select
+          id="waxShopSelect"
+          required
+          class="tom-select text-blue-700"
+        >
+          <!-- shop options inserted dynamically -->
+        </select>
+
+<select id="waxUnit" required class="w-full bg-gray-700 border border-gray-600 text-gray-100 p-2 rounded mb-4">
+  <option value="">-- Select Unit --</option>
+  <option value="PK">PK</option>
+  <option value="KG">KG</option>
+</select>
+
+
+
+        <input
+          type="number"
+          id="waxQty"
+          placeholder="Quantity"
+          min="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+          oninput="calcAmountDue('wax')"
+        />
+        <input
+          type="number"
+          id="waxRate"
+          placeholder="Rate"
+          min="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+          oninput="calcAmountDue('wax')"
+        />
+        <input
+          type="number"
+          id="waxAmount"
+          placeholder="Amount"
+          min="0"
+          readonly
+          class="w-full rounded-md px-4 py-2 bg-gray-600 border border-gray-600 text-gray-400 cursor-not-allowed"
+        />
+        <input
+          type="number"
+          id="waxPayment"
+          placeholder="Payment"
+          min="0"
+          value="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+          oninput="calcDue('wax')"
+        />
+        <input
+          type="number"
+          id="waxDue"
+          placeholder="Due"
+          min="0"
+          readonly
+          class="w-full rounded-md px-4 py-2 bg-gray-600 border border-gray-600 text-gray-400 cursor-not-allowed"
+        />
+        <input
+          type="number"
+          id="waxProfitInput"
+          placeholder="Profit"
+          min="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+        />
+        <div class="flex justify-end space-x-4">
+          <button
+            type="button"
+            onclick="closeModal('wax')"
+            class="px-5 py-2 bg-gray-600 hover:bg-gray-700 rounded-md font-semibold transition"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-5 py-2 bg-blue-600 hover:bg-blue-700 rounded-md font-semibold transition"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Chalk Modal -->
+  <div
+    id="chalkModal"
+    class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden"
+  >
+    <div
+      class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-lg w-full mx-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="chalkModalTitle"
+    >
+      <h2
+        id="chalkModalTitle"
+        class="text-2xl font-semibold mb-4 text-green-400 text-center"
+      >
+        Sell English Chalk
+      </h2>
+      <form
+        onsubmit="event.preventDefault(); submitForm('chalk')"
+        class="space-y-4"
+        autocomplete="off"
+      >
+        <input
+          type="date"
+          id="chalkDate"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
+        />
+        <select
+          id="chalkShopSelect"
+          required
+          class="tom-select"
+        >
+          <!-- shop options inserted dynamically -->
+        </select>
+
+<select id="chalkProduct" required class="w-full bg-gray-700 border border-gray-600 text-gray-100 p-2 rounded mb-4">
+  <option value="">-- Select Product --</option>
+  <option value="English Chalk">English Chalk</option>
+  <option value="Magic Chalk">Magic Chalk</option> 
+</select>
+
+
+
+
+    <select
+  id="chalkSize"
+  required
+  class="w-full bg-gray-700 border border-gray-600 text-gray-100"
+    >
+  <option value="">-- Select Size --</option>
+   <option value="Small">Small</option>
+  <option value="Big">Big</option>
+  </select>
+
+        <input
+          type="number"
+          id="chalkQty"
+          placeholder="Quantity"
+          min="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
+          oninput="calcAmountDue('chalk')"
+        />
+        <input
+          type="text"
+          id="chalkRate"
+          placeholder="Rate"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
+          oninput="calcAmountDue('chalk')"
+        />
+        <input
+          type="number"
+          id="chalkAmount"
+          placeholder="Amount"
+          min="0"
+          readonly
+          class="w-full rounded-md px-4 py-2 bg-gray-600 border border-gray-600 text-gray-400 cursor-not-allowed"
+        />
+        <input
+          type="number"
+          id="chalkPayment"
+          placeholder="Payment"
+          min="0"
+          value="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
+          oninput="calcDue('chalk')"
+        />
+        <input
+          type="number"
+          id="chalkDue"
+          placeholder="Due"
+          min="0"
+          readonly
+          class="w-full rounded-md px-4 py-2 bg-gray-600 border border-gray-600 text-gray-400 cursor-not-allowed"
+        />
+        <input
+          type="number"
+          id="chalkProfitInput"
+          placeholder="Profit"
+          min="0"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-100"
+        />
+        <div class="flex justify-end space-x-4">
+          <button
+            type="button"
+            onclick="closeModal('chalk')"
+            class="px-5 py-2 bg-gray-600 hover:bg-gray-700 rounded-md font-semibold transition"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-5 py-2 bg-green-600 hover:bg-green-700 rounded-md font-semibold transition"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+<!-- Chalk Size Summary Modal -->
+<div id="chalkSummaryModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+  <div class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-bold text-purple-400">📊 Chalk Size Summary</h2>
+      <button onclick="closeModal('chalkSummary')" class="text-red-400 hover:text-red-200 text-xl">&times;</button>
+    </div>
+    <div id="chalkSummaryContent" class="text-sm text-gray-100"></div>
+  </div>
+</div>
+
+
+
+
+<!-- Wax Size Summary Modal -->
+<div id="waxSummaryModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+  <div class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-bold text-yellow-400">📊 Wax Unit Summary</h2>
+      <button onclick="closeModal('waxSummary')" class="text-red-400 hover:text-red-200 text-xl">&times;</button>
+    </div>
+    <div id="waxSummaryContent" class="text-sm text-gray-100"></div>
+  </div>
+</div>
+
+
+
+
+<!-- Chalk Product Summary Modal -->
+<div id="chalkProductSummaryModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+  <div class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-bold text-blue-400">📊 Chalk Product Summary</h2>
+      <button onclick="closeModal('chalkProductSummary')" class="text-red-400 hover:text-red-200 text-xl">&times;</button>
+    </div>
+    <div id="chalkProductSummaryContent" class="text-sm text-gray-100"></div>
+  </div>
+</div>
+
+
+
+
+<!-- 🔸 Payment Modal -->
+<div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+  <div class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-sm w-full mx-4">
+    <h2 class="text-xl font-bold text-yellow-400 mb-4 text-center">🧾 Add Payment</h2>
+    <form onsubmit="event.preventDefault(); submitPartialPayment()" class="space-y-4">
+  <input type="hidden" id="paymentType" />
+  <input type="hidden" id="paymentIndex" />
+      <div>
+        <label class="block text-sm mb-1 text-gray-300">Payment Date</label>
+        <input type="date" id="paymentDate" required class="w-full px-4 py-2 rounded bg-gray-700 border border-gray-600 text-gray-100" />
+      </div>
+      <div>
+        <label class="block text-sm mb-1 text-gray-300">Amount</label>
+        <input type="number" id="paymentAmount" min="1" required class="w-full px-4 py-2 rounded bg-gray-700 border border-gray-600 text-gray-100" />
+      </div>
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="closeModal('payment')" class="px-4 py-2 bg-gray-600 rounded hover:bg-gray-700">Cancel</button>
+        <button type="submit" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 rounded font-bold">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+<!-- 📜 Payment History Modal -->
+<div id="historyModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+  <div class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-sm w-full mx-4">
+    <h2 class="text-xl font-bold text-yellow-400 mb-4 text-center">📜 Payment History</h2>
+    <div id="historyContent" class="text-gray-100 space-y-2 text-sm"></div>
+    <div class="text-right mt-4">
+      <button onclick="closeModal('history')" class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded">Close</button>
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- Shop Management Modal -->
+  <div
+    id="shopModal"
+    class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden"
+  >
+    <div
+      class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full mx-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="shopModalTitle"
+    >
+      <h2
+        id="shopModalTitle"
+        class="text-2xl font-semibold mb-4 text-yellow-400 text-center"
+      >
+        Manage Shops
+      </h2>
+      <form
+        id="shopForm"
+        onsubmit="event.preventDefault(); addShop()"
+        class="space-y-4"
+      >
+        <input
+          type="text"
+          id="shopNameInput"
+          placeholder="Shop Name"
+          required
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-gray-100"
+        />
+        <input
+          type="text"
+          id="shopAddressInput"
+          placeholder="Shop Address"
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-gray-100"
+        />
+        <input
+          type="text"
+          id="shopMobileInput"
+          placeholder="Mobile Number"
+          class="w-full rounded-md px-4 py-2 bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-gray-100"
+        />
+
+
+      <input type="text" id="shopLatInput" placeholder="Latitude" class="..." />
+      <input type="text" id="shopLngInput" placeholder="Longitude" class="..." />
+      <button type="button" onclick="getCurrentLocation()">📍 Use My Location</button>
+
+
+        <div class="flex justify-end space-x-4">
+          <button
+            type="button"
+            onclick="closeModal('shop')"
+            class="px-5 py-2 bg-gray-600 hover:bg-gray-700 rounded-md font-semibold transition"
+          >
+            Cancel
+          </button>
+          <button  id="shopSubmitBtn"
+            type="submit"
+            class="px-5 py-2 bg-yellow-500 hover:bg-yellow-600 rounded-md font-semibold transition"
+          >
+            Add Shop
+          </button>
+        </div>
+
+      </form>
+       <hr class="my-4 border-gray-600" />
+      <h3 class="text-xl font-semibold mb-2">Existing Shops</h3>
+      <div id="shopList" class="max-h-48 overflow-y-auto"></div>
+    </div>
+  </div>
+
+
+
+
+
+<!-- 🧾 Invoice Modal -->
+<div id="invoiceModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+  <div class="bg-gray-800 rounded-lg shadow-lg p-6 max-w-xl w-full mx-4">
+    <h2 class="text-2xl font-bold text-yellow-400 mb-4 text-center">🧾 Generate Invoice</h2>
+    
+    <form onsubmit="event.preventDefault(); generateInvoice()" class="space-y-4">
+      <div>
+        <label class="block text-sm mb-1 text-gray-300">Select Shop</label>
+        <select id="invoiceShopSelect" class="w-full px-4 py-2 rounded bg-gray-700 border border-gray-600 text-gray-100"></select>
+      </div>
+      <div>
+        <label class="block text-sm mb-1 text-gray-300">Select Date</label>
+        <input type="date" id="invoiceDate" class="w-full px-4 py-2 rounded bg-gray-700 border border-gray-600 text-gray-100">
+      </div>
+      <div class="flex justify-end gap-4">
+        <button type="button" onclick="closeModal('invoice')" class="px-4 py-2 bg-gray-600 rounded hover:bg-gray-700">Cancel</button>
+        <button type="submit" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 rounded font-bold">Generate</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+<!-- ⚙️ Settings Modal -->
+<div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 hidden transition duration-300">
+  <div class="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-xl mx-4 p-6 animate-fade-in">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center border-b border-gray-700 pb-3 mb-4">
+      <h2 class="text-2xl font-bold text-green-400 flex items-center gap-2">
+        <span class="material-icons">settings</span> Settings
+      </h2>
+      <button onclick="closeModal('settings')" class="text-gray-400 hover:text-red-400 text-2xl">&times;</button>
+    </div>
+
+    <!-- Body -->
+    <div id="settingsContent" class="space-y-6 text-sm text-gray-200">
+
+      <!-- Export/Import Section -->
+      <div>
+        <h3 class="text-base font-semibold mb-2 text-blue-300">📁 Import & Export</h3>
+        <div class="flex flex-col gap-2 ml-2">
+          <button onclick="exportAllData()" class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded-md w-fit">📤 Export Data</button>
+          <label class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded-md w-fit cursor-pointer">
+            📥 Import Data
+            <input type="file" accept=".json" onchange="importAllData(event)" hidden>
+          </label>
+        </div>
+      </div>
+
+      <!-- Reset All Data -->
+      <div>
+        <h3 class="text-base font-semibold mb-2 text-red-300">🗑️ Reset Data</h3>
+        <button onclick="resetAll()" class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md">
+          <span class="material-icons">delete_forever</span> Reset All Data
+        </button>
+      </div>
+
+      <!-- Language Switch -->
+      <div>
+        <h3 class="text-base font-semibold mb-2 text-yellow-300">🌐 Language</h3>
+        <select id="languageToggle" class="bg-gray-800 border border-gray-600 text-white px-3 py-2 rounded-md w-full">
+          <option value="en">English</option>
+          <option value="bn">বাংলা</option>
+        </select>
+      </div>
+
+      <!-- Shop Map -->
+      <div>
+        <h3 class="text-base font-semibold mb-2 text-green-300">🗺️ Shop Map</h3>
+        <button onclick="window.open('shop-map.html', '_blank')" class="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md w-full text-white">
+          <span class="material-icons">location_on</span> Open Shop Map
+        </button>
+      </div>
+
+
+    </div>
+
+    <!-- Footer -->
+    <div class="flex justify-end pt-6 border-t border-gray-700 mt-6">
+      <button onclick="closeModal('settings')" class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-md">Close</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Report Modal -->
+<div id="reportModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+  <div class="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-bold text-yellow-400">📄 Full Sales Report</h2>
+      <button onclick="closeReport()" class="text-red-400 hover:text-red-200 text-xl">&times;</button>
+    </div>
+    <div id="reportContent" class="space-y-6 text-gray-100 text-sm">
+      <!-- Dynamic content will be inserted here -->
+    </div>
+    <div class="mt-6 text-right">
+      <button onclick="downloadReport()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded font-semibold text-white">
+        ⬇ Download PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Shop List Modal -->
+<!-- 🌈 Modern Shop List Modal -->
+<div id="shopListModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+  <div class="bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-xl shadow-2xl p-6 max-w-5xl w-full mx-4 max-h-[90vh] overflow-y-auto border border-gray-700">
+    
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-500 drop-shadow">📋 Shop List</h2>
+        <p class="text-sm text-gray-400 mt-1">All active shops and their total dues</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button
+          onclick="sendDueSmsToAllCustomers()"
+          class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-4 py-2 rounded-lg shadow font-semibold transition"
+        >
+          📤 Send Due SMS
+        </button>
+        <button
+          onclick="closeModal('shopList')"
+          class="text-red-400 hover:text-red-300 text-3xl font-bold"
+        >
+          &times;
+        </button>
+      </div>
+    </div>
+
+    <!-- Search Input -->
+    <div class="mb-4">
+      <input
+        type="text"
+        id="shopSearchInput"
+        oninput="filterShopListTable()"
+        placeholder="🔍 Search by shop name..."
+        class="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
+      />
+    </div>
+
+    <!-- Table -->
+ <!-- Table (Scrollable Body) -->
+<div class="overflow-hidden rounded-lg border border-gray-700 shadow-inner">
+  <div class="max-h-[60vh] overflow-y-auto">
+    <table class="w-full text-sm text-left border-collapse rounded-lg overflow-hidden">
+      <thead class="sticky top-0 z-10 bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900 text-gray-300 uppercase tracking-wide text-xs">
+        <tr>
+          <th class="p-3 text-left">#</th>
+          <th class="p-3 text-left">Shop Name</th>
+          <th class="p-3 text-left">Address</th>
+          <th class="p-3 text-left">Mobile</th>
+          <th class="p-3 text-right">Total Due (৳)</th>
+          <th class="p-3 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="shopListTableBody" class="divide-y divide-gray-700 text-gray-100">
+        <!-- JS-generated rows -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+    <!-- Footer Count -->
+    <div class="text-sm text-gray-400 mt-4 text-right">
+      Total Shops: <span id="shopCount">${shops?.length || 0}</span>
+    </div>
+  </div>
+</div>
+
+
+
+  <footer class="p-4 text-center text-gray-400">
+    Developed for Mayer Duya Enterprise
+  </footer>
+
+
+
+
+
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="sell.js"></script>
+<script src="order.js"></script>
+<script src="lang.js"></script>
+<script src="buy.js"></script>
+</body>
+</html>
